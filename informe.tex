@@ -2,75 +2,45 @@
 
 \documentclass[12pt,a4paper]{article}
 
+<<<<<<< Updated upstream
 % --- \textit{""} ---
 
 
+=======
+>>>>>>> Stashed changes
 % --- Paquetes de Idioma y Formato ---
-
 \usepackage[utf8]{inputenc}
-
 \usepackage[spanish, es-tabla]{babel}
-
 \usepackage[margin=2.5cm]{geometry}
-
 \usepackage{setspace}
-
 \onehalfspacing
-
 \usepackage{parskip}
-
 \usepackage[hidelinks]{hyperref}
 
-
-
 % --- Paquetes de Imágenes ---
-
 \usepackage{graphicx}
-
-\graphicspath{ {./imagenes/} } % Busca en tu carpeta 'imagenes'
-
-
+\graphicspath{ {./imagenes/} } 
 
 % --- Configuración de la Portada ---
-
 \title{
-
-    \vspace{2cm} % Espacio superior
-
+    \vspace{2cm} 
     {\Huge \textbf{Informe Previo TFG: Agentes Autónomos y Sistemas Multi-Agente (MAS)}} \\[1.5cm]
-
     \includegraphics[width=0.5\textwidth]{portada.png} \\[1.5cm]
-
 }
-
 \author{\textbf{Samuel Gómez Grande}}
-
 \date{\today}
-
-
 
 \begin{document}
 
-
-
 % Genera la portada personalizada
-
 \begin{titlepage}
-
     \centering
-
     \maketitle
-
-    \thispagestyle{empty} % Quita el número de página de la portada
-
+    \thispagestyle{empty} 
 \end{titlepage}
 
-
-
 \newpage
-
 \tableofcontents
-
 \newpage
 
 \section{Introducción}
@@ -92,15 +62,33 @@ Un LLM (\textit{Large Language Model}) es un sistema de Inteligencia Artificial 
 
 Para que un LLM sea capaz de razonar y colaborar en un sistema multi-agente, necesita una estructura interna que le permita entender el contexto de forma global. Esta estructura es la arquitectura \textbf{Transformer}, introducida en 2017, que supuso una ruptura con los modelos clásicos que procesaban la información de manera secuencial (palabra por palabra).
 
-El corazón del Transformer es el mecanismo de \textbf{auto-atención (self-attention)}. Simplificándolo, este mecanismo permite que el modelo, al leer una palabra, pueda "mirar" al mismo tiempo todas las demás palabras del texto para entender su significado preciso. Por ejemplo, en un entorno de agentes, si un agente recibe la instrucción \textit{"Analiza el código y corrígelo"}, el Transformer permite que el modelo identifique que \textit{"corrígelo"} se refiere específicamente al \textit{"código"} mencionado antes, manteniendo la coherencia incluso en textos muy largos.
+El corazón del Transformer es el mecanismo de \textbf{auto-atención (self-attention)}. Simplificándolo, este mecanismo permite que el modelo, a la hora de leer un texto, pueda leer todas las palabras del texto simultáneamente para entender las relaciones de importancia entre ellas. Por ejemplo, en un entorno de agentes, si un agente recibe la instrucción \textit{``Analiza el código y corrígelo''}, el Transformer permite que el modelo identifique que \textit{``corrígelo''} se refiere específicamente al \textit{``código''} mencionado antes, manteniendo la coherencia incluso en textos muy largos.
 
 Esta capacidad de gestionar relaciones complejas y contextos extensos es, en última instancia, lo que permite que los agentes no solo generen texto, sino que mantengan un hilo lógico de pensamiento y planificación durante la resolución de problemas en equipo.
 
 \subsection{¿Qué es un Agente Inteligente?}
-% Espacio para completar
+
+Un \textbf{Agente Inteligente} es una entidad capaz de percibir su entorno, procesar esa información y ejecutar acciones de manera autónoma para alcanzar un objetivo específico. 
+
+Históricamente, los agentes inteligentes funcionaban bajo el paradigma \textit{---Si ocurre A, entonces haz B---}; sin embargo, el enfoque moderno basado en LLM ha transformado este concepto en un sistema de razonamiento dinámico. En este nuevo paradigma, la \textbf{Arquitectura Transformer} actúa como el núcleo cognitivo del agente. Gracias al mecanismo de \textit{self-attention}, el agente no solo ``lee'' palabras, sino que comprende la relación jerárquica y contextual entre ellas, permitiéndole ir más allá de las reglas preprogramadas mediante tres capacidades fundamentales:
+
+\begin{itemize}
+    \item \textbf{Planificación y Razonamiento (Planning):} Utilizando su arquitectura Transformer para procesar secuencias de pensamiento, el agente descompone objetivos complejos en pasos lógicos intermedios. Esto le permite anticipar necesidades y corregir su estrategia sobre la marcha.
+    
+    \item \textbf{Uso de Herramientas (Tool Use):} El agente identifica, mediante la comprensión del lenguaje, cuándo sus capacidades internas son insuficientes y decide de forma autónoma invocar herramientas externas (APIs, intérpretes de código o buscadores) para devolver una respuesta coherente y verídica.
+    
+    \item \textbf{Gestión de Memoria:} Los agentes actuales emulan la cognición humana gestionando una \textit{memoria a corto plazo} (la ventana de contexto del Transformer) y una \textit{memoria a largo plazo} (mediante bases de datos vectoriales) para recuperar conocimientos específicos.
+\end{itemize}
+
+Esta evolución convierte al agente en un sistema \textbf{proactivo} en lugar de reactivo, dotándolo de una ``intuición'' digital para navegar por la ambigüedad del lenguaje y la complejidad de las tareas técnicas.
 
 \subsection{¿Qué es un Sistema Multi-Agente (MAS)?}
-% Espacio para completar
+
+Un \textbf{Sistema Multi-Agente (MAS)} es un entorno compuesto por múltiples agentes inteligentes que interactúan entre sí para alcanzar objetivos que superan las capacidades de una entidad individual. Si un agente basado en Transformer es una unidad de razonamiento aislada, el MAS constituye una \textbf{estructura colaborativa} donde la inteligencia y la ejecución de tareas se distribuyen entre diferentes nodos.
+
+El contraste fundamental respecto a los sistemas de software tradicionales radica en su flexibilidad operativa. Los sistemas actuales aprovechan el lenguaje natural para que los agentes puedan coordinarse, debatir soluciones y compartir información de forma dinámica.
+
+En un MAS basado en LLM, la clave no es solo la potencia de procesamiento de cada modelo, sino la \textbf{arquitectura de comunicación} que los une. Esto permite transformar una simple herramienta de consulta en una fuerza de trabajo organizada donde los agentes no solo ejecutan órdenes, sino que colaboran activamente para resolver problemas complejos mediante la especialización y la supervisión mutua.
 
 \subsection{Limitaciones del agente individual}
 
@@ -109,7 +97,7 @@ Aunque un único agente puede ser eficiente para tareas sencillas, presenta limi
 \begin{itemize}
     \item \textbf{Capacidad restringida:} Límite físico en su ventana de contexto y potencia de cálculo.
     \item \textbf{Alucinaciones y falta de revisión:} Riesgo de generar información errónea sin contraste externo.
-    \item \textbf{Dificultad para la autocorrección:} Tendencia a incurrir en sesgos cognitivos sin una "segunda opinión".
+    \item \textbf{Dificultad para la autocorrección:} Tendencia a incurrir en sesgos cognitivos sin una ``segunda opinión''.
     \item \textbf{Falta de especialización:} Un perfil generalista es menos eficiente que un equipo de expertos dedicados.
     \item \textbf{Dificultad en la planificación:} Tendencia a perder la coherencia en procesos de largo plazo.
 \end{itemize}
@@ -119,16 +107,18 @@ Aunque un único agente puede ser eficiente para tareas sencillas, presenta limi
 El paradigma MAS traslada el enfoque desde la potencia de un único modelo hacia la colaboración. Los pilares que definen este esquema son:
 
 \begin{itemize}
-    \item \textbf{Especialización de roles (\textit{Role Playing}):} Asignación de personalidades y capacidades específicas (ej. "crítico", "programador").
+    \item \textbf{Especialización de roles (Role Playing):} Asignación de personalidades y capacidades específicas (ej. ``crítico'', ``programador'').
     \item \textbf{Razonamiento iterativo y debate:} Diálogo entre agentes para detectar errores y elevar la calidad.
-    \item \textbf{División de tareas (\textit{Task Decomposition}):} Fragmentación de objetivos ambiciosos en pasos manejables.
+    \item \textbf{División de tareas (Task Decomposition):} Fragmentación de objetivos ambiciosos en pasos manejables.
     \item \textbf{Memoria compartida y comunicación:} Alineación con el objetivo global mediante intercambio de información.
     \item \textbf{Escalabilidad y robustez:} Resistencia a fallos mediante la redistribución de tareas.
 \end{itemize}
 
 \section{Arquitectura y Flujo de Trabajo de los MAS}
+Para que un Sistema Multi-Agente (MAS) sepa resolver problemas complejos de manera autónoma, necesita una estructura de organización clara. La literatura científica actual propone un flujo de trabajo unificado compuesto por módulos fundamentales que guían el ciclo de vida de los agentes.
 
-La eficacia de un MAS basado en LLM reside en su arquitectura organizativa. Esta define qué rol desempeña cada agente y bajo qué reglas interactúan, permitiendo transformar el razonamiento lineal en un flujo dinámico.
+A continuación, se detallan los componentes clave de esta arquitectura: la extracción de información del entorno (\textbf{Percepción}), el diseño de roles específicos (\textbf{Perfilado}), los procesos cognitivos para la toma de decisiones (\textbf{Acción Autónoma}) y las estructuras de comunicación para colaborar (\textbf{Interacción Mutua}).
+
 
 La estructura de esta sección (percepción, \textit{profiling}, \textit{self-action}, interacción mutua y evolución) está alineada con la literatura reciente sobre MAS basados en LLM, donde estos cinco bloques se plantean como núcleo operativo del sistema. Asimismo, la visión de agentes autónomos a nivel individual encaja con los marcos actuales que combinan planificación, ejecución, evaluación y coordinación.
 
