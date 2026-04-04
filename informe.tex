@@ -199,20 +199,14 @@ Entre las buenas prácticas más útiles destacan: diseñar contratos de entrada
 
 \section{Aplicaciones Prácticas de los MAS basados en LLM}
 \subsection{Resolución de Problemas}
-Más allá de su interés teórico, los Sistemas Multi-Agente basados en LLM empiezan a ser relevantes cuando se trasladan a escenarios concretos. La literatura reciente muestra que su valor no está solo en generar texto, sino en coordinar procesos, repartir responsabilidades y sostener una resolución de tareas más flexible que la de un único modelo aislado.
+Más allá de su interés teórico, los Sistemas Multi-Agente basados en LLM empiezan a ser relevantes cuando se trasladan a escenarios concretos. Los MAS, tal y como se entienden en esta época, muestran que su valor no está solo en generar texto, sino en coordinar procesos, repartir responsabilidades y sostener una resolución de tareas más flexible que la de un único modelo aislado.
 
-En este contexto, las aplicaciones más interesantes no son las más espectaculares, sino las que aprovechan bien la división del trabajo. Un MAS permite que un agente analice, otro contraste, otro reescriba o valide, y que todo ello ocurra dentro de un flujo más o menos ordenado. Esto resulta especialmente útil cuando la tarea no se resuelve con una única respuesta, sino con varias decisiones encadenadas. Por eso, en la práctica, estos sistemas encajan bien en entornos donde hay incertidumbre, múltiples pasos intermedios o necesidad de revisar resultados antes de dar una salida final.
+En este contexto, las aplicaciones más interesantes no son las más espectaculares, sino las que aprovechan bien la división del trabajo. Un MAS permite que un agente analice, otro contraste, otro reescriba o valide, y que todo ello ocurra dentro de un flujo más o menos ordenado. Esto resulta especialmente útil cuando la tarea no se resuelve con una única respuesta, sino con varias decisiones encadenadas. Es por esta razón por la que estos sistemas encajan bien en entornos donde hay incertidumbre, múltiples pasos intermedios o necesidad de revisar resultados antes de dar una salida final.
 
-\subsection{Simulación del Mundo}
-Otra línea de aplicación interesante es la simulación de entornos complejos. Aquí los MAS no se usan solo para contestar, sino para representar comportamientos, interacciones o dinámicas entre distintos actores. Esto abre la puerta a escenarios de prueba donde se puede observar cómo reaccionan varios agentes ante objetivos distintos, conflictos de intereses o cambios en el contexto.
+\subsection{Frameworks para llevar los MAS a escenarios reales}
+Para que un Sistema Multi-Agente deje de ser una idea teórica y pueda evaluarse en condiciones cercanas al uso real, es habitual apoyarse en frameworks especializados. Estas herramientas reducen la complejidad inicial de implementación y permiten centrarse en lo verdaderamente importante: definir roles, coordinar tareas, controlar la calidad de las respuestas y medir resultados.
 
-Este uso tiene bastante sentido en tareas donde interesa estudiar cómo se distribuye la información, cómo se toman decisiones colectivas o cómo evoluciona una conversación con múltiples participantes. De hecho, uno de los aportes más repetidos en la literatura reciente es precisamente que los MAS basados en LLM permiten simular mejor ciertos entornos sociales o operativos que un único modelo. No sustituyen al mundo real, pero sí ofrecen un laboratorio útil para experimentar con comportamientos coordinados.
-
-En este punto, más que buscar una perfección técnica absoluta, lo relevante es que la simulación sea suficientemente coherente como para reflejar roles, dependencias y consecuencias. Ahí es donde estos sistemas empiezan a mostrar valor: no tanto como una respuesta final cerrada, sino como una herramienta para explorar escenarios, probar estrategias y observar cómo colaboran distintos agentes cuando tienen que compartir contexto y llegar a una decisión conjunta.
-
-\section{Frameworks y Herramientas de Implementación}
-
-En la práctica, el desarrollo de agentes autónomos rara vez parte desde cero. Actualmente existen frameworks que ya resuelven buena parte de la orquestación, la gestión de tareas y la conexión con herramientas externas. Esta capa de abstracción permite centrar el trabajo en el diseño del flujo y en la calidad del resultado, en lugar de dedicar todo el esfuerzo a la infraestructura.
+Permiten modelar flujos de trabajo con varios agentes, integrar fuentes de datos externas y establecer reglas de interacción entre componentes. De este modo, es posible pasar de una descripción conceptual del MAS a una prueba funcional en la que se observan tiempos de respuesta, consistencia de decisiones y capacidad de coordinación.
 
 Entre los frameworks más utilizados destacan los siguientes:
 
@@ -221,9 +215,12 @@ Entre los frameworks más utilizados destacan los siguientes:
     \item \textbf{LlamaIndex}: centrado en integrar conocimiento externo con LLM, facilitando la ingesta, organización y consulta de documentos y bases de datos.
     \item \textbf{smolagents}: propuesta ligera para prototipado rápido, con menor complejidad inicial y buena adaptación a pruebas de concepto.
     \item \textbf{AutoGen}: framework popular para conversaciones multiagente con roles diferenciados, útil para coordinación entre agentes que colaboran y se supervisan entre sí.
+    \item \textbf{CrewAI}: centrado en la colaboración por roles y tareas dentro de una \textit{crew}, con una definición clara de responsabilidades y secuencias de trabajo.
 \end{itemize}
 
-La existencia de estas herramientas confirma que gran parte de la base técnica ya está madura. El reto principal no suele estar en implementar un agente desde cero, sino en definir bien los roles, las reglas de interacción y los criterios de validación para que el sistema se comporte de forma útil y predecible.
+Con este enfoque, el apartado de aplicaciones prácticas queda conectado con la implementación: no solo se explica para qué sirven los MAS, sino también con qué herramientas se llevan a la práctica y cómo se valida su comportamiento en escenarios reales.
+
+\section{Frameworks y Herramientas de Implementación}
 
 \section{Conclusión}
 
