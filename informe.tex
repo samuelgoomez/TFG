@@ -12,6 +12,7 @@
 \onehalfspacing
 \usepackage{parskip}
 \usepackage[hidelinks]{hyperref}
+\usepackage{float}
 
 % --- Paquetes de Imágenes ---
 \usepackage{graphicx}
@@ -218,9 +219,130 @@ Entre los frameworks más utilizados destacan los siguientes:
     \item \textbf{CrewAI}: centrado en la colaboración por roles y tareas dentro de una \textit{crew}, con una definición clara de responsabilidades y secuencias de trabajo.
 \end{itemize}
 
-Con este enfoque, el apartado de aplicaciones prácticas queda conectado con la implementación: no solo se explica para qué sirven los MAS, sino también con qué herramientas se llevan a la práctica y cómo se valida su comportamiento en escenarios reales.
+\section{Propuesta realizada con el framework CrewAI}
 
-\section{Frameworks y Herramientas de Implementación}
+Como primer paso de la propuesta, se preparó el entorno de trabajo para poder ejecutar una prueba funcional con CrewAI. La instalación se realizó siguiendo la documentación oficial, priorizando una configuración simple y reproducible.
+
+\subsection{Instalación del entorno}
+
+Antes de instalar CrewAI, se verificó que la versión de Python fuese compatible (\texttt{>=3.10} y \texttt{<3.14}):
+
+\begin{verbatim}
+python --version
+\end{verbatim}
+
+Después, se instaló \texttt{uv}, que es el gestor recomendado por CrewAI. En Windows, el comando indicado en la guía es:
+
+\begin{verbatim}
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+\end{verbatim}
+
+Con \texttt{uv} disponible, se instaló la CLI de CrewAI:
+
+\begin{verbatim}
+uv tool install crewai
+\end{verbatim}
+
+Si aparece un aviso de \texttt{PATH}, se puede ejecutar:
+
+\begin{verbatim}
+uv tool update-shell
+\end{verbatim}
+
+Para confirmar que la instalación quedó correcta:
+
+\begin{verbatim}
+uv tool list
+\end{verbatim}
+
+\subsection{Creación y ejecución de un proyecto base}
+
+Una vez instalada la herramienta, se puede crear la estructura inicial del proyecto con:
+
+\begin{verbatim}
+crewai create crew tfg
+\end{verbatim}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{crewai_groq.png}
+    \caption{Selección del proveedor antes de la elección del modelo.}
+\end{figure}
+
+En esta fase se optó por \textbf{Groq} por ser una opción gratuita y por ofrecer, en las pruebas iniciales realizadas, un comportamiento más estable que otras alternativas como Gemini. En cualquier caso, la elección final del modelo para el desarrollo completo del TFG queda abierta para una fase posterior.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{crewai_groq2.png}
+    \caption{Selección del modelo durante la configuración inicial con Groq.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{crewai_groq3.png}
+    \caption{Selección de la API KEY del modelo Groq.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{estructura_crewai.png}
+    \caption{Estructura de proyecto generada automáticamente por CrewAI.}
+\end{figure}
+
+Con este comando se genera la base del proyecto (por ejemplo, \texttt{tfg}) y, para esta propuesta, los archivos clave son los siguientes:
+
+\begin{itemize}
+    \item \textbf{.env}: almacena variables de entorno y claves de API.
+    \item \textbf{src/tfg/main.py}: punto de entrada para ejecutar el flujo principal.
+    \item \textbf{src/tfg/crew.py}: archivo de orquestación donde se define la \textit{crew} y su ejecución.
+    \item \textbf{src/tfg/config/agents.yaml}: definición de agentes (rol, objetivo y contexto).
+    \item \textbf{src/tfg/config/tasks.yaml}: definición de tareas y asignación de cada tarea a los agentes.
+\end{itemize}
+
+\subsection{Configuración de la prueba: dos agentes y dos tareas}
+
+Tras preparar el proyecto base, la prueba se definió con una configuración sencilla: \textbf{dos agentes} y \textbf{dos tareas} encadenadas de forma secuencial.
+
+En esta configuración, el tema de trabajo se maneja mediante el parámetro \verb|{topic}|. Para la ejecución concreta de esta prueba, en \texttt{main.py} se estableció el valor: \textit{``Los misterios sin resolver del fondo del océano''}.
+
+En \texttt{agents.yaml} se configuraron los siguientes perfiles:
+
+\begin{itemize}
+    \item \textbf{researcher}: agente orientado a encontrar información llamativa, poco conocida e impactante sobre un tema concreto (\verb|{topic}|).
+    \item \textbf{reporting\_analyst}: agente orientado a transformar los hallazgos en un guion dinámico para vídeo, con enfoque en retención de audiencia.
+\end{itemize}
+
+En \texttt{tasks.yaml} se definieron estas tareas:
+
+\begin{itemize}
+    \item \textbf{research\_task}: investigar \verb|{topic}| y devolver \textbf{5 datos sorprendentes}, cada uno con título atractivo y explicación.
+    \item \textbf{reporting\_task}: utilizar esos 5 datos para generar un \textbf{guion completo de YouTube} (aprox. 5 minutos), con estructura de intro, desarrollo y outro, e indicaciones audiovisuales entre corchetes.
+\end{itemize}
+
+La orquestación en \texttt{crew.py} vincula cada tarea con su agente correspondiente y ejecuta el flujo con \texttt{Process.sequential}. En esta configuración, primero se ejecuta la investigación y, a continuación, se genera el guion final. Además, el resultado de la segunda tarea se guarda en \texttt{report.md}, lo que facilita la revisión posterior del experimento.
+
+Tras generar el proyecto, se instalan dependencias internas desde la raíz:
+
+\begin{verbatim}
+crewai install
+\end{verbatim}
+
+Finalmente, la ejecución de la primera prueba se lanza con:
+
+\begin{verbatim}
+crewai run
+\end{verbatim}
+
+\subsection{Resultado observado en la ejecución}
+
+En la ejecución mostrada en consola, el flujo se completó correctamente de principio a fin. Se observó el arranque de la \textit{crew}, la ejecución de \texttt{research\_task} por parte del agente \texttt{researcher} y, después, la ejecución de \texttt{reporting\_task} por el agente \texttt{reporting\_analyst}, manteniendo el orden secuencial definido en \texttt{crew.py}.
+
+Como salida intermedia, el primer agente generó una lista de datos sorprendentes sobre el tema configurado. A continuación, el segundo agente utilizó esa información para construir el guion completo con formato tipo YouTube (intro, desarrollo y cierre), incluyendo indicaciones audiovisuales entre corchetes. El resultado final quedó reflejado tanto en la salida de consola como en el archivo de salida configurado (\texttt{report.md}).
+
+También se observó que el trazado de ejecución (\textit{tracing}) estaba desactivado por defecto, lo cual no impidió la ejecución del flujo, pero limita el nivel de inspección detallada del proceso.
+
+Con este entorno preparado, ya se dispone de una base operativa para definir agentes, tareas y flujo de colaboración en la prueba práctica.
+
 
 \section{Conclusión}
 
