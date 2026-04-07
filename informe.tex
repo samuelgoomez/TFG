@@ -2,7 +2,7 @@
 
 \documentclass[12pt,a4paper]{article}
 
-% --- \textit{""} ---
+% --- \textit{``''} ---
 
 % --- Paquetes de Idioma y Formato ---
 \usepackage[utf8]{inputenc}
@@ -120,7 +120,7 @@ A continuación, se detallan los componentes clave de esta arquitectura: la extr
 La estructura de esta sección (percepción, \textit{profiling}, \textit{self-action}, interacción mutua y evolución) está alineada con la literatura reciente sobre MAS basados en LLM, donde estos cinco bloques se plantean como núcleo operativo del sistema. Asimismo, la visión de agentes autónomos a nivel individual encaja con los marcos actuales que combinan planificación, ejecución, evaluación y coordinación.
 
 \subsection{Interfaz con el Entorno (Percepción)}
-En un sistema multiagente, la percepción es la capa que conecta a los agentes con el estado real del problema. No se trata solo de "recibir datos", sino de transformar señales heterogéneas en contexto operativo: entradas de usuario, resultados de herramientas externas, documentos, eventos del sistema o respuestas de otros agentes. Esta interfaz actúa como un filtro inteligente que decide qué información es relevante en cada momento y en qué formato debe circular dentro del sistema.
+En un sistema multiagente, la percepción es la capa que conecta a los agentes con el estado real del problema. No se trata solo de ``recibir datos'', sino de transformar señales heterogéneas en contexto operativo: entradas de usuario, resultados de herramientas externas, documentos, eventos del sistema o respuestas de otros agentes. Esta interfaz actúa como un filtro inteligente que decide qué información es relevante en cada momento y en qué formato debe circular dentro del sistema.
 
 Desde un punto de vista arquitectónico, una buena interfaz de percepción cumple tres funciones clave:
 
@@ -132,25 +132,25 @@ Desde un punto de vista arquitectónico, una buena interfaz de percepción cumpl
 
 Esta capa suele materializarse como un conjunto de conectores y adaptadores: APIs, bases de conocimiento, buscadores, sistemas de archivos o servicios corporativos. Cuanto mejor diseñada esté esta frontera con el entorno, más robusto será el comportamiento del MAS ante cambios, ambigüedad o información incompleta. Por eso, la percepción no es un bloque auxiliar, sino el punto donde empieza la calidad global del sistema: si la lectura del contexto falla, la planificación y la ejecución también lo harán.
 \subsection{Perfilado de Agentes (Profiling)}
-Una vez que el sistema puede leer el entorno con suficiente calidad, el siguiente paso es definir qué tipo de agente participa y qué se espera de él. El \textbf{profiling} consiste precisamente en eso: establecer identidad funcional, nivel de autonomía, límites de actuación y criterios de calidad. En lugar de crear agentes "genéricos" que intentan hacerlo todo, se configuran perfiles con responsabilidades claras, lo que reduce ambigüedad y mejora la coordinación global.
+Una vez que el sistema puede leer el entorno con suficiente calidad, el siguiente paso es definir qué tipo de agente participa y qué se espera de él. El \textbf{profiling} consiste precisamente en eso: establecer identidad funcional, nivel de autonomía, límites de actuación y criterios de calidad. En lugar de crear agentes ``genéricos'' que intentan hacerlo todo, se configuran perfiles con responsabilidades claras, lo que reduce ambigüedad y mejora la coordinación global.
 
 Un perfil bien diseñado suele incluir cuatro elementos: rol principal (por ejemplo, analista, planificador o revisor), alcance de decisiones (qué puede resolver por sí mismo y qué debe escalar), herramientas disponibles (fuentes de datos, APIs, memoria compartida) y estilo de salida esperado (más sintético, más argumentado, orientado a ejecución, etc.). Esta definición previa evita solapamientos entre agentes, disminuye respuestas contradictorias y facilita la evaluación del rendimiento de cada componente del sistema.
 
 Además, el \textbf{profiling} no es estático. En escenarios reales, los perfiles se ajustan según métricas operativas: tiempo de respuesta, tasa de errores, calidad de las propuestas o nivel de consenso alcanzado en tareas colaborativas. Esto permite iterar la arquitectura sin rediseñar todo el MAS desde cero. En términos prácticos, perfilar bien no solo organiza mejor el trabajo interno, sino que convierte al sistema en una estructura más predecible, mantenible y escalable.
 \subsection{Razonamiento y Acción Autónoma (Self-action)}
-El bloque de \textit{self-action} es donde cada agente deja de ser un "nodo pasivo" y se convierte en una unidad de trabajo real. Aquí no solo interpreta una instrucción, sino que encadena decisiones: analiza el contexto disponible, propone un plan de actuación, ejecuta pasos concretos y revisa si el resultado cumple el objetivo marcado. Esta secuencia hace que el comportamiento del agente sea más cercano a un ciclo operativo que a una única respuesta aislada.
+El bloque de \textit{self-action} es donde cada agente deja de ser un \textit{``nodo pasivo''} y se convierte en una unidad de trabajo real. Aquí no solo interpreta una instrucción, sino que encadena decisiones: analiza el contexto disponible, propone un plan de actuación, ejecuta pasos concretos y revisa si el resultado cumple el objetivo marcado. Esta secuencia hace que el comportamiento del agente sea más cercano a un ciclo operativo que a una única respuesta aislada.
 
 En términos funcionales, esta autonomía suele apoyarse en un bucle corto de trabajo: observar, decidir, actuar y verificar. Si la verificación detecta desviaciones, el agente replanifica sin necesidad de reiniciar todo el proceso. Este mecanismo reduce bloqueos en tareas largas y permite mantener continuidad incluso cuando aparece información nueva o contradictoria durante la ejecución. Este tipo de ciclo también se describe en los surveys recientes sobre agentes autónomos basados en LLM, donde se enfatiza la necesidad de combinar planificación, ejecución y evaluación en una misma unidad operativa.
 
-También es importante delimitar el grado de autonomía. Un agente puede tener permiso para ejecutar acciones de bajo riesgo de forma directa (por ejemplo, clasificar información o generar borradores), pero requerir validación externa en decisiones críticas. Ese equilibrio entre iniciativa y control evita dos extremos problemáticos: agentes excesivamente dependientes que frenan el sistema, o agentes sobreactivos que actúan sin suficiente supervisión. En un MAS bien diseñado, el \textit{self-action} no busca "hacer más", sino actuar con criterio, trazabilidad y coherencia con el objetivo global.
+También es importante delimitar el grado de autonomía. Un agente puede tener permiso para ejecutar acciones de bajo riesgo de forma directa (por ejemplo, clasificar información o generar borradores), pero requerir validación externa en decisiones críticas. Ese equilibrio entre iniciativa y control evita dos extremos problemáticos: agentes excesivamente dependientes que frenan el sistema, o agentes sobreactivos que actúan sin suficiente supervisión. En un MAS bien diseñado, el \textit{self-action} no busca ``hacer más'', sino actuar con criterio, trazabilidad y coherencia con el objetivo global.
 \subsection{Interacción Mutua y Comunicación}
-La interacción entre agentes es el mecanismo que convierte capacidades individuales en inteligencia colectiva. Cuando esta comunicación está bien diseñada, el sistema no solo comparte información: construye criterio común, detecta inconsistencias y coordina prioridades sin depender de un único punto de control. En otras palabras, los agentes no trabajan "en paralelo" de forma aislada, sino en cooperación estructurada.
+La interacción entre agentes es el mecanismo que convierte capacidades individuales en inteligencia colectiva. Cuando esta comunicación está bien diseñada, el sistema no solo comparte información: construye criterio común, detecta inconsistencias y coordina prioridades sin depender de un único punto de control. En otras palabras, los agentes no trabajan ``en paralelo'' de forma aislada, sino en cooperación estructurada.
 
 Para que esto funcione, la comunicación debe ser útil y disciplinada. Cada mensaje debería aportar estado de tarea, justificación breve y siguiente paso propuesto. Si los intercambios son vagos o excesivos, aparece el conocido problema de sobrecoste conversacional: se consume tiempo en hablar, pero no en resolver. Por eso muchos MAS incorporan reglas explícitas de comunicación, como turnos de intervención, formatos de salida o protocolos de escalado cuando hay desacuerdo técnico.
 
 Un aspecto especialmente relevante es la gestión del conflicto entre agentes. El desacuerdo no siempre es un fallo; bien gestionado, es una fuente de robustez. Un agente puede cuestionar supuestos, otro aportar evidencia y un tercero consolidar una decisión final. Este patrón de contraste mejora la calidad de la solución y reduce errores silenciosos. En consecuencia, la comunicación interna no debe evaluarse solo por su volumen, sino por su capacidad de alinear decisiones, acelerar la convergencia y sostener coherencia operativa en tareas complejas.
 \subsection{Evolución y Aprendizaje}
-El último componente del flujo es la capacidad del sistema para mejorar con la experiencia. En un MAS, evolucionar no significa únicamente "acumular historial", sino transformar resultados pasados en ajustes concretos: redefinir roles, afinar reglas de coordinación, actualizar criterios de validación y corregir patrones que hayan generado errores repetidos.
+El último componente del flujo es la capacidad del sistema para mejorar con la experiencia. En un MAS, evolucionar no significa únicamente ``acumular historial'', sino transformar resultados pasados en ajustes concretos: redefinir roles, afinar reglas de coordinación, actualizar criterios de validación y corregir patrones que hayan generado errores repetidos.
 
 Este aprendizaje puede operar en dos escalas. A corto plazo, los agentes refinan su comportamiento durante una misma sesión, por ejemplo adaptando estrategias cuando detectan que una ruta de resolución no converge. A medio plazo, el sistema incorpora aprendizajes persistentes a través de memoria estructurada, métricas de desempeño y revisiones periódicas de arquitectura. Esta doble escala permite combinar adaptabilidad inmediata con mejora sostenida.
 
@@ -216,7 +216,7 @@ Entre los frameworks más utilizados destacan los siguientes:
     \item \textbf{LlamaIndex}: centrado en integrar conocimiento externo con LLM, facilitando la ingesta, organización y consulta de documentos y bases de datos.
     \item \textbf{smolagents}: propuesta ligera para prototipado rápido, con menor complejidad inicial y buena adaptación a pruebas de concepto.
     \item \textbf{AutoGen}: framework popular para conversaciones multiagente con roles diferenciados, útil para coordinación entre agentes que colaboran y se supervisan entre sí.
-    \item \textbf{CrewAI}: centrado en la colaboración por roles y tareas dentro de una \textit{crew}, con una definición clara de responsabilidades y secuencias de trabajo.
+    \item \textbf{CrewAI}: centrado en la colaboración por roles y tareas dentro de una \textit{crew}, con una definición clara de responsabilidades y secuencias de trabajo. Se ha optado por esta herramienta para la prueba práctica de esta propuesta, dada su orientación a la colaboración estructurada y su facilidad para definir agentes con roles específicos.
 \end{itemize}
 
 \section{Propuesta realizada con el framework CrewAI}
@@ -269,7 +269,7 @@ crewai create crew tfg
     \caption{Selección del proveedor antes de la elección del modelo.}
 \end{figure}
 
-En esta fase se optó por \textbf{Groq} por ser una opción gratuita y por ofrecer, en las pruebas iniciales realizadas, un comportamiento más estable que otras alternativas como Gemini. En cualquier caso, la elección final del modelo para el desarrollo completo del TFG queda abierta para una fase posterior.
+En esta fase, es decir, en la elección del proveedor, se optó por \textbf{Groq} por ser una opción gratuita y por ofrecer, en las pruebas iniciales realizadas, un comportamiento más estable que otras alternativas como Gemini. En cualquier caso, la elección final del modelo para el desarrollo completo del TFG queda abierta para una fase posterior.
 
 \begin{figure}[H]
     \centering
@@ -277,11 +277,21 @@ En esta fase se optó por \textbf{Groq} por ser una opción gratuita y por ofrec
     \caption{Selección del modelo durante la configuración inicial con Groq.}
 \end{figure}
 
+Una vez elegido el modelo deseado (teniendo en cuenta las características, rendimiento y precio), se obtiene la API Key en el panel de Groq y se introduce en la configuración del proyecto para que los agentes puedan utilizarlo durante la ejecución.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{api_key-groq.png}
+    \caption{Vista del panel de Groq donde se obtiene la API Key utilizada en la configuración.}
+\end{figure}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{crewai_groq3.png}
-    \caption{Selección de la API KEY del modelo Groq.}
+    \caption{Introducción de la API Key en la configuración.}
 \end{figure}
+
+Se adjunta una imagen para mostrar la estructura de proyecto que se genera automáticamente al ejecutar el comando \texttt{crewai create crew tfg}, con los archivos y carpetas clave para definir agentes, tareas y flujo de trabajo.
 
 \begin{figure}[H]
     \centering
@@ -319,7 +329,7 @@ En \texttt{tasks.yaml} se definieron estas tareas:
     \item \textbf{reporting\_task}: utilizar esos 5 datos para generar un \textbf{guion completo de YouTube} (aprox. 5 minutos), con estructura de intro, desarrollo y outro, e indicaciones audiovisuales entre corchetes.
 \end{itemize}
 
-La orquestación en \texttt{crew.py} vincula cada tarea con su agente correspondiente y ejecuta el flujo con \texttt{Process.sequential}. En esta configuración, primero se ejecuta la investigación y, a continuación, se genera el guion final. Además, el resultado de la segunda tarea se guarda en \texttt{report.md}, lo que facilita la revisión posterior del experimento.
+La orquestación en \texttt{crew.py} vincula cada tarea con su agente correspondiente y ejecuta el flujo con \texttt{Process.sequential}. En esta configuración, primero se ejecuta la investigación y, a continuación, se genera el guion final. Este resultado se podrá ver más adelante en este documento.
 
 Tras generar el proyecto, se instalan dependencias internas desde la raíz:
 
@@ -337,13 +347,55 @@ crewai run
 
 En la ejecución mostrada en consola, el flujo se completó correctamente de principio a fin. Se observó el arranque de la \textit{crew}, la ejecución de \texttt{research\_task} por parte del agente \texttt{researcher} y, después, la ejecución de \texttt{reporting\_task} por el agente \texttt{reporting\_analyst}, manteniendo el orden secuencial definido en \texttt{crew.py}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo1.png}
+    \caption{Inicio de la demostración: Tarea de investigación comenzada con su correspondiente agente a cargo.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo2.png}
+    \caption{Respuesta obtenida por el agente de investigación.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo3.png}
+    \caption{Tarea de guionización comenzada con su correspondiente agente a cargo.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo4.png}
+    \caption{Respuesta obtenida por el agente de guionización.}
+\end{figure}
+
 Como salida intermedia, el primer agente generó una lista de datos sorprendentes sobre el tema configurado. A continuación, el segundo agente utilizó esa información para construir el guion completo con formato tipo YouTube (intro, desarrollo y cierre), incluyendo indicaciones audiovisuales entre corchetes. El resultado final quedó reflejado tanto en la salida de consola como en el archivo de salida configurado (\texttt{report.md}).
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo5.png}
+    \caption{Cierre de la ejecución con el resultado completo generado por la \textit{crew}.}
+\end{figure}
+
 También se observó que el trazado de ejecución (\textit{tracing}) estaba desactivado por defecto, lo cual no impidió la ejecución del flujo, pero limita el nivel de inspección detallada del proceso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{demo6.png}
+    \caption{Opción de trazado de ejecución (\textit{tracing}) desactivada por defecto.}
+\end{figure}
 
 Con este entorno preparado, ya se dispone de una base operativa para definir agentes, tareas y flujo de colaboración en la prueba práctica.
 
 
 \section{Conclusión}
+
+En conclusión, este trabajo parte de un tema que no solo es interesante hoy, sino también muy contemporáneo, esto es debido a que encaja con una tendencia tecnológica que seguirá creciendo en los próximos años. La idea de contar con sistemas multiagente capaces de colaborar entre sí tiene un potencial real para ayudar en una gran cantidad de trabajos, ya que puede hacer más sencillas tareas que hoy consumen tiempo, esfuerzo y atención.
+
+Además, durante esta propuesta he podido comprobar que CrewAI facilita de forma notable la creación del proyecto, especialmente a la hora de definir el \textit{topic}, los agentes y las \textit{tasks}. Esa simplicidad hace que el proceso resulte más accesible, más ordenado y más natural, incluso cuando se quiere construir una solución con varios roles especializados trabajando de forma conjunta.
+
+Por ello, considero que este tipo de herramientas no solo sirven como demostración técnica, sino también como una base muy útil para futuras aplicaciones reales en distintos ámbitos profesionales.
 
 \end{document}
