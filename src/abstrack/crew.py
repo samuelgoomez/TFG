@@ -1,6 +1,10 @@
-from crewai import Agent, Crew, Process, Task
-from crewai.project import CrewBase, agent, crew, task
+import os
+from dotenv import load_dotenv
+load_dotenv()
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.agents.agent_builder.base_agent import BaseAgent
+from crewai.project import CrewBase, agent, crew, task
+
 from typing import List
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -19,10 +23,18 @@ class Abstrack():
     
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
+
+    @property
+    def llm(self) -> LLM:
+        return LLM(
+            model=os.getenv("MODEL"),
+            verbose=True
+        )
     @agent
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], # type: ignore[index]
+            llm=self.llm,
             verbose=True
         )
 
@@ -30,6 +42,7 @@ class Abstrack():
     def reporting_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config['reporting_analyst'], # type: ignore[index]
+            llm=self.llm,
             verbose=True
         )
 
@@ -60,5 +73,6 @@ class Abstrack():
             tasks=self.tasks, # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
+            max_rpm=5, # Limit API calls to 5 per minute to avoid free tier rate limits
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
