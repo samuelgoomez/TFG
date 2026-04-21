@@ -1,3 +1,4 @@
+# Autor: Samuel Gómez
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -6,6 +7,7 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, crew, task
 
 from typing import List
+from abstrack.tools.custom_tools import ask_human_tool
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -31,18 +33,11 @@ class Abstrack():
             verbose=True
         )
     @agent
-    def researcher(self) -> Agent:
+    def information_acquisition(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
+            config=self.agents_config['information_acquisition'],
             llm=self.llm,
-            verbose=True
-        )
-
-    @agent
-    def reporting_analyst(self) -> Agent:
-        return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            llm=self.llm,
+            tools=[ask_human_tool],
             verbose=True
         )
 
@@ -50,16 +45,9 @@ class Abstrack():
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def research_task(self) -> Task:
+    def gather_information_task(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
-        )
-
-    @task
-    def reporting_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config['gather_information_task'],
         )
 
     @crew

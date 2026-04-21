@@ -5,8 +5,11 @@ description = "ABSTRACK using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
+    "apscheduler>=3.11.2",
     "crewai[google-genai,tools]==1.9.3",
+    "email-validator>=2.3.0",
     "fastapi>=0.136.0",
+    "fastapi-sso>=0.21.0",
     "litellm>=1.75.3",
     "python-dotenv>=1.1.1",
 ]
