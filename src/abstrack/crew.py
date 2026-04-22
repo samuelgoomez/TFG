@@ -41,6 +41,14 @@ class Abstrack():
             verbose=True
         )
 
+    @agent
+    def completeness_validator(self) -> Agent:
+        return Agent(
+            config=self.agents_config['completeness_validator'],
+            llm=self.llm,
+            verbose=True
+        )
+
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
@@ -48,6 +56,12 @@ class Abstrack():
     def gather_information_task(self) -> Task:
         return Task(
             config=self.tasks_config['gather_information_task'],
+        )
+
+    @task
+    def validate_completeness_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['validate_completeness_task'],
         )
 
     @crew

@@ -9,12 +9,12 @@ gather_information_task:
   description: >
     Inicia una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
     Tu objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
-    1) El tema o problema abordado.
-    2) El objetivo principal del trabajo.
-    3) La metodología seguida.
-    4) Los resultados obtenidos.
-    5) La principal conclusión o aportación.
-    6) Restricciones (como el límite de palabras o el contexto del documento).
+    1. El tema o problema abordado.
+    2. El objetivo principal del trabajo.
+    3. La metodología seguida.
+    4. Los resultados obtenidos.
+    5. La principal conclusión o aportación.
+    6. Restricciones (como el límite de palabras o el contexto del documento).
     
     INSTRUCCIONES CLAVE:
     - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
@@ -26,10 +26,20 @@ gather_information_task:
   output_file: "informe_entrevista.md"
 
 # 3. Tarea de validación de completitud
-# validate_completeness_task:
-#   description: ""
-#   expected_output: ""
-#   agent: completeness_validator
+validate_completeness_task:
+  description: >
+    Revisa detenidamente el informe final generado por la tarea de adquisición de información (gather_information_task).
+    Analiza los 6 puntos clave comprobando que:
+    1. El problema y el objetivo están bien definidos.
+    2. La metodología tiene detalles técnicos y no es genérica.
+    3. Los resultados aportan datos concretos (cuantitativos o cualitativos).
+    4. La conclusión es específica y relevante.
+    
+    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES usar tu herramienta de delegación para devolverle la tarea a "information_acquisition", indicándole exactamente qué pregunta nueva debe hacerle al usuario para completar las lagunas.
+    No des el informe por válido hasta que toda la información sea sólida.
+  expected_output: >
+    El informe certificado y validado con los 6 puntos clave completamente detallados, listo para pasar a la fase de estructuración.
+  agent: completeness_validator
 
 # 4. Tarea de estructuración del contenido
 # structure_content_task:

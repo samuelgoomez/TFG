@@ -1,6 +1,6 @@
 from crewai.tools import tool
 
-@tool("Preguntar al Autor")
+@tool("preguntar_al_autor")
 def ask_human_tool(pregunta: str) -> str:
     """
     Usa esta herramienta cuando necesites hacerle una pregunta directa al autor del artículo.
