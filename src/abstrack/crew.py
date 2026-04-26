@@ -33,18 +33,26 @@ class Abstrack():
             verbose=True
         )
     @agent
-    def information_acquisition(self) -> Agent:
+    def agente_de_adquisicion_de_informacion(self) -> Agent:
         return Agent(
-            config=self.agents_config['information_acquisition'],
+            config=self.agents_config['agente_de_adquisicion_de_informacion'],
             llm=self.llm,
             tools=[ask_human_tool],
             verbose=True
         )
 
     @agent
-    def completeness_validator(self) -> Agent:
+    def agente_de_validacion_de_completitud(self) -> Agent:
         return Agent(
-            config=self.agents_config['completeness_validator'],
+            config=self.agents_config['agente_de_validacion_de_completitud'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_redactor(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_redactor'],
             llm=self.llm,
             verbose=True
         )
@@ -53,15 +61,22 @@ class Abstrack():
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def gather_information_task(self) -> Task:
+    def tarea_adquisicion(self) -> Task:
         return Task(
-            config=self.tasks_config['gather_information_task'],
+            config=self.tasks_config['tarea_adquisicion'],
         )
 
     @task
-    def validate_completeness_task(self) -> Task:
+    def tarea_validacion(self) -> Task:
         return Task(
-            config=self.tasks_config['validate_completeness_task'],
+            config=self.tasks_config['tarea_validacion'],
+        )
+
+    @task
+    def tarea_redaccion(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_redaccion'],
+            context=[self.tarea_adquisicion()]
         )
 
     @crew
@@ -75,6 +90,6 @@ class Abstrack():
             tasks=self.tasks, # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
-            max_rpm=5, # Limit API calls to 5 per minute to avoid free tier rate limits
+            max_rpm=2, # Limit API calls to 2 per minute to avoid free tier TPM (Tokens Per Minute) limits
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

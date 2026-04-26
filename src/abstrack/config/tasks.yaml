@@ -5,7 +5,7 @@
 #   agent: coordinator
 
 # 2. Tarea de adquisición de información
-gather_information_task:
+tarea_adquisicion:
   description: >
     Inicia una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
     Tu objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
@@ -22,24 +22,25 @@ gather_information_task:
     - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave detallados, usando como base la información aportada por el usuario. No debes incluir la transcripción de la entrevista ni texto de relleno, solo los datos duros clasificados bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
-  agent: information_acquisition
+  agent: agente_de_adquisicion_de_informacion
   output_file: "informe_entrevista.md"
 
 # 3. Tarea de validación de completitud
-validate_completeness_task:
+tarea_validacion:
   description: >
-    Revisa detenidamente el informe final generado por la tarea de adquisición de información (gather_information_task).
+    Revisa detenidamente el informe final generado por la tarea de adquisición de información (tarea_adquisicion).
     Analiza los 6 puntos clave comprobando que:
     1. El problema y el objetivo están bien definidos.
     2. La metodología tiene detalles técnicos y no es genérica.
     3. Los resultados aportan datos concretos (cuantitativos o cualitativos).
     4. La conclusión es específica y relevante.
     
-    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES usar tu herramienta de delegación para devolverle la tarea a "information_acquisition", indicándole exactamente qué pregunta nueva debe hacerle al usuario para completar las lagunas.
+    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES usar tu herramienta de delegación para devolverle la tarea al agente "Entrevistador Académico Experto y Recopilador de Datos".
+    Al realizar la delegación, tu mensaje o contexto debe empezar SIEMPRE con la frase exacta: "NO VALIDADO. Devolviendo al agente de adquisición de información...". Después de esa frase, indícale exactamente qué pregunta nueva debe hacerle al usuario para completar las lagunas.
     No des el informe por válido hasta que toda la información sea sólida.
   expected_output: >
-    El informe certificado y validado con los 6 puntos clave completamente detallados, listo para pasar a la fase de estructuración.
-  agent: completeness_validator
+    Una única palabra: "VALIDADO" si la información es correcta. No debes reescribir, resumir ni estructurar el informe bajo ninguna circunstancia. Si faltan datos, debes devolver el control al agente anterior usando la herramienta de delegación.
+  agent: agente_de_validacion_de_completitud
 
 # 4. Tarea de estructuración del contenido
 # structure_content_task:
@@ -48,10 +49,22 @@ validate_completeness_task:
 #   agent: content_structurer
 
 # 5. Tarea de redacción
-# draft_abstract_task:
-#   description: ""
-#   expected_output: ""
-#   agent: drafter
+tarea_redaccion:
+  description: >
+    Toma el informe final de la entrevista generado por el agente recopilador y redacta una primera versión completa del abstract a partir de esa información.
+    Tu tarea es encargarte de producir una primera versión completa del abstract a partir de esa información.
+    Instrucciones obligatorias:
+    1. Redacta exclusivamente a partir de la información validada. NO "inventes" contenido ni rellenes huecos por tu cuenta bajo ninguna circunstancia.
+    2. Mantén la brevedad exigible en un abstract.
+    3. Asegura la autosuficiencia del texto (que se entienda por sí solo sin leer el resto del artículo).
+    4. Pon el foco en la aportación real del trabajo.
+    5. Evita a toda costa los detalles secundarios o un excesivo contexto general.
+    6. Escribe en lenguaje natural, en prosa continua (está prohibido usar viñetas o listas), con tono académico, buena cohesión y claridad expositiva.
+    7. MUY IMPORTANTE: NO incluyas etiquetas <think>, explicaciones de tu proceso mental ni ningún otro texto adicional. Tu respuesta final debe contener ÚNICAMENTE el texto del abstract.
+  expected_output: >
+    Un abstract científico cohesionado, breve y autosuficiente, redactado en lenguaje natural sin inventar datos y sin usar formatos de lista, enfocándose en la aportación principal.
+  agent: agente_redactor
+  output_file: "abstract_final.md"
 
 # 6. Tarea de revisión de estilo
 # review_style_task:
