@@ -32,6 +32,14 @@ class Abstrack():
             model=os.getenv("MODEL"),
             verbose=True
         )
+
+    def agente_coordinador(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_coordinador'],
+            llm=self.llm,
+            verbose=True,
+            allow_delegation=True
+        )
     @agent
     def agente_de_adquisicion_de_informacion(self) -> Agent:
         return Agent(
@@ -50,9 +58,33 @@ class Abstrack():
         )
 
     @agent
+    def agente_de_estructuracion_de_contenido(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_de_estructuracion_de_contenido'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
     def agente_redactor(self) -> Agent:
         return Agent(
             config=self.agents_config['agente_redactor'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_de_revision_de_estilo(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_de_revision_de_estilo'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_de_control_de_calidad(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_de_control_de_calidad'],
             llm=self.llm,
             verbose=True
         )
@@ -73,10 +105,27 @@ class Abstrack():
         )
 
     @task
+    def tarea_estructuracion(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_estructuracion'],
+        )
+
+    @task
     def tarea_redaccion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_redaccion'],
-            context=[self.tarea_adquisicion()]
+        )
+
+    @task
+    def tarea_revision(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_revision'],
+        )
+
+    @task
+    def tarea_control_calidad(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_control_calidad'],
         )
 
     @crew
@@ -88,8 +137,7 @@ class Abstrack():
         return Crew(
             agents=self.agents, # Automatically created by the @agent decorator
             tasks=self.tasks, # Automatically created by the @task decorator
-            process=Process.sequential,
+            process=Process.hierarchical,
+            manager_agent=self.agente_coordinador(),
             verbose=True,
-            max_rpm=2, # Limit API calls to 2 per minute to avoid free tier TPM (Tokens Per Minute) limits
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

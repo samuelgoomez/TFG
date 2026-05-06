@@ -43,10 +43,20 @@ tarea_validacion:
   agent: agente_de_validacion_de_completitud
 
 # 4. Tarea de estructuración del contenido
-# structure_content_task:
-#   description: ""
-#   expected_output: ""
-#   agent: content_structurer
+tarea_estructuracion:
+  description: >
+    Toma el informe de adquisición y organiza la información antes de ser redactada.
+    Debes transformar las respuestas del informe en una estructura lógica y coherente, separando claramente las piezas fundamentales.
+    Reorganiza la información estrictamente en estos bloques:
+    * Contexto o problema
+    * Objetivo
+    * Método
+    * Resultados
+    * Conclusión
+    PROHIBIDO REDACTAR. No escribas el abstract todavía. Tu misión es únicamente preparar el "esqueleto conceptual" mediante un índice o esquema detallado para evitar que el redactor trabaje sobre información caótica.
+  expected_output: >
+    Un esquema lógico, limpio y muy bien ordenado en forma de viñetas o bloques (Contexto, Objetivo, Método, Resultados, Conclusión) que sirva como mapa conceptual para el redactor.
+  agent: agente_de_estructuracion_de_contenido
 
 # 5. Tarea de redacción
 tarea_redaccion:
@@ -64,16 +74,37 @@ tarea_redaccion:
   expected_output: >
     Un abstract científico cohesionado, breve y autosuficiente, redactado en lenguaje natural sin inventar datos y sin usar formatos de lista, enfocándose en la aportación principal.
   agent: agente_redactor
-  output_file: "abstract_final.md"
 
 # 6. Tarea de revisión de estilo
-# review_style_task:
-#   description: ""
-#   expected_output: ""
-#   agent: style_reviewer
+tarea_revision:
+  description: >
+    Toma el borrador del abstract generado por la tarea de redacción (tarea_redaccion).
+    Tu tarea no es cambiar el contenido de fondo, sino revisar la forma en la que está escrito para mejorar la calidad del texto.
+    Debes ocuparte estrictamente de lo siguiente:
+    1. Eliminar redundancias.
+    2. Mejorar la fluidez entre frases.
+    3. Simplificar expresiones innecesariamente largas.
+    4. Ajustar el tono académico.
+    5. Asegurar que el texto sea claro, preciso y conciso.
+    6. Comprobar que el abstract no resulta demasiado extenso y que se ajusta al límite de palabras fijado, si lo hubiera.
+    7. Tu respuesta final debe contener ÚNICAMENTE el abstract pulido y mejorado, sin introducciones, comentarios ni etiquetas como <think>
+  expected_output: >
+    Un abstract definitivo que cumple con todas las mejoras de forma (claro, preciso, conciso, fluido y con tono académico ajustado), respetando estrictamente el límite de palabras.
+  agent: agente_de_revision_de_estilo
 
 # 7. Tarea de control de calidad
-# quality_control_task:
-#   description: ""
-#   expected_output: ""
-#   agent: quality_controller
+tarea_control_calidad:
+  description: >
+    Toma el abstract pulido generado por la tarea de revisión (tarea_revision).
+    Debes realizar una verificación global del resultado final para asegurar que cumple todos los requisitos.
+    Comprueba estrictamente los siguientes puntos:
+    1. Que el abstract puede entenderse por sí solo (autosuficiencia).
+    2. Que resume adecuadamente el trabajo y contiene sus elementos esenciales.
+    3. Que mantiene coherencia interna.
+    4. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales.
+    5. Que su extensión y enfoque son adecuados.
+    Si todo está correcto, devuelve el texto final. Esta es la última capa de control antes de entregar el resultado al usuario.
+  expected_output: >
+    El abstract final y definitivo, validado globalmente, garantizando que cumple con todos los requisitos académicos y de calidad.
+  agent: agente_de_control_de_calidad
+  output_file: "abstract_final.md"
