@@ -35,13 +35,12 @@ tarea_validacion:
     3. Los resultados aportan datos concretos (cuantitativos o cualitativos).
     4. La conclusión es específica y relevante.
     
-    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES usar tu herramienta de delegación para devolverle la tarea al agente "Entrevistador Académico Experto y Recopilador de Datos".
-    Al realizar la delegación, tu mensaje o contexto debe empezar SIEMPRE con la frase exacta: "NO VALIDADO. Devolviendo al agente de adquisición de información...". Después de esa frase, indícale exactamente qué pregunta nueva debe hacerle al usuario para completar las lagunas.
+    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES emitir un informe de rechazo para el Coordinador.
+    Para ello, tu respuesta debe empezar SIEMPRE con la frase exacta: "NO VALIDADO.". Después de esa frase, indícale al Coordinador exactamente qué detalles faltan.
     No des el informe por válido hasta que toda la información sea sólida.
   expected_output: >
-    Una única palabra: "VALIDADO" si la información es correcta. No debes reescribir, resumir ni estructurar el informe bajo ninguna circunstancia. Si faltan datos, debes devolver el control al agente anterior usando la herramienta de delegación.
+    Una única palabra: "VALIDADO" si la información es correcta. No debes reescribir, resumir ni estructurar el informe. Si faltan datos, tu respuesta debe ser "NO VALIDADO" seguido de los detalles que faltan para que el Coordinador actúe.
   agent: agente_de_validacion_de_completitud
-
 # 4. Tarea de estructuración del contenido
 tarea_estructuracion:
   description: >
