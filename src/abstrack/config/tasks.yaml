@@ -7,8 +7,8 @@
 # 2. Tarea de adquisición de información
 tarea_adquisicion:
   description: >
-    Inicia una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
-    Tu objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
+    El Entrevistador Académico Experto debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
+    Su objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
     1. El tema o problema abordado.
     2. El objetivo principal del trabajo.
     3. La metodología seguida.
@@ -21,26 +21,23 @@ tarea_adquisicion:
     - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
     - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
   expected_output: >
-    Un informe estructurado (texto limpio) que contenga los 6 puntos clave detallados, usando como base la información aportada por el usuario. No debes incluir la transcripción de la entrevista ni texto de relleno, solo los datos duros clasificados bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
   agent: agente_de_adquisicion_de_informacion
   output_file: "informe_entrevista.md"
 
 # 3. Tarea de validación de completitud
 tarea_validacion:
   description: >
-    Revisa detenidamente el informe final generado por la tarea de adquisición de información (tarea_adquisicion).
-    Analiza los 6 puntos clave comprobando que:
-    1. El problema y el objetivo están bien definidos.
-    2. La metodología tiene detalles técnicos y no es genérica.
-    3. Los resultados aportan datos concretos (cuantitativos o cualitativos).
-    4. La conclusión es específica y relevante.
-    
-    Si encuentras carencias, inconsistencias o información genérica (ej. resultados sin números), DEBES emitir un informe de rechazo para el Coordinador.
-    Para ello, tu respuesta debe empezar SIEMPRE con la frase exacta: "NO VALIDADO.". Después de esa frase, indícale al Coordinador exactamente qué detalles faltan.
-    No des el informe por válido hasta que toda la información sea sólida.
+    Tu objetivo es obtener la VALIDACIÓN definitiva del informe por parte del 'Auditor de Calidad y Completitud Científica'.
+    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Auditor.
+    Si el Auditor detecta carencias y te responde que NO está validado, NO PUEDES dar esta tarea por terminada.
+    En su lugar, DEBES delegar inmediatamente al 'Entrevistador Académico Experto y Recopilador de Datos' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
+    IMPORTANTE AL DELEGAR: Al delegar al Entrevistador, pásale como contexto el INFORME ACTUAL y los COMENTARIOS DEL AUDITOR. Indícale explícitamente que SOLO debe preguntar por los datos que faltan y NO debe volver a pedir la información que ya está en el informe.
+    Una vez que el Entrevistador consiga los datos nuevos, vuelve a delegar al Auditor para una nueva revisión.
+    Repite este proceso hasta que el Auditor te responda explícitamente con "VALIDADO".
+    Bajo ningún concepto puedes dar esta tarea por terminada si hay carencias técnicas o el Auditor la rechaza.
   expected_output: >
-    Una única palabra: "VALIDADO" si la información es correcta. No debes reescribir, resumir ni estructurar el informe. Si faltan datos, tu respuesta debe ser "NO VALIDADO" seguido de los detalles que faltan para que el Coordinador actúe.
-  agent: agente_de_validacion_de_completitud
+    El informe final completo, corregido y enriquecido con todos los detalles técnicos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
 # 4. Tarea de estructuración del contenido
 tarea_estructuracion:
   description: >

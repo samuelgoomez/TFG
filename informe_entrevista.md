@@ -1,11 +1,11 @@
-Problema: El artículo aborda la generación de abstracts científicos mediante Inteligencia Artificial. El problema principal es que usar un único LLM para todo el proceso genera texto con alucinaciones y mala estructura, por lo que se busca solucionarlo imitando el proceso humano paso a paso.
+1. **Problema:** El problema abordado en el artículo es la detección general de anomalías en medicina, que busca ayudar a los médicos a reducir su carga de trabajo, salvando vidas y ahorrando tiempo.
+   
+2. **Objetivo:** El objetivo principal del trabajo es comprobar el funcionamiento del modelo en situaciones del mundo real y observar su comportamiento, con la esperanza de mejorar los flujos de trabajo diarios en los hospitales.
 
-Objetivo: El objetivo principal es diseñar y desarrollar un sistema multiagente compuesto por 7 agentes especializados que colaboren para estructurar, redactar y revisar abstracts científicos de forma automatizada, siguiendo las directrices académicas de Scribbr.
+3. **Metodología:** La metodología utilizada fue una cuantitativa estándar, que incluyó la recopilación y limpieza de un gran conjunto de datos de internet, seguido del entrenamiento de algoritmos de aprendizaje automático, con pruebas de efectividad a través de un conjunto de datos separado.
 
-Metodología: Se ha implementado una arquitectura jerárquica utilizando el framework CrewAI. Se han configurado 7 agentes con roles especializados y prompts específicos, y se ha integrado con modelos de lenguaje grandes (Llama) a través de la API de OpenRouter para ejecutar las tareas de forma secuencial y validada.
+4. **Resultados:** Los resultados mostraron que el modelo superó la línea base en todas las métricas, aunque el autor no pudo compartir cifras exactas por razones de confidencialidad.
 
-Resultados: Se ha desarrollado con éxito un prototipo funcional que entrevista al usuario, valida los datos y redacta el texto final. Las pruebas demuestran que este enfoque multiagente reduce drásticamente las alucinaciones y produce abstracts con una estructura y rigor académico muy superiores a los generados con un único LLM.
+5. **Conclusión:** La conclusión principal es que el modelo ofrece una nueva forma de abordar el problema de detección de anomalías y sugiere que los hospitales deben adoptar más tecnología moderna, mejorando la satisfacción y reduciendo el estrés entre los médicos.
 
-Conclusión: La principal conclusión es que segmentar tareas cognitivas complejas en agentes de IA especializados es mucho más efectivo y seguro que depender de un único modelo generalista. La mayor aportación es el diseño de este flujo de trabajo modular que simula el razonamiento humano y garantiza que la redacción académica se fundamente únicamente en datos validados.
-
-Restricciones: El abstract debe tener una extensión máxima de 250 palabras. El contexto específico es que servirá como presentación de un Trabajo de Fin de Grado (TFG) universitario en el ámbito tecnológico, por lo que debe mantener un tono formal, objetivo y estrictamente académico alineado con las recomendaciones de Scribbr.
+6. **Restricciones:** No hay restricciones de formato o limitaciones que afecten la interpretación de los resultados en la investigación.
