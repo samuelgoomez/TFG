@@ -12,6 +12,7 @@ dependencies = [
     "fastapi-sso>=0.21.0",
     "litellm>=1.75.3",
     "python-dotenv>=1.1.1",
+    "pdfplumber>=0.11",
 ]
 
 [project.scripts]

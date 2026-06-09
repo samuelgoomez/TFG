@@ -1,80 +1,106 @@
 #!/usr/bin/env python
+import os
 import sys
 import warnings
-
 from datetime import datetime
+from pathlib import Path
 
 from abstrack.crew import Abstrack
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
+
+def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
+    """Guarda el abstract generado en abstracts/generados/ con el nombre del paper."""
+    carpeta = Path("abstracts/generados")
+    carpeta.mkdir(parents=True, exist_ok=True)
+
+    if pdf_path:
+        nombre = Path(pdf_path).stem
+    else:
+        nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    destino = carpeta / f"{nombre}_generado.md"
+    destino.write_text(str(resultado), encoding="utf-8")
+    print(f"\n Abstract guardado en: {destino}")
+
 
 def run():
     """
-    Run the crew.
+    Ejecuta el sistema multiagente.
+
+    Modo interactivo (por defecto):
+        abstrack
+
+    Modo PDF:
+        abstrack --pdf papers/sin_abstract/paper.pdf
     """
+    pdf_path = None
+    args = sys.argv[1:]
+
+    if "--pdf" in args:
+        idx = args.index("--pdf")
+        if idx + 1 >= len(args):
+            raise SystemExit("Error: indica la ruta al PDF tras --pdf")
+        pdf_path = args[idx + 1]
+        if not os.path.isfile(pdf_path):
+            raise SystemExit(f"Error: no se encuentra el fichero '{pdf_path}'")
+
     inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        "topic": "abstract generation",
+        "current_year": str(datetime.now().year),
+        "pdf_path": pdf_path or "",
     }
 
     try:
-        Abstrack().crew().kickoff(inputs=inputs)
+        crew_instance = Abstrack()
+        crew_instance.pdf_path = pdf_path
+        resultado = crew_instance.crew().kickoff(inputs=inputs)
+        _guardar_abstract_generado(resultado, pdf_path)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
 
 def train():
-    """
-    Train the crew for a given number of iterations.
-    """
     inputs = {
         "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
+        "current_year": str(datetime.now().year),
+        "pdf_path": "",
     }
     try:
-        Abstrack().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
+        Abstrack().crew().train(
+            n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs
+        )
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
 
+
 def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
     try:
         Abstrack().crew().replay(task_id=sys.argv[1])
-
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
 
+
 def test():
-    """
-    Test the crew execution and returns the results.
-    """
     inputs = {
         "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
+        "current_year": str(datetime.now().year),
+        "pdf_path": "",
     }
-
     try:
-        Abstrack().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
+        Abstrack().crew().test(
+            n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs
+        )
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
 
+
 def run_with_trigger():
-    """
-    Run the crew with trigger payload.
-    """
     import json
 
     if len(sys.argv) < 2:
-        raise Exception("No trigger payload provided. Please provide JSON payload as argument.")
+        raise Exception("No trigger payload provided.")
 
     try:
         trigger_payload = json.loads(sys.argv[1])
@@ -84,7 +110,8 @@ def run_with_trigger():
     inputs = {
         "crewai_trigger_payload": trigger_payload,
         "topic": "",
-        "current_year": ""
+        "current_year": "",
+        "pdf_path": "",
     }
 
     try:

@@ -7,10 +7,7 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, crew, task
 
 from typing import List
-from abstrack.tools.custom_tools import ask_human_tool
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from abstrack.tools.custom_tools import ask_human_tool, read_pdf_tool
 
 @CrewBase
 class Abstrack():
@@ -19,12 +16,8 @@ class Abstrack():
     agents: List[BaseAgent]
     tasks: List[Task]
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
+    # Ruta al PDF; si es None, el sistema usa el modo interactivo (preguntas al autor)
+    pdf_path: str = None
 
     @property
     def llm(self) -> LLM:
@@ -33,6 +26,7 @@ class Abstrack():
             verbose=True
         )
 
+    # ── Agente coordinador (común a ambos modos) ──────────────────────────────
     def agente_coordinador(self) -> Agent:
         return Agent(
             config=self.agents_config['agente_coordinador'],
@@ -40,6 +34,8 @@ class Abstrack():
             verbose=True,
             allow_delegation=True
         )
+
+    # ── Agentes modo interactivo ──────────────────────────────────────────────
     @agent
     def agente_de_adquisicion_de_informacion(self) -> Agent:
         return Agent(
@@ -49,6 +45,16 @@ class Abstrack():
             verbose=True
         )
 
+    # ── Agente modo PDF (sin @agent para que no entre en self.agents) ─────────
+    def agente_de_adquisicion_pdf(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_de_adquisicion_pdf'],
+            llm=self.llm,
+            tools=[read_pdf_tool],
+            verbose=True
+        )
+
+    # ── Agentes compartidos ───────────────────────────────────────────────────
     @agent
     def agente_de_validacion_de_completitud(self) -> Agent:
         return Agent(
@@ -89,15 +95,20 @@ class Abstrack():
             verbose=True
         )
 
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
+    # ── Tareas modo interactivo ───────────────────────────────────────────────
     @task
     def tarea_adquisicion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_adquisicion'],
         )
 
+    # ── Tarea modo PDF (sin @task para que no entre en self.tasks) ────────────
+    def tarea_adquisicion_pdf(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_adquisicion_pdf'],
+        )
+
+    # ── Tareas compartidas ────────────────────────────────────────────────────
     @task
     def tarea_validacion(self) -> Task:
         return Task(
@@ -128,15 +139,36 @@ class Abstrack():
             config=self.tasks_config['tarea_control_calidad'],
         )
 
+    # ── Crew ──────────────────────────────────────────────────────────────────
     @crew
     def crew(self) -> Crew:
         """Creates the Abstrack crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+        tareas_compartidas = [
+            self.tarea_validacion(),
+            self.tarea_estructuracion(),
+            self.tarea_redaccion(),
+            self.tarea_revision(),
+            self.tarea_control_calidad(),
+        ]
+
+        if self.pdf_path:
+            agentes = [
+                self.agente_de_adquisicion_pdf(),
+                self.agente_de_validacion_de_completitud(),
+                self.agente_de_estructuracion_de_contenido(),
+                self.agente_redactor(),
+                self.agente_de_revision_de_estilo(),
+                self.agente_de_control_de_calidad(),
+            ]
+            tareas = [self.tarea_adquisicion_pdf()] + tareas_compartidas
+        else:
+            agentes = self.agents   # auto-recopilados por @agent
+            tareas = [self.tarea_adquisicion()] + tareas_compartidas
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=agentes,
+            tasks=tareas,
             process=Process.hierarchical,
             manager_agent=self.agente_coordinador(),
             verbose=True,

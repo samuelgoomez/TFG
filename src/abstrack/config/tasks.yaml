@@ -4,6 +4,30 @@
 #   expected_output: ""
 #   agent: coordinator
 
+# 2b. Tarea de adquisición desde PDF
+tarea_adquisicion_pdf:
+  description: >
+    Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico en la ruta: {pdf_path}
+
+    A partir del texto extraído, identifica y documenta con precisión los siguientes 6 puntos clave:
+    1. El tema o problema abordado.
+    2. El objetivo principal del trabajo.
+    3. La metodología seguida.
+    4. Los resultados obtenidos (incluye métricas, porcentajes o valores numéricos exactos que aparezcan).
+    5. La principal conclusión o aportación del trabajo.
+    6. Restricciones de formato (límite de palabras, idioma, contexto del documento) si se mencionan.
+
+    INSTRUCCIONES CLAVE:
+    - Extrae ÚNICAMENTE información que esté presente en el texto del PDF. No inventes ni inferas datos.
+    - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
+    - Si algún punto no puede determinarse desde el texto, indícalo como "No especificado en el documento".
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave extraídos del PDF,
+    manteniendo TODOS LOS DETALLES TÉCNICOS (nombres de datasets, modelos, métricas, números).
+    Clasifícalo bajo 6 encabezados: Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones.
+  agent: agente_de_adquisicion_pdf
+  output_file: "papers/salida/informe_entrevista.md"
+
 # 2. Tarea de adquisición de información
 tarea_adquisicion:
   description: >
@@ -23,7 +47,7 @@ tarea_adquisicion:
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
   agent: agente_de_adquisicion_de_informacion
-  output_file: "informe_entrevista.md"
+  output_file: "papers/salida/informe_entrevista.md"
 
 # 3. Tarea de validación de completitud
 tarea_validacion:
@@ -103,4 +127,3 @@ tarea_control_calidad:
   expected_output: >
     El abstract final y definitivo, validado globalmente, garantizando que cumple con todos los requisitos académicos y de calidad.
   agent: agente_de_control_de_calidad
-  output_file: "abstract_final.md"
