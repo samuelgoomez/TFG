@@ -18,6 +18,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "fastapi-sso" },
     { name = "litellm" },
+    { name = "pdfplumber" },
     { name = "python-dotenv" },
 ]
 
@@ -29,6 +30,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.136.0" },
     { name = "fastapi-sso", specifier = ">=0.21.0" },
     { name = "litellm", specifier = ">=1.75.3" },
+    { name = "pdfplumber", specifier = ">=0.11" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
 

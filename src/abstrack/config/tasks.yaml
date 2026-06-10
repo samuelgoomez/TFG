@@ -4,7 +4,28 @@
 #   expected_output: ""
 #   agent: coordinator
 
-# 2b. Tarea de adquisición desde PDF
+# 2. Tarea de adquisición de información
+tarea_adquisicion:
+  description: >
+    El Agente de Adquisición de Información debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
+    Su objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
+    1. El tema o problema abordado.
+    2. El objetivo principal del trabajo.
+    3. La metodología seguida.
+    4. Los resultados obtenidos.
+    5. La principal conclusión o aportación.
+    6. Restricciones (como el límite de palabras o el contexto del documento).
+    
+    INSTRUCCIONES CLAVE:
+    - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
+    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
+    - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
+  agent: agente_de_adquisicion_de_informacion
+  output_file: "papers/salida/informe_entrevista.md"
+
+  # 2b. Tarea de adquisición desde PDF
 tarea_adquisicion_pdf:
   description: >
     Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico en la ruta: {pdf_path}
@@ -26,28 +47,7 @@ tarea_adquisicion_pdf:
     manteniendo TODOS LOS DETALLES TÉCNICOS (nombres de datasets, modelos, métricas, números).
     Clasifícalo bajo 6 encabezados: Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones.
   agent: agente_de_adquisicion_pdf
-  output_file: "papers/salida/informe_entrevista.md"
-
-# 2. Tarea de adquisición de información
-tarea_adquisicion:
-  description: >
-    El Agente de Adquisición de Información debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
-    Su objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
-    1. El tema o problema abordado.
-    2. El objetivo principal del trabajo.
-    3. La metodología seguida.
-    4. Los resultados obtenidos.
-    5. La principal conclusión o aportación.
-    6. Restricciones (como el límite de palabras o el contexto del documento).
-    
-    INSTRUCCIONES CLAVE:
-    - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
-    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
-    - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
-  expected_output: >
-    Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
-  agent: agente_de_adquisicion_de_informacion
-  output_file: "papers/salida/informe_entrevista.md"
+  output_file: "papers/salida/informe_pdf.md"
 
 # 3. Tarea de validación de completitud
 tarea_validacion:

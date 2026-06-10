@@ -45,7 +45,8 @@ class Abstrack():
             verbose=True
         )
 
-    # ── Agente modo PDF (sin @agent para que no entre en self.agents) ─────────
+    # ── Agente modo PDF ────────────────────────────────────────────────────────
+    @agent
     def agente_de_adquisicion_pdf(self) -> Agent:
         return Agent(
             config=self.agents_config['agente_de_adquisicion_pdf'],
@@ -163,7 +164,14 @@ class Abstrack():
             ]
             tareas = [self.tarea_adquisicion_pdf()] + tareas_compartidas
         else:
-            agentes = self.agents   # auto-recopilados por @agent
+            agentes = [
+                self.agente_de_adquisicion_de_informacion(),
+                self.agente_de_validacion_de_completitud(),
+                self.agente_de_estructuracion_de_contenido(),
+                self.agente_redactor(),
+                self.agente_de_revision_de_estilo(),
+                self.agente_de_control_de_calidad(),
+            ]
             tareas = [self.tarea_adquisicion()] + tareas_compartidas
 
         return Crew(
