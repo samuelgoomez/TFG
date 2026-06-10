@@ -19,6 +19,9 @@ class Abstrack():
     # Ruta al PDF; si es None, el sistema usa el modo interactivo (preguntas al autor)
     pdf_path: str = None
 
+    # Tipo de contenido a generar: "abstract" (por defecto) o "introduccion"
+    tipo: str = "abstract"
+
     @property
     def llm(self) -> LLM:
         return LLM(
@@ -140,17 +143,55 @@ class Abstrack():
             config=self.tasks_config['tarea_control_calidad'],
         )
 
+    # ── Tareas modo introducción ──────────────────────────────────────────────
+    @task
+    def tarea_adquisicion_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_adquisicion_intro'],
+        )
+
+    @task
+    def tarea_validacion_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_validacion_intro'],
+        )
+
+    @task
+    def tarea_estructuracion_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_estructuracion_intro'],
+        )
+
+    @task
+    def tarea_redaccion_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_redaccion_intro'],
+        )
+
+    @task
+    def tarea_revision_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_revision_intro'],
+        )
+
+    @task
+    def tarea_control_calidad_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_control_calidad_intro'],
+        )
+
     # ── Crew ──────────────────────────────────────────────────────────────────
     @crew
     def crew(self) -> Crew:
         """Creates the Abstrack crew"""
 
-        tareas_compartidas = [
-            self.tarea_validacion(),
-            self.tarea_estructuracion(),
-            self.tarea_redaccion(),
-            self.tarea_revision(),
-            self.tarea_control_calidad(),
+        agentes_interactivo = [
+            self.agente_de_adquisicion_de_informacion(),
+            self.agente_de_validacion_de_completitud(),
+            self.agente_de_estructuracion_de_contenido(),
+            self.agente_redactor(),
+            self.agente_de_revision_de_estilo(),
+            self.agente_de_control_de_calidad(),
         ]
 
         if self.pdf_path:
@@ -162,17 +203,32 @@ class Abstrack():
                 self.agente_de_revision_de_estilo(),
                 self.agente_de_control_de_calidad(),
             ]
-            tareas = [self.tarea_adquisicion_pdf()] + tareas_compartidas
-        else:
-            agentes = [
-                self.agente_de_adquisicion_de_informacion(),
-                self.agente_de_validacion_de_completitud(),
-                self.agente_de_estructuracion_de_contenido(),
-                self.agente_redactor(),
-                self.agente_de_revision_de_estilo(),
-                self.agente_de_control_de_calidad(),
+            tareas = [self.tarea_adquisicion_pdf()] + [
+                self.tarea_validacion(),
+                self.tarea_estructuracion(),
+                self.tarea_redaccion(),
+                self.tarea_revision(),
+                self.tarea_control_calidad(),
             ]
-            tareas = [self.tarea_adquisicion()] + tareas_compartidas
+        elif self.tipo == "introduccion":
+            agentes = agentes_interactivo
+            tareas = [
+                self.tarea_adquisicion_intro(),
+                self.tarea_validacion_intro(),
+                self.tarea_estructuracion_intro(),
+                self.tarea_redaccion_intro(),
+                self.tarea_revision_intro(),
+                self.tarea_control_calidad_intro(),
+            ]
+        else:
+            agentes = agentes_interactivo
+            tareas = [self.tarea_adquisicion()] + [
+                self.tarea_validacion(),
+                self.tarea_estructuracion(),
+                self.tarea_redaccion(),
+                self.tarea_revision(),
+                self.tarea_control_calidad(),
+            ]
 
         return Crew(
             agents=agentes,

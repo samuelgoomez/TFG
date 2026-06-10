@@ -30,17 +30,36 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
         print(f" Excel de comparación actualizado en: {excel}")
 
 
+def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None:
+    """Guarda la introducción generada en introducciones/generadas/."""
+    carpeta = Path("introducciones/generadas")
+    carpeta.mkdir(parents=True, exist_ok=True)
+
+    if pdf_path:
+        nombre = Path(pdf_path).stem
+    else:
+        nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    destino = carpeta / f"{nombre}_generada.md"
+    destino.write_text(str(resultado), encoding="utf-8")
+    print(f"\n Introducción guardada en: {destino}")
+
+
 def run():
     """
     Ejecuta el sistema multiagente.
 
-    Modo interactivo (por defecto):
+    Modo interactivo, abstract (por defecto):
         abstrack
 
-    Modo PDF:
+    Modo interactivo, introducción:
+        abstrack --tipo introduccion
+
+    Modo PDF (solo abstract por ahora):
         abstrack --pdf papers/sin_abstract/paper.pdf
     """
     pdf_path = None
+    tipo = "abstract"
     args = sys.argv[1:]
 
     if "--pdf" in args:
@@ -51,6 +70,17 @@ def run():
         if not os.path.isfile(pdf_path):
             raise SystemExit(f"Error: no se encuentra el fichero '{pdf_path}'")
 
+    if "--tipo" in args:
+        idx = args.index("--tipo")
+        if idx + 1 >= len(args):
+            raise SystemExit("Error: indica el tipo tras --tipo (abstract o introduccion)")
+        tipo = args[idx + 1]
+        if tipo not in ("abstract", "introduccion"):
+            raise SystemExit(f"Error: tipo desconocido '{tipo}'. Usa 'abstract' o 'introduccion'.")
+
+    if tipo == "introduccion" and pdf_path:
+        raise SystemExit("Error: el modo PDF para introducción todavía no está implementado.")
+
     inputs = {
         "topic": "abstract generation",
         "current_year": str(datetime.now().year),
@@ -60,8 +90,12 @@ def run():
     try:
         crew_instance = Abstrack()
         crew_instance.pdf_path = pdf_path
+        crew_instance.tipo = tipo
         resultado = crew_instance.crew().kickoff(inputs=inputs)
-        _guardar_abstract_generado(resultado, pdf_path)
+        if tipo == "introduccion":
+            _guardar_introduccion_generada(resultado, pdf_path)
+        else:
+            _guardar_abstract_generado(resultado, pdf_path)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
