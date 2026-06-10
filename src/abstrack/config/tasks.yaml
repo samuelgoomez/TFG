@@ -231,3 +231,28 @@ tarea_control_calidad_intro:
   expected_output: >
     La introducción final y definitiva, validada globalmente, garantizando que cumple con todos los requisitos académicos y de calidad.
   agent: agente_de_control_de_calidad
+
+# 14. Tarea de adquisición desde PDF (introducción)
+tarea_adquisicion_pdf_intro:
+  description: >
+    Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico en la ruta: {pdf_path}
+    A continuación, usa la herramienta 'leer_pdfs_carpeta' para leer los papers citados en la introducción de ese artículo, disponibles en: {citas_path}
+
+    A partir de ambos textos, identifica y documenta con precisión los siguientes 6 puntos clave para redactar la introducción:
+    1. El contexto o panorama general del tema, y por qué es relevante (apóyate en el resumen o la motivación del artículo principal).
+    2. El problema concreto o la brecha de investigación que el trabajo aborda.
+    3. Los trabajos relacionados o el estado del arte: a partir de los papers citados, qué propone cada uno y qué limitaciones o carencias tiene en relación con el trabajo del artículo principal.
+    4. El objetivo principal del trabajo.
+    5. La contribución o aportación principal frente a los trabajos relacionados.
+    6. La estructura del documento, si se menciona en alguna parte del texto del artículo principal.
+
+    INSTRUCCIONES CLAVE:
+    - Extrae ÚNICAMENTE información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
+    - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
+    - Para los trabajos relacionados, identifica cada paper citado por su título o autores y describe su aportación de forma crítica, no como una simple lista de menciones.
+    - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave para la introducción, manteniendo los detalles técnicos y las referencias a los trabajos relacionados.
+    Clasifícalo bajo 6 encabezados: Contexto, Problema, Trabajos Relacionados, Objetivo, Contribución, Estructura del Documento.
+  agent: agente_de_adquisicion_pdf
+  output_file: "introducciones/salida/informe_pdf_intro.md"

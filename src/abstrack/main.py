@@ -6,7 +6,10 @@ from datetime import datetime
 from pathlib import Path
 
 from abstrack.crew import Abstrack
-from abstrack.comparacion import generar_excel_comparacion
+from abstrack.comparacion import (
+    generar_excel_comparacion_abstracts,
+    generar_excel_comparacion_introducciones,
+)
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -25,7 +28,7 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
     destino.write_text(str(resultado), encoding="utf-8")
     print(f"\n Abstract guardado en: {destino}")
 
-    excel = generar_excel_comparacion()
+    excel = generar_excel_comparacion_abstracts()
     if excel:
         print(f" Excel de comparación actualizado en: {excel}")
 
@@ -44,6 +47,10 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None
     destino.write_text(str(resultado), encoding="utf-8")
     print(f"\n Introducción guardada en: {destino}")
 
+    excel = generar_excel_comparacion_introducciones()
+    if excel:
+        print(f" Excel de comparación actualizado en: {excel}")
+
 
 def run():
     """
@@ -55,8 +62,11 @@ def run():
     Modo interactivo, introducción:
         abstrack --tipo introduccion
 
-    Modo PDF (solo abstract por ahora):
+    Modo PDF, abstract:
         abstrack --pdf papers/sin_abstract/paper.pdf
+
+    Modo PDF, introducción (requiere los papers citados en papers/sin_introduccion/<paper>_citas/):
+        abstrack --tipo introduccion --pdf papers/sin_introduccion/paper.pdf
     """
     pdf_path = None
     tipo = "abstract"
@@ -78,13 +88,15 @@ def run():
         if tipo not in ("abstract", "introduccion"):
             raise SystemExit(f"Error: tipo desconocido '{tipo}'. Usa 'abstract' o 'introduccion'.")
 
-    if tipo == "introduccion" and pdf_path:
-        raise SystemExit("Error: el modo PDF para introducción todavía no está implementado.")
+    citas_path = ""
+    if pdf_path and tipo == "introduccion":
+        citas_path = str(Path(pdf_path).with_name(f"{Path(pdf_path).stem}_citas"))
 
     inputs = {
         "topic": "abstract generation",
         "current_year": str(datetime.now().year),
         "pdf_path": pdf_path or "",
+        "citas_path": citas_path,
     }
 
     try:

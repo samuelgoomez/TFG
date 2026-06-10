@@ -7,7 +7,7 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, crew, task
 
 from typing import List
-from abstrack.tools.custom_tools import ask_human_tool, read_pdf_tool
+from abstrack.tools.custom_tools import ask_human_tool, read_pdf_tool, read_pdfs_folder_tool
 
 @CrewBase
 class Abstrack():
@@ -54,7 +54,7 @@ class Abstrack():
         return Agent(
             config=self.agents_config['agente_de_adquisicion_pdf'],
             llm=self.llm,
-            tools=[read_pdf_tool],
+            tools=[read_pdf_tool, read_pdfs_folder_tool],
             verbose=True
         )
 
@@ -180,6 +180,12 @@ class Abstrack():
             config=self.tasks_config['tarea_control_calidad_intro'],
         )
 
+    # ── Tarea modo PDF para introducción (sin @task para que no entre en self.tasks) ──
+    def tarea_adquisicion_pdf_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_adquisicion_pdf_intro'],
+        )
+
     # ── Crew ──────────────────────────────────────────────────────────────────
     @crew
     def crew(self) -> Crew:
@@ -194,15 +200,26 @@ class Abstrack():
             self.agente_de_control_de_calidad(),
         ]
 
-        if self.pdf_path:
-            agentes = [
-                self.agente_de_adquisicion_pdf(),
-                self.agente_de_validacion_de_completitud(),
-                self.agente_de_estructuracion_de_contenido(),
-                self.agente_redactor(),
-                self.agente_de_revision_de_estilo(),
-                self.agente_de_control_de_calidad(),
+        agentes_pdf = [
+            self.agente_de_adquisicion_pdf(),
+            self.agente_de_validacion_de_completitud(),
+            self.agente_de_estructuracion_de_contenido(),
+            self.agente_redactor(),
+            self.agente_de_revision_de_estilo(),
+            self.agente_de_control_de_calidad(),
+        ]
+
+        if self.pdf_path and self.tipo == "introduccion":
+            agentes = agentes_pdf
+            tareas = [self.tarea_adquisicion_pdf_intro()] + [
+                self.tarea_validacion_intro(),
+                self.tarea_estructuracion_intro(),
+                self.tarea_redaccion_intro(),
+                self.tarea_revision_intro(),
+                self.tarea_control_calidad_intro(),
             ]
+        elif self.pdf_path:
+            agentes = agentes_pdf
             tareas = [self.tarea_adquisicion_pdf()] + [
                 self.tarea_validacion(),
                 self.tarea_estructuracion(),

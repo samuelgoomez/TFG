@@ -25,3 +25,34 @@ def read_pdf_tool(ruta_pdf: str) -> str:
             if texto:
                 paginas.append(texto)
     return "\n\n".join(paginas)
+
+@tool("leer_pdfs_carpeta")
+def read_pdfs_folder_tool(ruta_carpeta: str) -> str:
+    """
+    Lee y extrae el texto completo de todos los ficheros PDF que haya en una carpeta.
+    Recibe la ruta a la carpeta (por ejemplo, la que contiene los papers citados en la introducción de un artículo)
+    y devuelve el texto de cada PDF, separado y precedido por el nombre de su fichero.
+    Úsala para obtener el contenido de los trabajos relacionados antes de redactar la introducción.
+    """
+    import pdfplumber
+    from pathlib import Path
+
+    carpeta = Path(ruta_carpeta)
+    if not carpeta.is_dir():
+        return f"La carpeta '{ruta_carpeta}' no existe o no contiene papers citados."
+
+    ficheros = sorted(carpeta.glob("*.pdf"))
+    if not ficheros:
+        return f"La carpeta '{ruta_carpeta}' no contiene ningún PDF."
+
+    bloques = []
+    for fichero in ficheros:
+        paginas = []
+        with pdfplumber.open(fichero) as pdf:
+            for pagina in pdf.pages:
+                texto = pagina.extract_text()
+                if texto:
+                    paginas.append(texto)
+        bloques.append(f"### Paper citado: {fichero.name}\n\n" + "\n\n".join(paginas))
+
+    return "\n\n---\n\n".join(bloques)

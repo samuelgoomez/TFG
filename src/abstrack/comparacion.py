@@ -1,13 +1,9 @@
-"""Genera el Excel con los pares abstract real / abstract generado."""
+"""Genera los Excel con los pares real / generado para abstracts e introducciones."""
 import re
 from pathlib import Path
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
-
-ORIGINALES_DIR = Path("abstracts/originales")
-GENERADOS_DIR = Path("abstracts/generados")
-SALIDA = Path("abstracts/comparacion_abstracts.xlsx")
 
 
 def _extraer_campo(texto: str, etiqueta: str) -> str:
@@ -20,24 +16,34 @@ def _extraer_titulo(texto: str) -> str:
     return match.group(1).strip() if match else ""
 
 
-def _extraer_abstract_original(texto: str) -> str:
+def _extraer_seccion_original(texto: str, etiquetas: str) -> str:
     match = re.search(
-        r"##\s*(?:Abstract|Resumen) original\s*\n+(.+?)(?:\n##|\Z)",
+        rf"##\s*(?:{etiquetas})\s*\n+(.+?)(?:\n##|\Z)",
         texto,
         re.DOTALL,
     )
     return match.group(1).strip() if match else ""
 
 
-def generar_excel_comparacion() -> Path | None:
-    """Recorre abstracts/originales y abstracts/generados y crea el Excel de comparación.
+def _generar_excel_pares(
+    originales_dir: Path,
+    generados_dir: Path,
+    salida: Path,
+    prefijo_original: str,
+    sufijo_generado: str,
+    etiquetas_seccion: str,
+    nombre_hoja: str,
+    cabecera_real: str,
+    cabecera_generado: str,
+) -> Path | None:
+    """Recorre los ficheros originales y generados y crea el Excel de comparación.
 
     Devuelve la ruta del Excel generado, o None si no hay ningún par disponible.
     """
     filas = []
-    for fichero in sorted(ORIGINALES_DIR.glob("abstract_*.md")):
-        nombre_paper = fichero.stem.removeprefix("abstract_")
-        generado_path = GENERADOS_DIR / f"{nombre_paper}_generado.md"
+    for fichero in sorted(originales_dir.glob(f"{prefijo_original}*.md")):
+        nombre_paper = fichero.stem.removeprefix(prefijo_original)
+        generado_path = generados_dir / f"{nombre_paper}{sufijo_generado}"
         if not generado_path.exists():
             continue
 
@@ -45,8 +51,8 @@ def generar_excel_comparacion() -> Path | None:
         filas.append({
             "titulo": _extraer_titulo(texto_original),
             "idioma": _extraer_campo(texto_original, "Idioma"),
-            "abstract_real": _extraer_abstract_original(texto_original),
-            "abstract_generado": generado_path.read_text(encoding="utf-8").strip(),
+            "real": _extraer_seccion_original(texto_original, etiquetas_seccion),
+            "generado": generado_path.read_text(encoding="utf-8").strip(),
         })
 
     if not filas:
@@ -54,16 +60,16 @@ def generar_excel_comparacion() -> Path | None:
 
     wb = Workbook()
     ws = wb.active
-    ws.title = "Comparacion abstracts"
+    ws.title = nombre_hoja
 
-    cabeceras = ["Paper", "Idioma", "Abstract real", "Abstract generado"]
+    cabeceras = ["Paper", "Idioma", cabecera_real, cabecera_generado]
     ws.append(cabeceras)
     for celda in ws[1]:
         celda.font = Font(bold=True)
         celda.alignment = Alignment(vertical="top", wrap_text=True)
 
     for fila in filas:
-        ws.append([fila["titulo"], fila["idioma"], fila["abstract_real"], fila["abstract_generado"]])
+        ws.append([fila["titulo"], fila["idioma"], fila["real"], fila["generado"]])
 
     for fila_celdas in ws.iter_rows(min_row=2):
         for celda in fila_celdas:
@@ -76,6 +82,36 @@ def generar_excel_comparacion() -> Path | None:
     for i in range(2, len(filas) + 2):
         ws.row_dimensions[i].height = 200
 
-    SALIDA.parent.mkdir(parents=True, exist_ok=True)
-    wb.save(SALIDA)
-    return SALIDA
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(salida)
+    return salida
+
+
+def generar_excel_comparacion_abstracts() -> Path | None:
+    """Recorre abstracts/originales y abstracts/generados y crea el Excel de comparación de abstracts."""
+    return _generar_excel_pares(
+        originales_dir=Path("abstracts/originales"),
+        generados_dir=Path("abstracts/generados"),
+        salida=Path("abstracts/comparacion_abstracts.xlsx"),
+        prefijo_original="abstract_",
+        sufijo_generado="_generado.md",
+        etiquetas_seccion="Abstract original|Resumen original",
+        nombre_hoja="Comparacion abstracts",
+        cabecera_real="Abstract real",
+        cabecera_generado="Abstract generado",
+    )
+
+
+def generar_excel_comparacion_introducciones() -> Path | None:
+    """Recorre introducciones/originales y introducciones/generadas y crea el Excel de comparación de introducciones."""
+    return _generar_excel_pares(
+        originales_dir=Path("introducciones/originales"),
+        generados_dir=Path("introducciones/generadas"),
+        salida=Path("introducciones/comparacion_introducciones.xlsx"),
+        prefijo_original="introduccion_",
+        sufijo_generado="_generada.md",
+        etiquetas_seccion="Introducción original|Introduccion original",
+        nombre_hoja="Comparacion introducciones",
+        cabecera_real="Introducción real",
+        cabecera_generado="Introducción generada",
+    )
