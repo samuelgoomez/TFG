@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from abstrack.crew import Abstrack
+from abstrack.comparacion import generar_excel_comparacion
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -23,6 +24,10 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
     destino = carpeta / f"{nombre}_generado.md"
     destino.write_text(str(resultado), encoding="utf-8")
     print(f"\n Abstract guardado en: {destino}")
+
+    excel = generar_excel_comparacion()
+    if excel:
+        print(f" Excel de comparación actualizado en: {excel}")
 
 
 def run():

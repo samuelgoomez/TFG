@@ -34,13 +34,14 @@ tarea_adquisicion_pdf:
     1. El tema o problema abordado.
     2. El objetivo principal del trabajo.
     3. La metodología seguida.
-    4. Los resultados obtenidos (incluye métricas, porcentajes o valores numéricos exactos que aparezcan).
+    4. Los resultados obtenidos del modelo o enfoque principal (incluye métricas, porcentajes o valores numéricos exactos que aparezcan).
     5. La principal conclusión o aportación del trabajo.
     6. Restricciones de formato (límite de palabras, idioma, contexto del documento) si se mencionan.
 
     INSTRUCCIONES CLAVE:
     - Extrae ÚNICAMENTE información que esté presente en el texto del PDF. No inventes ni inferas datos.
     - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
+    - Muchos artículos comparan varios modelos o configuraciones experimentales. Identifica cuál es el modelo o enfoque principal propuesto por los autores y reporta en "Resultados" únicamente sus métricas, sin mezclarlas con las de otros modelos o experimentos secundarios mencionados como comparación.
     - Si algún punto no puede determinarse desde el texto, indícalo como "No especificado en el documento".
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave extraídos del PDF,
