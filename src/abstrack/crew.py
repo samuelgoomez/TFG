@@ -31,8 +31,9 @@ class Abstrack():
 
     # ── Agente coordinador (común a ambos modos) ──────────────────────────────
     def agente_coordinador(self) -> Agent:
+        config_key = 'agente_coordinador_intro' if self.tipo == "introduccion" else 'agente_coordinador'
         return Agent(
-            config=self.agents_config['agente_coordinador'],
+            config=self.agents_config[config_key],
             llm=self.llm,
             verbose=True,
             allow_delegation=True
@@ -99,6 +100,63 @@ class Abstrack():
             verbose=True
         )
 
+    # ── Agentes modo introducción (especialistas CARS + editor) ──────────────
+    @agent
+    def agente_especialista_territorio(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_territorio'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_especialista_hueco(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_hueco'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_especialista_idea(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_idea'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_especialista_contribuciones(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_contribuciones'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_especialista_evaluacion(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_evaluacion'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_especialista_estructura_documento(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_especialista_estructura_documento'],
+            llm=self.llm,
+            verbose=True
+        )
+
+    @agent
+    def agente_editor_intro(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_editor_intro'],
+            llm=self.llm,
+            verbose=True
+        )
+
     # ── Tareas modo interactivo ───────────────────────────────────────────────
     @task
     def tarea_adquisicion(self) -> Task:
@@ -157,27 +215,67 @@ class Abstrack():
         )
 
     @task
-    def tarea_estructuracion_intro(self) -> Task:
+    def tarea_bloque_territorio(self) -> Task:
         return Task(
-            config=self.tasks_config['tarea_estructuracion_intro'],
+            config=self.tasks_config['tarea_bloque_territorio'],
+            context=[self.tarea_validacion_intro()],
         )
 
     @task
-    def tarea_redaccion_intro(self) -> Task:
+    def tarea_bloque_hueco(self) -> Task:
         return Task(
-            config=self.tasks_config['tarea_redaccion_intro'],
+            config=self.tasks_config['tarea_bloque_hueco'],
+            context=[self.tarea_validacion_intro(), self.tarea_bloque_territorio()],
         )
 
     @task
-    def tarea_revision_intro(self) -> Task:
+    def tarea_bloque_idea(self) -> Task:
         return Task(
-            config=self.tasks_config['tarea_revision_intro'],
+            config=self.tasks_config['tarea_bloque_idea'],
+            context=[self.tarea_validacion_intro(), self.tarea_bloque_hueco()],
+        )
+
+    @task
+    def tarea_bloque_contribuciones(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_bloque_contribuciones'],
+            context=[self.tarea_validacion_intro(), self.tarea_bloque_idea()],
+        )
+
+    @task
+    def tarea_bloque_evaluacion(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_bloque_evaluacion'],
+            context=[self.tarea_validacion_intro()],
+        )
+
+    @task
+    def tarea_bloque_estructura_documento(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_bloque_estructura_documento'],
+            context=[self.tarea_validacion_intro()],
+        )
+
+    @task
+    def tarea_fusion_intro(self) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_fusion_intro'],
+            context=[
+                self.tarea_validacion_intro(),
+                self.tarea_bloque_territorio(),
+                self.tarea_bloque_hueco(),
+                self.tarea_bloque_idea(),
+                self.tarea_bloque_contribuciones(),
+                self.tarea_bloque_evaluacion(),
+                self.tarea_bloque_estructura_documento(),
+            ],
         )
 
     @task
     def tarea_control_calidad_intro(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_control_calidad_intro'],
+            context=[self.tarea_fusion_intro()],
         )
 
     # ── Tarea modo PDF para introducción (sin @task para que no entre en self.tasks) ──
@@ -209,15 +307,37 @@ class Abstrack():
             self.agente_de_control_de_calidad(),
         ]
 
+        # ── Equipo CARS para la introducción (común a entrevista y PDF) ───────
+        agentes_intro_comunes = [
+            self.agente_de_validacion_de_completitud(),
+            self.agente_especialista_territorio(),
+            self.agente_especialista_hueco(),
+            self.agente_especialista_idea(),
+            self.agente_especialista_contribuciones(),
+            self.agente_especialista_evaluacion(),
+            self.agente_especialista_estructura_documento(),
+            self.agente_editor_intro(),
+            self.agente_de_control_de_calidad(),
+        ]
+
+        agentes_intro_interactivo = [self.agente_de_adquisicion_de_informacion()] + agentes_intro_comunes
+        agentes_intro_pdf = [self.agente_de_adquisicion_pdf()] + agentes_intro_comunes
+
+        tareas_cars_intro = [
+            self.tarea_validacion_intro(),
+            self.tarea_bloque_territorio(),
+            self.tarea_bloque_hueco(),
+            self.tarea_bloque_idea(),
+            self.tarea_bloque_contribuciones(),
+            self.tarea_bloque_evaluacion(),
+            self.tarea_bloque_estructura_documento(),
+            self.tarea_fusion_intro(),
+            self.tarea_control_calidad_intro(),
+        ]
+
         if self.pdf_path and self.tipo == "introduccion":
-            agentes = agentes_pdf
-            tareas = [self.tarea_adquisicion_pdf_intro()] + [
-                self.tarea_validacion_intro(),
-                self.tarea_estructuracion_intro(),
-                self.tarea_redaccion_intro(),
-                self.tarea_revision_intro(),
-                self.tarea_control_calidad_intro(),
-            ]
+            agentes = agentes_intro_pdf
+            tareas = [self.tarea_adquisicion_pdf_intro()] + tareas_cars_intro
         elif self.pdf_path:
             agentes = agentes_pdf
             tareas = [self.tarea_adquisicion_pdf()] + [
@@ -228,15 +348,8 @@ class Abstrack():
                 self.tarea_control_calidad(),
             ]
         elif self.tipo == "introduccion":
-            agentes = agentes_interactivo
-            tareas = [
-                self.tarea_adquisicion_intro(),
-                self.tarea_validacion_intro(),
-                self.tarea_estructuracion_intro(),
-                self.tarea_redaccion_intro(),
-                self.tarea_revision_intro(),
-                self.tarea_control_calidad_intro(),
-            ]
+            agentes = agentes_intro_interactivo
+            tareas = [self.tarea_adquisicion_intro()] + tareas_cars_intro
         else:
             agentes = agentes_interactivo
             tareas = [self.tarea_adquisicion()] + [
