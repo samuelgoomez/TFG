@@ -134,6 +134,7 @@ tarea_control_calidad:
 # 8. Tarea de adquisición de información para la introducción (entrevista)
 tarea_adquisicion_intro:
   description: >
+    Delega esta tarea completa al Agente de Adquisición de Información, sin entrevistar tú mismo al autor.
     El Agente de Adquisición de Información debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
     Sigue este orden, una pregunta por turno:
 
@@ -158,6 +159,7 @@ tarea_adquisicion_intro:
 # 9. Tarea de adquisición desde PDF (introducción)
 tarea_adquisicion_pdf_intro:
   description: >
+    Delega esta tarea completa al Agente de Adquisición de Información desde PDF, sin leer tú mismo los documentos.
     Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico. La ruta exacta que debes pasar como argumento 'ruta_pdf' es: {pdf_path}
     A continuación, usa la herramienta 'leer_pdfs_carpeta' para leer los papers citados en la introducción de ese artículo. La ruta exacta que debes pasar como argumento 'ruta_carpeta' es: {citas_path}
 
@@ -269,8 +271,9 @@ tarea_fusion_intro:
     2. Suaviza las transiciones entre bloques, unifica la terminología y elimina las repeticiones que hayan podido surgir al redactarse cada bloque por separado.
     3. Comprueba, usando el informe validado (tarea_validacion_intro) como referencia de los ejes de Shaw, que el texto deja claro: qué pregunta de investigación se responde, qué se aporta (las contribuciones) y cómo se valida el trabajo. Si alguno de estos tres puntos no queda claro en el texto fusionado, ajusta la redacción para que lo esté, sin inventar información nueva.
     4. No elimines ni resumas en exceso el contenido de los bloques: tu trabajo es de fusión y pulido, no de recorte.
-    5. Escribe en lenguaje natural, organizado en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
-    6. MUY IMPORTANTE: NO incluyas etiquetas <think>, explicaciones de tu proceso mental ni ningún otro texto adicional. No envuelvas el resultado entre comillas triples ni lo marques como bloque de código: entrégalo como texto normal. Tu respuesta final debe contener ÚNICAMENTE el texto de la introducción.
+    5. No añadas referencias a números o nombres de secciones del documento (p. ej. "Sección 2", "Sección 3") en el bloque de Contribuciones ni en ningún otro, salvo que esa referencia aparezca YA EXPLÍCITA y asociada a esa contribución concreta en el informe validado (tarea_validacion_intro). No infieras ni cruces la numeración de "Estructura del Documento" con las Contribuciones para inventar esas referencias.
+    6. Escribe en lenguaje natural, organizado en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
+    7. MUY IMPORTANTE: NO incluyas etiquetas <think>, explicaciones de tu proceso mental ni ningún otro texto adicional. No envuelvas el resultado entre comillas triples ni lo marques como bloque de código: entrégalo como texto normal. Tu respuesta final debe contener ÚNICAMENTE el texto de la introducción.
   expected_output: >
     Una introducción científica única, cohesionada y organizada en varios párrafos, que combina los seis bloques en el orden Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento, dejando claros los tres ejes de Shaw (pregunta de investigación, contribución y validación).
   agent: agente_editor_intro

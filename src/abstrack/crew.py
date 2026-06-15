@@ -26,7 +26,6 @@ class Abstrack():
     def llm(self) -> LLM:
         return LLM(
             model=os.getenv("MODEL"),
-            verbose=True
         )
 
     # ── Agente coordinador (común a ambos modos) ──────────────────────────────
@@ -210,8 +209,10 @@ class Abstrack():
 
     @task
     def tarea_validacion_intro(self) -> Task:
+        tarea_previa = self.tarea_adquisicion_pdf_intro() if self.pdf_path else self.tarea_adquisicion_intro()
         return Task(
             config=self.tasks_config['tarea_validacion_intro'],
+            context=[tarea_previa],
         )
 
     @task
@@ -280,9 +281,11 @@ class Abstrack():
 
     # ── Tarea modo PDF para introducción (sin @task para que no entre en self.tasks) ──
     def tarea_adquisicion_pdf_intro(self) -> Task:
-        return Task(
-            config=self.tasks_config['tarea_adquisicion_pdf_intro'],
-        )
+        if not hasattr(self, '_tarea_adquisicion_pdf_intro_cache'):
+            self._tarea_adquisicion_pdf_intro_cache = Task(
+                config=self.tasks_config['tarea_adquisicion_pdf_intro'],
+            )
+        return self._tarea_adquisicion_pdf_intro_cache
 
     # ── Crew ──────────────────────────────────────────────────────────────────
     @crew
