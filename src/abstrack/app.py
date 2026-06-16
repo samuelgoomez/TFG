@@ -31,6 +31,7 @@ def _run_pipeline(tipo, pdf_path, citas_path, q_questions, q_answers, q_result):
         }
         crew = Abstrack()
         crew.pdf_path = pdf_path
+        crew.citas_path = citas_path or ""
         crew.tipo = tipo
         resultado = crew.crew().kickoff(inputs=inputs)
         q_result.put(("ok", str(resultado)))

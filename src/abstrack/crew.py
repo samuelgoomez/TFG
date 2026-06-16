@@ -19,6 +19,9 @@ class Abstrack():
     # Ruta al PDF; si es None, el sistema usa el modo interactivo (preguntas al autor)
     pdf_path: str = None
 
+    # Carpeta con los PDFs citados (solo modo introducción + PDF)
+    citas_path: str = ""
+
     # Tipo de contenido a generar: "abstract" (por defecto) o "introduccion"
     tipo: str = "abstract"
 
@@ -53,11 +56,16 @@ class Abstrack():
     def agente_de_adquisicion_pdf(self) -> Agent:
         config = dict(self.agents_config['agente_de_adquisicion_pdf'])
         if self.pdf_path:
-            config['goal'] = (
-                config['goal']
-                + f"\n    RUTA OBLIGATORIA PARA ESTA SESIÓN: {self.pdf_path}\n"
-                + "    Llama a 'leer_pdf' con exactamente esa ruta. No uses ninguna otra."
+            extra = (
+                f"\n    RUTA OBLIGATORIA DEL PAPER PRINCIPAL: {self.pdf_path}\n"
+                "    Llama a 'leer_pdf' con exactamente esa ruta. No uses ninguna otra."
             )
+            if self.citas_path:
+                extra += (
+                    f"\n    CARPETA DE PAPERS CITADOS: {self.citas_path}\n"
+                    "    Llama a 'leer_pdfs_carpeta' con exactamente esa ruta para leer los papers citados."
+                )
+            config['goal'] = config['goal'] + extra
         return Agent(
             config=config,
             llm=self.llm,

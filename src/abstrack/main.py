@@ -102,6 +102,7 @@ def run():
     try:
         crew_instance = Abstrack()
         crew_instance.pdf_path = pdf_path
+        crew_instance.citas_path = citas_path
         crew_instance.tipo = tipo
         resultado = crew_instance.crew().kickoff(inputs=inputs)
         if tipo == "introduccion":
