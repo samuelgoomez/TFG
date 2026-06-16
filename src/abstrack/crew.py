@@ -25,6 +25,9 @@ class Abstrack():
     # Tipo de contenido a generar: "abstract" (por defecto) o "introduccion"
     tipo: str = "abstract"
 
+    # Callback opcional: se llama con un TaskOutput cada vez que una tarea termina
+    task_callback: object = None
+
     @property
     def llm(self) -> LLM:
         return LLM(
@@ -378,10 +381,13 @@ class Abstrack():
                 self.tarea_control_calidad(),
             ]
 
-        return Crew(
+        crew_kwargs = dict(
             agents=agentes,
             tasks=tareas,
             process=Process.hierarchical,
             manager_agent=self.agente_coordinador(),
             verbose=True,
         )
+        if self.task_callback:
+            crew_kwargs["task_callback"] = self.task_callback
+        return Crew(**crew_kwargs)
