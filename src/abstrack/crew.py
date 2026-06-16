@@ -51,8 +51,15 @@ class Abstrack():
     # ── Agente modo PDF ────────────────────────────────────────────────────────
     @agent
     def agente_de_adquisicion_pdf(self) -> Agent:
+        config = dict(self.agents_config['agente_de_adquisicion_pdf'])
+        if self.pdf_path:
+            config['goal'] = (
+                config['goal']
+                + f"\n    RUTA OBLIGATORIA PARA ESTA SESIÓN: {self.pdf_path}\n"
+                + "    Llama a 'leer_pdf' con exactamente esa ruta. No uses ninguna otra."
+            )
         return Agent(
-            config=self.agents_config['agente_de_adquisicion_pdf'],
+            config=config,
             llm=self.llm,
             tools=[read_pdf_tool, read_pdfs_folder_tool],
             verbose=True

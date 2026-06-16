@@ -28,7 +28,8 @@ tarea_adquisicion:
   # 2b. Tarea de adquisición desde PDF
 tarea_adquisicion_pdf:
   description: >
-    Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico en la ruta: {pdf_path}
+    RUTA OBLIGATORIA DEL PDF: {pdf_path}
+    El agente DEBE llamar a 'leer_pdf' con ruta_pdf='{pdf_path}'. Esta es la única ruta válida; no uses ninguna otra.
 
     A partir del texto extraído, identifica y documenta con precisión los siguientes 6 puntos clave:
     1. El tema o problema abordado.
