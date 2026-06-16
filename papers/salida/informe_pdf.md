@@ -1,11 +1,17 @@
-Problema: La Enfermedad de Parkinson (EP) es una afección crónica y progresiva que afecta el movimiento de los pacientes, causando fluctuaciones en los síntomas motores que complican su manejo y seguimiento. La evaluación actual se basa en autoevaluaciones subjetivas, lo que hace necesaria la obtención de información objetiva.
+# Problema
+El documento aborda las limitaciones de las redes neuronales recurrentes (RNNs) y los problemas relacionados con la modelación secuencial, como el aprendizaje de dependencias a larga distancia en tareas de traducción automática.
 
-Objetivo: Desarrollar un método que identifique y clasifique las Actividades de la Vida Diaria (AVDs) en pacientes con Parkinson utilizando Redes Neuronales Artificiales (RNA) programadas en Python para enriquecer el seguimiento y apoyo a estos pacientes.
+# Objetivo
+El objetivo principal del trabajo es presentar el modelo Transformer, que reemplaza la recurrencia con un mecanismo de atención para capturar dependencias globales en los datos, lo que permite una mayor paralelización y mejora la calidad de la traducción.
 
-Metodología: Se aplicó Análisis de Componentes Principales (PCA) para reducir la dimensionalidad de una base de datos de 179,755 observaciones y 64 variables, recolectadas a través de sensores inerciales de varios pacientes con Parkinson. Se entrenó un Perceptrón Multicapa (MLP) con los datos obtenidos, normalizando las características y utilizando la función de activación ReLU en la primera capa oculta.
+# Metodología
+El modelo Transformer utiliza una arquitectura de codificador-decodificador con capas de atención multi-cabeza y una red neuronal de alimentación hacia adelante. Utiliza codificaciones posicionales para mantener el orden de la secuencia sin recurrencia.
 
-Resultados: El modelo obtuvo un porcentaje de clasificación del 93% en la medida F1-score, evidenciando una alta precisión en la identificación de AVDs a partir de la información proporcionada por los sensores, incluso en un conjunto de datos desbalanceado.
+# Resultados
+El modelo Transformer alcanzó un puntaje BLEU de 28.4 en la tarea de traducción de inglés a alemán y 41.0 en inglés a francés, superando los modelos previos. Utilizó 8 GPUs P100 y se entrenó en 12 horas para el modelo base y 3.5 días para el modelo grande.
 
-Conclusión: Se demuestra la versatilidad de las RNA, en combinación con la técnica PCA, en la clasificación de actividades en pacientes con EP, mostrando que es posible alcanzar altos niveles de precisión incluso usando una base de datos reducida.
+# Conclusión
+El Transformer es el primer modelo de transducción que depende únicamente de mecanismos de atención, logrando rapidez y calidad superior en tareas de traducción. Esto establece un nuevo estándar en la calidad de traducción y sugiere futuros usos en diferentes modalidades de entrada y salida.
 
-Restricciones: No se especificaron limitaciones de formato en el documento, pero se infiere que el estudio se basa en la implementación técnica y condiciones específicas de los datos utilizados para entrenar el modelo.
+# Restricciones
+No se mencionan restricciones de formato específicas en el documento (límite de palabras, idioma, contexto del documento).
