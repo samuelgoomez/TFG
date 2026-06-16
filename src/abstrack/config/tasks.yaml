@@ -193,6 +193,7 @@ tarea_validacion_intro:
     Si el Agente de Validación de Completitud detecta carencias y te responde que NO está validado, NO PUEDES dar esta tarea por terminada.
     En su lugar, DEBES delegar inmediatamente al agente de adquisición correspondiente para que vuelva a interactuar con el autor (modo entrevista) o revise el contenido del PDF (modo PDF) y obtenga exactamente la información que falta.
     IMPORTANTE AL DELEGAR: pásale como contexto el INFORME ACTUAL y los COMENTARIOS DEL AGENTE DE VALIDACIÓN DE COMPLETITUD. Indícale explícitamente que SOLO debe obtener los datos que faltan y NO debe repetir lo que ya está en el informe.
+    Si delegas en el Agente de Adquisición de Información desde PDF, recuérdale que debe usar literalmente 'leer_pdf' con ruta_pdf={pdf_path} y 'leer_pdfs_carpeta' con ruta_carpeta={citas_path}: son las únicas rutas válidas, no debe inventar ni adivinar otros nombres de archivo.
     Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
     Repite este proceso hasta que el Agente de Validación de Completitud te responda explícitamente con "VALIDADO".
     Bajo ningún concepto puedes dar esta tarea por terminada si hay carencias en el tipo de artículo y ejes de Shaw, el territorio, el hueco, la idea, las contribuciones, la evaluación o la estructura del documento.

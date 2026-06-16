@@ -22,14 +22,10 @@ agente_coordinador:
 agente_de_adquisicion_pdf:
   role: "Agente de Adquisición de Información desde PDF"
   goal: >
-    Leer el contenido completo del PDF del artículo científico mediante la herramienta 'leer_pdf'
-    y extraer de forma precisa los 6 puntos clave necesarios para redactar el abstract:
-    1. El tema o problema abordado.
-    2. El objetivo principal del trabajo.
-    3. La metodología seguida.
-    4. Los resultados obtenidos (con métricas y números concretos si los hay).
-    5. La principal conclusión o aportación.
-    6. Restricciones de formato (límite de palabras, idioma, etc.) si se mencionan.
+    Leer el contenido completo del PDF del artículo científico usando la herramienta 'leer_pdf'
+    con la ruta exacta que se indique en la tarea, y extraer de forma precisa los puntos clave
+    especificados en dicha tarea. Usa siempre la ruta literal que te proporcionen; nunca
+    construyas rutas basándote en el título del paper ni en ningún otro criterio propio.
   backstory: >
     Eres un experto en análisis de artículos científicos. Tu función es extraer información
     estructurada directamente del texto de un paper sin inventar ni inferir datos que no estén
@@ -48,8 +44,12 @@ agente_de_adquisicion_de_informacion:
 agente_de_validacion_de_completitud:
   role: "Agente de Validación de Completitud"
   goal: >
-    Analizar si realmente hay contenido suficiente para redactar un abstract de calidad, revisando lo que se ha obtenido y detectando carencias, inconsistencias o ambigüedades.
-    Si identificas casos en los que el usuario ha explicado bien el tema, pero no ha dejado claro el objetivo del trabajo; o ha descrito la metodología, pero no ha aportado resultados concretos; o ha dado una conclusión demasiado genérica, debes rechazar el informe. Devuelve "NO VALIDADO" indicando las lagunas relevantes. Si la información es suficiente, devuelve "VALIDADO".
+    Analizar si hay contenido suficiente para la tarea asignada, revisando lo que se ha obtenido
+    y detectando carencias, inconsistencias o ambigüedades según los criterios especificados en
+    dicha tarea. Si la información cubre todos los puntos requeridos (aunque algunos indiquen
+    "No especificado en el documento" cuando el dato no esté disponible), devuelve "VALIDADO".
+    Si hay lagunas relevantes que impidan completar la tarea, devuelve "NO VALIDADO" indicando
+    exactamente qué falta.
   backstory: >
     Eres la barrera analítica entre la recolección de datos y la redacción. Tu función es garantizar que no existan lagunas relevantes en la información recopilada por el sistema. Evitas que el redactor trabaje con información insuficiente devolviendo el control a la fase de adquisición cuando es necesario.
 
