@@ -1,17 +1,11 @@
-# Problema
-El documento aborda las limitaciones de las redes neuronales recurrentes (RNNs) y los problemas relacionados con la modelación secuencial, como el aprendizaje de dependencias a larga distancia en tareas de traducción automática.
+1. **Tema o problema abordado**: El documento presenta el modelo Transformer, que aborda la inferencia en tareas de traducción de secuencias, proponiendo un enfoque que reemplaza las redes neuronales recurrentes tradicionales con un mecanismo de atención, buscando mejorar la paralelización y eficiencia computacional en el procesamiento de secuencias.
 
-# Objetivo
-El objetivo principal del trabajo es presentar el modelo Transformer, que reemplaza la recurrencia con un mecanismo de atención para capturar dependencias globales en los datos, lo que permite una mayor paralelización y mejora la calidad de la traducción.
+2. **Objetivo principal del trabajo**: El objetivo principal del trabajo es desarrollar un modelo de transducción de secuencias que se base completamente en la atención, eliminando la dependencia de las capas recurrentes y logrando altos niveles de rendimiento en tareas de traducción.
 
-# Metodología
-El modelo Transformer utiliza una arquitectura de codificador-decodificador con capas de atención multi-cabeza y una red neuronal de alimentación hacia adelante. Utiliza codificaciones posicionales para mantener el orden de la secuencia sin recurrencia.
+3. **Metodología seguida**: La metodología incluye el uso de un architecture de codificador-decodificador con atención múltiple auto-regresiva, entrenamiento en conjuntos de datos estándar como WMT 2014, y ciertos hipeparametros como el optimizador Adam. Se entrenó el modelo en hardware de GPU, utilizando en promedio 8 GPUs P100 durante un período de tiempo razonablemente corto.
 
-# Resultados
-El modelo Transformer alcanzó un puntaje BLEU de 28.4 en la tarea de traducción de inglés a alemán y 41.0 en inglés a francés, superando los modelos previos. Utilizó 8 GPUs P100 y se entrenó en 12 horas para el modelo base y 3.5 días para el modelo grande.
+4. **Resultados obtenidos del modelo o enfoque principal**: En el conjunto de datos WMT 2014 de inglés a alemán, el modelo Transformer alcanzó una puntuación BLEU de 28.4 y una puntuación de 41.0 en el conjunto de datos de inglés a francés, superando modelos anteriores en eficiencia y calidad de traducción, además de requerir una fracción del costo de entrenamiento en comparación con modelos previos.
 
-# Conclusión
-El Transformer es el primer modelo de transducción que depende únicamente de mecanismos de atención, logrando rapidez y calidad superior en tareas de traducción. Esto establece un nuevo estándar en la calidad de traducción y sugiere futuros usos en diferentes modalidades de entrada y salida.
+5. **Principal conclusión o aportación del trabajo**: La principal conclusión es que el modelo Transformer establece un nuevo estado del arte en tareas de traducción, demostrando que es más rápido y eficiente que los modelos basados en RNN o convolucionales. Se sugiere un futuro prometedor para modelos basados en atención en otros dominios que involucran diversas modalidades de entrada y salida.
 
-# Restricciones
-No se mencionan restricciones de formato específicas en el documento (límite de palabras, idioma, contexto del documento).
+6. **Restricciones de formato**: No especificado en el documento.
