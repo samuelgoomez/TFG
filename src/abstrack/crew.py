@@ -59,16 +59,20 @@ class Abstrack():
     def agente_de_adquisicion_pdf(self) -> Agent:
         config = dict(self.agents_config['agente_de_adquisicion_pdf'])
         if self.pdf_path:
-            extra = (
-                f"\n    RUTA OBLIGATORIA DEL PAPER PRINCIPAL: {self.pdf_path}\n"
-                "    Llama a 'leer_pdf' con exactamente esa ruta. No uses ninguna otra."
+            prefijo = (
+                f"INSTRUCCIÓN PRIORITARIA (anula cualquier otra indicación sobre la ruta):\n"
+                f"La ruta del PDF para esta sesión es: {self.pdf_path}\n"
+                f"Llama a 'leer_pdf' con esa ruta exacta de forma inmediata, sin pedir confirmación al coordinador.\n\n"
+            )
+            sufijo = (
+                f"\n\nRECORDATORIO FINAL: usa siempre '{self.pdf_path}' como ruta del PDF. "
+                "No preguntes por la ruta; ya la tienes arriba."
             )
             if self.citas_path:
-                extra += (
-                    f"\n    CARPETA DE PAPERS CITADOS: {self.citas_path}\n"
-                    "    Llama a 'leer_pdfs_carpeta' con exactamente esa ruta para leer los papers citados."
+                sufijo += (
+                    f"\nPara los papers citados usa 'leer_pdfs_carpeta' con la ruta '{self.citas_path}'."
                 )
-            config['goal'] = config['goal'] + extra
+            config['goal'] = prefijo + config['goal'] + sufijo
         return Agent(
             config=config,
             llm=self.llm,
