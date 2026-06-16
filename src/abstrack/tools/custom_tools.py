@@ -1,4 +1,23 @@
+import queue as _queue_module
 from crewai.tools import tool
+
+# When running in web mode these are set to Queue objects before starting the pipeline thread.
+# In CLI mode they stay None and the tool falls back to input().
+_q_questions = None
+_q_answers = None
+
+
+def set_web_queues(q_questions, q_answers):
+    global _q_questions, _q_answers
+    _q_questions = q_questions
+    _q_answers = q_answers
+
+
+def clear_web_queues():
+    global _q_questions, _q_answers
+    _q_questions = None
+    _q_answers = None
+
 
 @tool("preguntar_al_autor")
 def ask_human_tool(pregunta: str) -> str:
@@ -6,9 +25,15 @@ def ask_human_tool(pregunta: str) -> str:
     Usa esta herramienta cuando necesites hacerle una pregunta directa al autor del artículo.
     Recibe como parámetro la pregunta que quieres hacer, y devuelve la respuesta del autor.
     """
+    if _q_questions is not None:
+        _q_questions.put(pregunta)
+        try:
+            return _q_answers.get(timeout=600)
+        except _queue_module.Empty:
+            return "Sin respuesta (tiempo agotado)."
     print(f"\n[El Agente te pregunta]: {pregunta}")
-    respuesta = input("Tu respuesta: ")
-    return respuesta
+    return input("Tu respuesta: ")
+
 
 @tool("leer_pdf")
 def read_pdf_tool(ruta_pdf: str) -> str:
@@ -25,6 +50,7 @@ def read_pdf_tool(ruta_pdf: str) -> str:
             if texto:
                 paginas.append(texto)
     return "\n\n".join(paginas)
+
 
 @tool("leer_pdfs_carpeta")
 def read_pdfs_folder_tool(ruta_carpeta: str) -> str:

@@ -54,15 +54,21 @@ tarea_adquisicion_pdf:
 tarea_validacion:
   description: >
     Tu objetivo es obtener la VALIDACIÓN definitiva del informe por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud.
+    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud, pidiéndole que compruebe estos 6 puntos:
+    1. Tema o problema abordado.
+    2. Objetivo principal.
+    3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
+    4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
+    5. Conclusión o aportación principal.
+    6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
     Si el Agente de Validación de Completitud detecta carencias y te responde que NO está validado, NO PUEDES dar esta tarea por terminada.
     En su lugar, DEBES delegar inmediatamente al 'Agente de Adquisición de Información' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
     IMPORTANTE AL DELEGAR: Al delegar al Agente de Adquisición de Información, pásale como contexto el INFORME ACTUAL y los COMENTARIOS DEL AGENTE DE VALIDACIÓN DE COMPLETITUD. Indícale explícitamente que SOLO debe preguntar por los datos que faltan y NO debe volver a pedir la información que ya está en el informe.
     Una vez que el Agente de Adquisición de Información consiga los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
     Repite este proceso hasta que el Agente de Validación de Completitud te responda explícitamente con "VALIDADO".
-    Bajo ningún concepto puedes dar esta tarea por terminada si hay carencias técnicas o el Agente de Validación de Completitud la rechaza.
+    Bajo ningún concepto puedes dar esta tarea por terminada si el Agente de Validación de Completitud la rechaza.
   expected_output: >
-    El informe final completo, corregido y enriquecido con todos los detalles técnicos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
+    El informe final con los 6 puntos cubiertos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
 # 4. Tarea de estructuración del contenido
 tarea_estructuracion:
   description: >
@@ -124,9 +130,9 @@ tarea_control_calidad:
     3. Que mantiene coherencia interna.
     4. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales.
     5. Que su extensión y enfoque son adecuados.
-    Si todo está correcto, devuelve el texto final. Esta es la última capa de control antes de entregar el resultado al usuario.
+    Si todo está correcto, devuelve ÚNICAMENTE el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional. Tu respuesta final debe contener SOLO el abstract.
   expected_output: >
-    El abstract final y definitivo, validado globalmente, garantizando que cumple con todos los requisitos académicos y de calidad.
+    El abstract final y definitivo en texto plano, sin introducciones, sin checklists de validación, sin etiquetas ni comentarios. Solo el abstract.
   agent: agente_de_control_de_calidad
 
 # TAREAS NECESARIAS PARA LA INTRODUCCIÓN (MODELO CARS + EJES DE SHAW)

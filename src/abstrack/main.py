@@ -25,7 +25,7 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     destino = carpeta / f"{nombre}_generado.md"
-    destino.write_text(str(resultado), encoding="utf-8")
+    destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Abstract guardado en: {destino}")
 
     excel = generar_excel_comparacion_abstracts()
@@ -44,7 +44,7 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     destino = carpeta / f"{nombre}_generada.md"
-    destino.write_text(str(resultado), encoding="utf-8")
+    destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Introducción guardada en: {destino}")
 
     excel = generar_excel_comparacion_introducciones()

@@ -13,10 +13,12 @@ dependencies = [
     "litellm>=1.75.3",
     "python-dotenv>=1.1.1",
     "pdfplumber>=0.11",
+    "streamlit>=1.35",
 ]
 
 [project.scripts]
 abstrack = "abstrack.main:run"
+abstrack-web = "abstrack.app:launch"
 run_crew = "abstrack.main:run"
 train = "abstrack.main:train"
 replay = "abstrack.main:replay"
