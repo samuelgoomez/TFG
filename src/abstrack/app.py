@@ -303,11 +303,64 @@ def _run_pipeline(tipo, pdf_path, citas_path, q_questions, q_answers, q_result, 
 
     set_web_queues(q_questions, q_answers)
 
+    # En modo jerárquico task_output.agent es siempre el coordinador (manager).
+    # Se pre-calcula la lista de agentes esperados por orden de ejecución para
+    # mostrar el agente real en cada paso.
+    if pdf_path and tipo == "introduccion":
+        _task_labels = [
+            "Agente de Adquisición desde PDF",
+            "Agente de Validación de Completitud",
+            "Especialista en Territorio",
+            "Especialista en Hueco",
+            "Especialista en Idea",
+            "Especialista en Contribuciones",
+            "Especialista en Evaluación",
+            "Especialista en Estructura del Documento",
+            "Agente Editor de la Introducción",
+            "Agente de Control de Calidad",
+        ]
+    elif pdf_path:
+        _task_labels = [
+            "Agente de Adquisición desde PDF",
+            "Agente de Estructuración del Contenido",
+            "Agente Redactor",
+            "Agente de Revisión de Estilo",
+            "Agente de Control de Calidad",
+        ]
+    elif tipo == "introduccion":
+        _task_labels = [
+            "Agente de Adquisición de Información",
+            "Agente de Validación de Completitud",
+            "Especialista en Territorio",
+            "Especialista en Hueco",
+            "Especialista en Idea",
+            "Especialista en Contribuciones",
+            "Especialista en Evaluación",
+            "Especialista en Estructura del Documento",
+            "Agente Editor de la Introducción",
+            "Agente de Control de Calidad",
+        ]
+    else:
+        _task_labels = [
+            "Agente de Adquisición de Información",
+            "Agente de Validación de Completitud",
+            "Agente de Estructuración del Contenido",
+            "Agente Redactor",
+            "Agente de Revisión de Estilo",
+            "Agente de Control de Calidad",
+        ]
+
+    _task_counter = [0]
+
     def on_task_done(task_output):
         try:
-            agent = getattr(task_output, 'agent', None)
-            if agent:
-                q_status.put(str(agent))
+            idx = _task_counter[0]
+            if idx < len(_task_labels):
+                label = _task_labels[idx]
+            else:
+                label = getattr(task_output, 'summary', None) or getattr(task_output, 'agent', 'Tarea completada')
+            _task_counter[0] += 1
+            q_status.put(str(label))
         except Exception:
             pass
 
@@ -593,6 +646,14 @@ def main():
                 try:
                     q = st.session_state.q_questions.get(timeout=2.0)
                     if q is None:
+                        # Drenar cualquier agente pendiente antes de transicionar
+                        if qs:
+                            while True:
+                                try:
+                                    agent = qs.get_nowait()
+                                    st.session_state.steps_done.append(agent)
+                                except queue.Empty:
+                                    break
                         status, payload = st.session_state.q_result.get()
                         if status == "ok":
                             st.session_state.resultado = payload
@@ -615,6 +676,11 @@ def main():
     # ── Done ──────────────────────────────────────────────────────────────────
     elif state == "done":
         resultado = st.session_state.resultado
+
+        if st.session_state.steps_done:
+            with st.expander("🤖 Agentes ejecutados", expanded=False):
+                for step in st.session_state.steps_done:
+                    st.markdown(f"✓ {step}")
 
         if st.session_state.chat:
             with st.expander("💬 Ver conversación completa", expanded=False):

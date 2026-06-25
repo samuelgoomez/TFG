@@ -57,24 +57,8 @@ class Abstrack():
     # ── Agente modo PDF ────────────────────────────────────────────────────────
     @agent
     def agente_de_adquisicion_pdf(self) -> Agent:
-        config = dict(self.agents_config['agente_de_adquisicion_pdf'])
-        if self.pdf_path:
-            prefijo = (
-                f"INSTRUCCIÓN PRIORITARIA (anula cualquier otra indicación sobre la ruta):\n"
-                f"La ruta del PDF para esta sesión es: {self.pdf_path}\n"
-                f"Llama a 'leer_pdf' con esa ruta exacta de forma inmediata, sin pedir confirmación al coordinador.\n\n"
-            )
-            sufijo = (
-                f"\n\nRECORDATORIO FINAL: usa siempre '{self.pdf_path}' como ruta del PDF. "
-                "No preguntes por la ruta; ya la tienes arriba."
-            )
-            if self.citas_path:
-                sufijo += (
-                    f"\nPara los papers citados usa 'leer_pdfs_carpeta' con la ruta '{self.citas_path}'."
-                )
-            config['goal'] = prefijo + config['goal'] + sufijo
         return Agent(
-            config=config,
+            config=self.agents_config['agente_de_adquisicion_pdf'],
             llm=self.llm,
             tools=[read_pdf_tool, read_pdfs_folder_tool],
             verbose=True
@@ -196,6 +180,14 @@ class Abstrack():
     def tarea_validacion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_validacion'],
+        )
+
+    # Variante sin bucle para modo PDF: acepta "No especificado" como válido.
+    # Recibe la tarea de adquisición como contexto para que el validador tenga el informe extraído.
+    def tarea_validacion_pdf(self, tarea_adquisicion: Task) -> Task:
+        return Task(
+            config=self.tasks_config['tarea_validacion_pdf'],
+            context=[tarea_adquisicion],
         )
 
     @task
@@ -323,8 +315,30 @@ class Abstrack():
             self.agente_de_control_de_calidad(),
         ]
 
+        # Inyectar pdf_path en el goal del agente PDF aquí, donde self.pdf_path ya está asignado.
+        # @agent cachea la instancia, por lo que la inyección en el método factory no funciona
+        # (se ejecuta antes de que se asigne pdf_path desde fuera). Se parcha el atributo .goal
+        # directamente sobre la instancia ya construida.
+        agente_pdf = self.agente_de_adquisicion_pdf()
+        if self.pdf_path:
+            prefijo = (
+                f"INSTRUCCIÓN PRIORITARIA (anula cualquier otra indicación sobre la ruta):\n"
+                f"La ruta del PDF para esta sesión es: {self.pdf_path}\n"
+                f"Llama a 'leer_pdf' con esa ruta exacta de forma inmediata, sin pedir confirmación al coordinador.\n\n"
+            )
+            sufijo = (
+                f"\n\nRECORDATORIO FINAL: usa siempre '{self.pdf_path}' como ruta del PDF. "
+                "No preguntes por la ruta; ya la tienes arriba."
+            )
+            if self.citas_path:
+                sufijo += (
+                    f"\nPara los papers citados usa 'leer_pdfs_carpeta' con la ruta '{self.citas_path}'."
+                )
+            if not agente_pdf.goal.startswith("INSTRUCCIÓN PRIORITARIA"):
+                agente_pdf.goal = prefijo + agente_pdf.goal + sufijo
+
         agentes_pdf = [
-            self.agente_de_adquisicion_pdf(),
+            agente_pdf,
             self.agente_de_validacion_de_completitud(),
             self.agente_de_estructuracion_de_contenido(),
             self.agente_redactor(),
@@ -346,7 +360,7 @@ class Abstrack():
         ]
 
         agentes_intro_interactivo = [self.agente_de_adquisicion_de_informacion()] + agentes_intro_comunes
-        agentes_intro_pdf = [self.agente_de_adquisicion_pdf()] + agentes_intro_comunes
+        agentes_intro_pdf = [agente_pdf] + agentes_intro_comunes
 
         tareas_cars_intro = [
             self.tarea_validacion_intro(),
@@ -365,13 +379,11 @@ class Abstrack():
             tareas = [self.tarea_adquisicion_pdf_intro()] + tareas_cars_intro
         elif self.pdf_path:
             agentes = agentes_pdf
-            tareas = [self.tarea_adquisicion_pdf()] + [
-                self.tarea_validacion(),
-                self.tarea_estructuracion(),
-                self.tarea_redaccion(),
-                self.tarea_revision(),
-                self.tarea_control_calidad(),
-            ]
+            tareas = [self.tarea_adquisicion_pdf(),
+                      self.tarea_estructuracion(),
+                      self.tarea_redaccion(),
+                      self.tarea_revision(),
+                      self.tarea_control_calidad()]
         elif self.tipo == "introduccion":
             agentes = agentes_intro_interactivo
             tareas = [self.tarea_adquisicion_intro()] + tareas_cars_intro

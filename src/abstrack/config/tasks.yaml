@@ -70,6 +70,26 @@ tarea_validacion:
     Bajo ningún concepto puedes dar esta tarea por terminada si el Agente de Validación de Completitud la rechaza.
   expected_output: >
     El informe final con los 6 puntos cubiertos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
+# 3b. Tarea de validación de completitud en modo PDF (sin bucle de re-lectura)
+tarea_validacion_pdf:
+  description: >
+    Tu objetivo es obtener la VALIDACIÓN definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud, pidiéndole que compruebe estos 6 puntos:
+    1. Tema o problema abordado.
+    2. Objetivo principal.
+    3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
+    4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
+    5. Conclusión o aportación principal.
+    6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
+    REGLA CRÍTICA PARA MODO PDF: La información fue extraída de un documento fijo; no es posible obtener datos adicionales
+    releer el mismo PDF no aportará información nueva. Por ello:
+    - Si algún punto indica "No especificado en el documento", acéptalo como válido.
+    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos sean "No especificado en el documento".
+    - NO delegues de vuelta al agente de adquisición bajo ningún concepto.
+  expected_output: >
+    El informe extraído del PDF con los 6 puntos identificados, seguido de la frase "ESTADO: VALIDADO".
+    Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+
 # 4. Tarea de estructuración del contenido
 tarea_estructuracion:
   description: >
