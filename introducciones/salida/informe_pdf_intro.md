@@ -1,20 +1,23 @@
-# Tipo de Artículo y Ejes de Shaw
-El artículo "Attention Is All You Need" es un artículo de investigación que propone un nuevo modelo de arquitectura de red, el Transformer, que transforma datos secuenciales utilizando únicamente mecanismos de atención. Los ejes de Shaw discutidos en el contexto del artículo son la eficiencia computacional y la capacidad para manejar dependencias a largo plazo en las secuencias.
+### 1. Tipo de Artículo y Ejes de Shaw
+El artículo "Attention Is All You Need" es un trabajo de investigación que presenta una nueva arquitectura de red neural llamada Transformer, proponiendo una técnica para la traducción automática que utiliza mecanismos de atención en lugar de recurrencias o convoluciones. La pregunta de investigación aborda cómo mejorar la eficiencia y efectividad en la traducción automática a través de esta nueva arquitectura. La contribución clave es establecer un nuevo estado del arte en la traducción automática de inglés a alemán y francés. La validación del modelo se respalda a través de experimentos en tareas de traducción. Se publica en la Conferencia anual de Procesamiento de Información Neural (NIPS 2017) en inglés.
 
-# Territorio
-El territorio de estudio abarca el campo de la traducción automática y los modelos de transducción de secuencias, específicamente comparando el rendimiento de modelos basados en atención frente a los modelos recurrentes y convolucionales tradicionales.
+### 2. Territorio
+El contexto del artículo se enmarca dentro de la traducción automática, un área relevante debido a la creciente necesidad de tecnologías que faciliten la comunicación entre diferentes idiomas. La motivación del trabajo principal es la limitación de los modelos de traducción basados en redes neuronales recurrentes (RNN), que tienden a tener dificultades para manejar la longitud de las oraciones y requieren un tiempo sustancial para el entrenamiento. Esta arquitectura Transformer propone un nuevo enfoque, facilitando el procesamiento más paralelo y disminuyendo el tiempo de entrenamiento.
 
-# Hueco
-Se identifica un hueco en la literatura en la forma en que los modelos de transducción de secuencias tradicionalmente han utilizado redes neuronales recurrentes (RNNs) que dependen de un mapeo a un vector de longitud fija, lo que limita su eficacia para manejar secuencias largas y complejas. El documento propone cerrar este hueco al eliminar la dependencia de la recurrencia.
+### 3. Hueco
+Los trabajos citados (Bahdanau et al. 2014, Sutskever et al. 2014) revelan la limitación de los enfoques anteriores que requieren la compresión de la información de una oración entera en un solo vector de longitud fija, lo que crea un cuello de botella en el aprendizaje de dependencias a largo plazo. Bahdanau et al. proponen un mecanismo de alineación que permite buscar partes relevantes de la oración del idioma fuente durante la generación de cada palabra en el idioma objetivo, pero los resultados aún no superan plenamente los modelos de traducción estadística más establecidos.
 
-# Idea o Enfoque
-La idea principal del artículo es introducir el Transformer, una arquitectura que elimina el uso de RNNs y CNNs y se basa exclusivamente en mecanismos de atención, lo que permite una mayor paralelización y mejora del tiempo de entrenamiento sin sacrificar la calidad de traducción.
+### 4. Idea o enfoque
+La propuesta central del trabajo es la arquitectura Transformer, que se basa exclusivamente en mecanismos de atención, eliminando la necesidad de recurrencia y convoluciones. Esta arquitectura permite que el modelo mantenga información de diferentes posiciones dentro del mismo paso a través de la atención auto-regresiva, lo que mejora la captura de dependencias a largo y corto plazo.
 
-# Contribuciones
-Las contribuciones del artículo son múltiples: presenta una nueva arquitectura, el Transformer, que logra resultados de primer nivel en traducción automática (28.4 BLEU para el inglés-alemán y 41.8 para el inglés-francés) y mejora la capacidad de atención a partes relevantes de una secuencia de entrada a lo largo de toda la longitud de la secuencia.
+### 5. Contribuciones
+Las aportaciones del trabajo incluyen: 
+- Introducción de la arquitectura Transformer, que mejora significativamente la eficiencia en tareas de traducción automática.
+- Desarrollo de un nuevo modelo que establece un estado del arte en puntuaciones BLEU en traducción automática (28.4 BLEU inglés-alemán, 41.8 BLEU inglés-francés).
+- Implementación de un mecanismo de atención que permite que el modelo asigne relevancia a diferentes partes de la entrada a medida que genera la salida, documentada en la sección de experimentos del artículo.
 
-# Evaluación
-La evaluación se lleva a cabo utilizando métricas estándar como BLEU en conjuntos de datos bien establecidos (WMT 2014 para inglés-alemán y inglés-francés). El rendimiento del modelo Transformer es comparado con los mejores modelos existentes de la literatura, demostrando su superioridad en términos de calidad de traducción y eficiencia durante el entrenamiento.
+### 6. Evaluación
+La evaluación del modelo se realiza a través de experimentos en tareas de traducción automática, donde se compara su rendimiento con modelos de referencia y se analiza su eficacia en la generación de oraciones de diferentes longitudes. Se establece una nueva puntuación de referencia en el corpus de WMT 2014, superando en más de 2 BLEU la puntuación de los mejores resultados anteriores.
 
-# Estructura del Documento
-La estructura del documento incluye una introducción que contextualiza el problema y el modelo, una descripción detallada de la arquitectura del Transformer, comparaciones con modelos existentes, experimentos y resultados, y finalmente una conclusión. Las secciones están diseñadas para llevar al lector a través del razonamiento detrás del diseño del modelo y su eficacia.
+### 7. Estructura del Documento
+La organización del documento presenta una introducción a los métodos previos, seguida de la descripción técnica de la arquitectura del Transformer, los resultados experimentales que muestran la efectividad del modelo, y una discusión de las implicaciones de estos resultados para la traducción automática y el aprendizaje de secuencias. La conclusión resalta la promesa futura de modelos basados en atención en otros dominios.

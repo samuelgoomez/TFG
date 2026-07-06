@@ -186,13 +186,12 @@ tarea_adquisicion_intro:
 # 9. Tarea de adquisición desde PDF (introducción)
 tarea_adquisicion_pdf_intro:
   description: >
-    Delega esta tarea completa al Agente de Adquisición de Información desde PDF, sin leer tú mismo los documentos.
-    Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico. La ruta exacta que debes pasar como argumento 'ruta_pdf' es: {pdf_path}
-    A continuación, usa la herramienta 'leer_pdfs_carpeta' para leer los papers citados en la introducción de ese artículo. La ruta exacta que debes pasar como argumento 'ruta_carpeta' es: {citas_path}
+    RUTA OBLIGATORIA DEL PDF: {pdf_path}
+    El agente DEBE llamar a 'leer_pdf' con ruta_pdf='{pdf_path}'. Esta es la única ruta válida; no uses ninguna otra.
+    RUTA OBLIGATORIA DE LOS PAPERS CITADOS: {citas_path}
+    El agente DEBE llamar a 'leer_pdfs_carpeta' con ruta_carpeta='{citas_path}' si esta ruta no está vacía. Esta es la única ruta válida; no uses ninguna otra.
 
-    IMPORTANTE: usa esas dos rutas tal cual aparecen arriba, de forma literal, como argumento de cada herramienta. No utilices rutas de ejemplo, inventadas o genéricas (como "ruta/del/articulo.pdf"): si la ruta indicada no funciona, esa es la única ruta válida y debes informarlo en el resultado en lugar de probar otras.
-
-    A partir de ambos textos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
+    A partir de ambos textos extraídos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
     1. Tipo de artículo y ejes de Shaw: el tipo de artículo (técnica, herramienta, sistema, modelo, resultado empírico, etc.), el tipo de pregunta de investigación que responde, el tipo de contribución que aporta y el tipo de validación con el que se respalda. Indica también el venue (si se menciona o se puede deducir del formato) y el idioma del artículo (dedúcelo del propio texto).
     2. Territorio: el contexto o panorama general del tema y por qué es relevante, apoyándote en el resumen o la motivación del artículo principal.
     3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. A partir de los papers citados, indica qué propone cada uno y qué limitaciones o carencias tiene en relación con el trabajo del artículo principal.
@@ -202,7 +201,7 @@ tarea_adquisicion_pdf_intro:
     7. Estructura del documento: cómo se organizan las siguientes secciones, si se menciona en alguna parte del texto del artículo principal.
 
     INSTRUCCIONES CLAVE:
-    - Extrae ÚNICAMENTE información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
+    - Extrae ÚNICAMENTE información presente en los textos leídos. No inventes ni inferas datos que no aparezcan en ellos.
     - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
     - Para el hueco, identifica cada paper citado por su título o autores y describe su aportación de forma crítica, no como una simple lista de menciones.
     - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".

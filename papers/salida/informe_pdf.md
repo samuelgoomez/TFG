@@ -1,11 +1,9 @@
-1. **Tema o problema abordado**: El artículo presenta el Transformer, un modelo de arquitectura que elimina la recurrencia y utiliza exclusivamente un mecanismo de atención para modelar dependencias globales entre entradas y salidas en tareas de traducción y modelado de secuencias.
-
-2. **Objetivo principal del trabajo**: El objetivo es introducir el modelo Transformer como una alternativa que mejora la calidad de traducción y eficiencia en comparación con arquitecturas basadas en redes neuronales recurrentes (RNN).
-
-3. **Metodología seguida**: El Transformer está compuesto por capas de atención multi-cabeza y redes de alimentación completamente conectadas, tanto en el codificador como en el decodificador. Se entrenó utilizando datos del WMT 2014 en inglés-alemán y inglés-francés, empleando GPUs NVIDIA P100.
-
-4. **Resultados obtenidos del modelo o enfoque principal**: El modelo Transformer logró un BLEU score de 28.4 en inglés-alemán y 41.0 en inglés-francés, superando previamente los mejores modelos reportados, y alcanzando estos resultados en un tiempo de entrenamiento de aproximadamente 3.5 días en 8 GPUs.
-
-5. **Principal conclusión o aportación del trabajo**: El Transformer es el primer modelo de transducción basado completamente en atención, superando arquitecturas anteriores en calidad de traducción y eficiencia, y abre la puerta a futuros trabajos en tareas diversas con modalidad de entrada y salida distinta.
-
-6. **Restricciones de formato**: No especificado en el documento.
+1. Problema: Los modelos de redes neuronales recurrentes y de memoria a largo plazo (LSTM) han sido estándares en los problemas de modelado secuencial, pero su naturaleza secuencial limita la paralelización y la eficiencia en el entrenamiento, especialmente en secuencias largas.
+2. Objetivo: El objetivo principal del trabajo es proponer el modelo Transformer, que reemplaza las capas recurrentes por un mecanismo de atención que permite aprender dependencias globales entre las entradas y salidas de manera más eficiente.
+3. Metodología: El modelo Transformer está formado por capas de atención multi-cabeza y redes neuronales completamente conectadas apiladas. No utiliza capas recurrentes ni convolucionales. El modelo se entrena en tareas de traducción, utilizando un conjunto de datos estándar de WMT 2014.
+4. Resultados: 
+   - En la tarea de traducción de inglés a alemán, el modelo Transformer grande alcanzó un BLEU score de 28.4, superando a todos los modelos anteriores con más de 2.0 BLEU.
+   - Para inglés a francés, el modelo grande alcanzó un BLEU score de 41.0, nuevamente superando a los modelos previos con costo de entrenamiento significativamente menor.
+   - Se redujo el costo de entrenamiento a solo 3.5 días en 8 GPUs P100.
+5. Conclusión: El Transformer es el primer modelo de transducción de secuencias basado completamente en atención, que permite un entrenamiento mucho más rápido y eficiente que los modelos basados en LSTM o capas convolucionales. Se establece un nuevo estado del arte en traducción y se plantean futuras investigaciones para aplicar atención a otros tipos de datos.
+6. Restricciones: No se especifican restricciones de formato, tales como límites de palabras o idiomas.
