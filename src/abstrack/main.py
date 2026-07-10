@@ -10,6 +10,8 @@ from abstrack.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )
+from abstrack.latex_writer import generar_latex
+from abstrack.bib_writer import generar_bib
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -27,6 +29,9 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
     destino = carpeta / f"{nombre}_generado.md"
     destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Abstract guardado en: {destino}")
+
+    latex = generar_latex(str(resultado), "abstract", nombre)
+    print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_abstracts()
     if excel:
@@ -46,6 +51,9 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None
     destino = carpeta / f"{nombre}_generada.md"
     destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Introducción guardada en: {destino}")
+
+    latex = generar_latex(str(resultado), "introduccion", nombre)
+    print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_introducciones()
     if excel:
@@ -109,6 +117,11 @@ def run():
             _guardar_introduccion_generada(resultado, pdf_path)
         else:
             _guardar_abstract_generado(resultado, pdf_path)
+        if citas_path:
+            nombre = Path(pdf_path).stem if pdf_path else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            bib = generar_bib(citas_path, nombre, tipo)
+            if bib:
+                print(f" Bibliografía guardada en: {bib}")
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
