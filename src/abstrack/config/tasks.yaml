@@ -28,8 +28,8 @@ tarea_adquisicion:
   # 2b. Tarea de adquisición desde PDF
 tarea_adquisicion_pdf:
   description: >
-    RUTA OBLIGATORIA DEL PDF: {pdf_path}
-    El agente DEBE llamar a 'leer_pdf' con ruta_pdf='{pdf_path}'. Esta es la única ruta válida; no uses ninguna otra.
+    Ruta del PDF para esta sesión: {pdf_path}
+    Usa la herramienta 'leer_pdf' con ruta_pdf='{pdf_path}'. Esa es la única ruta válida para esta sesión; no utilices ninguna otra.
 
     A partir del texto extraído, identifica y documenta con precisión los siguientes 6 puntos clave:
     1. El tema o problema abordado.
@@ -39,8 +39,8 @@ tarea_adquisicion_pdf:
     5. La principal conclusión o aportación del trabajo.
     6. Restricciones de formato (límite de palabras, idioma, contexto del documento) si se mencionan.
 
-    INSTRUCCIONES CLAVE:
-    - Extrae ÚNICAMENTE información que esté presente en el texto del PDF. No inventes ni inferas datos.
+    Instrucciones:
+    - Extrae únicamente información que esté presente en el texto del PDF. No inventes ni inferas datos.
     - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
     - Muchos artículos comparan varios modelos o configuraciones experimentales. Identifica cuál es el modelo o enfoque principal propuesto por los autores y reporta en "Resultados" únicamente sus métricas, sin mezclarlas con las de otros modelos o experimentos secundarios mencionados como comparación.
     - Si algún punto no puede determinarse desde el texto, indícalo como "No especificado en el documento".
@@ -54,38 +54,36 @@ tarea_adquisicion_pdf:
 # 3. Tarea de validación de completitud
 tarea_validacion:
   description: >
-    Tu objetivo es obtener la VALIDACIÓN definitiva del informe por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud, pidiéndole que compruebe estos 6 puntos:
+    Tu objetivo es obtener la validación definitiva del informe por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe estos 6 puntos:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
     4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
-    Si el Agente de Validación de Completitud detecta carencias y te responde que NO está validado, NO PUEDES dar esta tarea por terminada.
-    En su lugar, DEBES delegar inmediatamente al 'Agente de Adquisición de Información' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
-    IMPORTANTE AL DELEGAR: Al delegar al Agente de Adquisición de Información, pásale como contexto el INFORME ACTUAL y los COMENTARIOS DEL AGENTE DE VALIDACIÓN DE COMPLETITUD. Indícale explícitamente que SOLO debe preguntar por los datos que faltan y NO debe volver a pedir la información que ya está en el informe.
-    Una vez que el Agente de Adquisición de Información consiga los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
-    Repite este proceso hasta que el Agente de Validación de Completitud te responda explícitamente con "VALIDADO".
-    Bajo ningún concepto puedes dar esta tarea por terminada si el Agente de Validación de Completitud la rechaza.
+    Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
+    En ese caso, delega al 'Agente de Adquisición de Información' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
+    Al delegar, pásale el informe actual y los comentarios del agente de validación. Indícale que solo debe preguntar por los datos que faltan, sin repetir lo que ya está recogido.
+    Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
+    Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
   expected_output: >
     El informe final con los 6 puntos cubiertos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
 # 3b. Tarea de validación de completitud en modo PDF (sin bucle de re-lectura)
 tarea_validacion_pdf:
   description: >
-    Tu objetivo es obtener la VALIDACIÓN definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud, pidiéndole que compruebe estos 6 puntos:
+    Tu objetivo es obtener la validación definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe estos 6 puntos:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
     4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
-    REGLA CRÍTICA PARA MODO PDF: La información fue extraída de un documento fijo; no es posible obtener datos adicionales
-    releer el mismo PDF no aportará información nueva. Por ello:
+    Consideración importante para el modo PDF: la información procede de un documento fijo y releer el mismo PDF no aportará datos nuevos. Por ello:
     - Si algún punto indica "No especificado en el documento", acéptalo como válido.
-    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos sean "No especificado en el documento".
-    - NO delegues de vuelta al agente de adquisición bajo ningún concepto.
+    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No delegar de vuelta al agente de adquisición, ya que no es posible obtener información adicional.
   expected_output: >
     El informe extraído del PDF con los 6 puntos identificados, seguido de la frase "ESTADO: VALIDADO".
     Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
@@ -101,7 +99,7 @@ tarea_estructuracion:
     * Método
     * Resultados
     * Conclusión
-    PROHIBIDO REDACTAR. No escribas el abstract todavía. Tu misión es únicamente preparar el "esqueleto conceptual" mediante un índice o esquema detallado para evitar que el redactor trabaje sobre información caótica.
+    No escribas el abstract todavía. Tu misión es únicamente preparar el "esqueleto conceptual" mediante un índice o esquema detallado para evitar que el redactor trabaje sobre información caótica.
   expected_output: >
     Un esquema lógico, limpio y muy bien ordenado en forma de viñetas o bloques (Contexto, Objetivo, Método, Resultados, Conclusión) que sirva como mapa conceptual para el redactor.
   agent: agente_de_estructuracion_de_contenido
@@ -118,7 +116,7 @@ tarea_redaccion:
     4. Pon el foco en la aportación real del trabajo.
     5. Evita a toda costa los detalles secundarios o un excesivo contexto general.
     6. Escribe en lenguaje natural, en prosa continua (está prohibido usar viñetas o listas), con tono académico, buena cohesión y claridad expositiva.
-    7. MUY IMPORTANTE: NO incluyas etiquetas <think>, explicaciones de tu proceso mental ni ningún otro texto adicional. Tu respuesta final debe contener ÚNICAMENTE el texto del abstract.
+    7. Tu respuesta final debe contener únicamente el texto del abstract, sin etiquetas, sin explicaciones del proceso ni ningún texto adicional.
   expected_output: >
     Un abstract científico cohesionado, breve y autosuficiente, redactado en lenguaje natural sin inventar datos y sin usar formatos de lista, enfocándose en la aportación principal.
   agent: agente_redactor
@@ -135,7 +133,7 @@ tarea_revision:
     4. Ajustar el tono académico.
     5. Asegurar que el texto sea claro, preciso y conciso.
     6. Comprobar que el abstract no resulta demasiado extenso y que se ajusta al límite de palabras fijado, si lo hubiera.
-    7. Tu respuesta final debe contener ÚNICAMENTE el abstract pulido y mejorado, sin introducciones, comentarios ni etiquetas como <think>
+    7. Tu respuesta final debe contener únicamente el abstract pulido y mejorado, sin introducciones, comentarios ni etiquetas.
   expected_output: >
     Un abstract definitivo que cumple con todas las mejoras de forma (claro, preciso, conciso, fluido y con tono académico ajustado), respetando estrictamente el límite de palabras.
   agent: agente_de_revision_de_estilo
@@ -144,14 +142,14 @@ tarea_revision:
 tarea_control_calidad:
   description: >
     Toma el abstract pulido generado por la tarea de revisión (tarea_revision).
-    Debes realizar una verificación global del resultado final para asegurar que cumple todos los requisitos.
-    Comprueba estrictamente los siguientes puntos:
+    Realiza una verificación global del resultado final para asegurar que cumple todos los requisitos.
+    Comprueba los siguientes puntos:
     1. Que el abstract puede entenderse por sí solo (autosuficiencia).
     2. Que resume adecuadamente el trabajo y contiene sus elementos esenciales.
     3. Que mantiene coherencia interna.
     4. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales.
     5. Que su extensión y enfoque son adecuados.
-    Si todo está correcto, devuelve ÚNICAMENTE el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional. Tu respuesta final debe contener SOLO el abstract.
+    Si todo está correcto, devuelve únicamente el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional.
   expected_output: >
     El abstract final y definitivo en texto plano, sin introducciones, sin checklists de validación, sin etiquetas ni comentarios. Solo el abstract.
   agent: agente_de_control_de_calidad
@@ -173,13 +171,13 @@ tarea_adquisicion_intro:
     6. Evaluación: cómo se valida o evalúa el trabajo, y qué respalda las contribuciones.
     7. Estructura del documento: cómo se organizan las siguientes secciones del artículo.
 
-    INSTRUCCIONES CLAVE:
+    Pautas para la entrevista:
     - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
-    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles.
+    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formularla pidiendo amablemente más detalle.
     - En el punto del hueco, no aceptes una idea general: pide referencias o enfoques concretos (autores, técnicas o trabajos previos).
     - Continúa el diálogo hasta que tengas la certeza de que los 7 puntos están completos y bien definidos.
   expected_output: >
-    Un informe estructurado (texto limpio) que contenga los 7 puntos clave, manteniendo TODOS LOS DETALLES aportados por el usuario (referencias, enfoques, datos concretos). Clasifícalo bajo 7 encabezados: Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento.
+    Un informe estructurado (texto limpio) que contenga los 7 puntos clave, manteniendo todos los detalles aportados por el usuario (referencias, enfoques, datos concretos). Clasifícalo bajo 7 encabezados: Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento.
   agent: agente_de_adquisicion_de_informacion
   output_file: "introducciones/salida/informe_intro.md"
 
@@ -190,7 +188,7 @@ tarea_adquisicion_pdf_intro:
     Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico. La ruta exacta que debes pasar como argumento 'ruta_pdf' es: {pdf_path}
     A continuación, usa la herramienta 'leer_pdfs_carpeta' para leer los papers citados en la introducción de ese artículo. La ruta exacta que debes pasar como argumento 'ruta_carpeta' es: {citas_path}
 
-    IMPORTANTE: usa esas dos rutas tal cual aparecen arriba, de forma literal, como argumento de cada herramienta. No utilices rutas de ejemplo, inventadas o genéricas (como "ruta/del/articulo.pdf"): si la ruta indicada no funciona, esa es la única ruta válida y debes informarlo en el resultado en lugar de probar otras.
+    Usa esas dos rutas tal cual aparecen arriba, de forma literal, como argumento de cada herramienta. No utilices rutas de ejemplo, inventadas o genéricas (como "ruta/del/articulo.pdf"): si la ruta indicada no funciona, esa es la única ruta válida y debes informarlo en el resultado en lugar de probar otras.
 
     A partir de ambos textos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
     1. Tipo de artículo y ejes de Shaw: el tipo de artículo (técnica, herramienta, sistema, modelo, resultado empírico, etc.), el tipo de pregunta de investigación que responde, el tipo de contribución que aporta y el tipo de validación con el que se respalda. Indica también el venue (si se menciona o se puede deducir del formato) y el idioma del artículo (dedúcelo del propio texto).
@@ -201,8 +199,8 @@ tarea_adquisicion_pdf_intro:
     6. Evaluación: cómo se valida o evalúa el trabajo en el artículo (qué experimentos, casos de estudio o análisis se realizan).
     7. Estructura del documento: cómo se organizan las siguientes secciones, si se menciona en alguna parte del texto del artículo principal.
 
-    INSTRUCCIONES CLAVE:
-    - Extrae ÚNICAMENTE información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
+    Instrucciones:
+    - Extrae únicamente información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
     - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
     - Para el hueco, identifica cada paper citado por su título o autores y describe su aportación de forma crítica, no como una simple lista de menciones.
     - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".
@@ -215,22 +213,21 @@ tarea_adquisicion_pdf_intro:
 # 10. Tarea de validación de completitud (introducción)
 tarea_validacion_intro:
   description: >
-    Tu objetivo es obtener la VALIDACIÓN definitiva del informe por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega OBLIGATORIAMENTE la revisión del informe a dicho Agente de Validación de Completitud, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos), idea, contribuciones, evaluación y estructura del documento.
-    Si el Agente de Validación de Completitud detecta carencias y te responde que NO está validado, NO PUEDES dar esta tarea por terminada.
-    En su lugar, DEBES delegar inmediatamente al agente de adquisición correspondiente para que vuelva a interactuar con el autor (modo entrevista) o revise el contenido del PDF (modo PDF) y obtenga exactamente la información que falta.
-    IMPORTANTE AL DELEGAR: pásale como contexto el INFORME ACTUAL y los COMENTARIOS DEL AGENTE DE VALIDACIÓN DE COMPLETITUD. Indícale explícitamente que SOLO debe obtener los datos que faltan y NO debe repetir lo que ya está en el informe.
-    Si delegas en el Agente de Adquisición de Información desde PDF, recuérdale que debe usar literalmente 'leer_pdf' con ruta_pdf={pdf_path} y 'leer_pdfs_carpeta' con ruta_carpeta={citas_path}: son las únicas rutas válidas, no debe inventar ni adivinar otros nombres de archivo.
+    Tu objetivo es obtener la validación definitiva del informe por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos), idea, contribuciones, evaluación y estructura del documento.
+    Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
+    En ese caso, delega al agente de adquisición correspondiente para que vuelva a interactuar con el autor (modo entrevista) o revise el contenido del PDF (modo PDF) y obtenga exactamente la información que falta.
+    Al delegar, pásale el informe actual y los comentarios del agente de validación. Indícale que solo debe obtener los datos que faltan, sin repetir lo que ya está recogido en el informe.
+    Si delegas en el Agente de Adquisición de Información desde PDF, recuérdale que debe usar 'leer_pdf' con ruta_pdf={pdf_path} y 'leer_pdfs_carpeta' con ruta_carpeta={citas_path}: son las únicas rutas válidas para esta sesión.
     Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
-    Repite este proceso hasta que el Agente de Validación de Completitud te responda explícitamente con "VALIDADO".
-    Bajo ningún concepto puedes dar esta tarea por terminada si hay carencias en el tipo de artículo y ejes de Shaw, el territorio, el hueco, la idea, las contribuciones, la evaluación o la estructura del documento.
+    Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
   expected_output: >
     El informe final completo, corregido y enriquecido con todos los detalles, organizado bajo los 7 encabezados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
 
 # 11. Tarea del bloque "Territorio"
 tarea_bloque_territorio:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta ÚNICAMENTE el bloque de "Territorio" de la introducción, a partir de su sección "Territorio".
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Territorio" de la introducción, a partir de su sección "Territorio".
     Sitúa el área de trabajo y muestra por qué es relevante, con un esbozo de alto nivel del estado del arte. No menciones todavía el problema o hueco concreto: eso lo cubre otro especialista a continuación.
     Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado.
   expected_output: >
@@ -240,10 +237,9 @@ tarea_bloque_territorio:
 # 12. Tarea del bloque "Hueco"
 tarea_bloque_hueco:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Territorio" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta ÚNICAMENTE el bloque de "Hueco" de la introducción, a partir de la sección "Hueco" del informe validado.
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Territorio" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Hueco" de la introducción, a partir de la sección "Hueco" del informe validado.
     Explica qué falta en el trabajo previo descrito en el territorio: la limitación, el problema sin resolver o la carencia que justifica la investigación, de forma que el hueco se entienda como contraste directo con lo que ya existe.
-    INSTRUCCIONES CLAVE:
-    - Usa ÚNICAMENTE los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí.
+    - Usa únicamente los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí.
     - Si para algún trabajo relacionado la información del informe es insuficiente para describir su limitación con precisión, marca ese punto con [VERIFICAR] en lugar de completarlo por tu cuenta.
     - Redacta en lenguaje natural, en uno o dos párrafos, con tono académico.
   expected_output: >
@@ -253,7 +249,7 @@ tarea_bloque_hueco:
 # 13. Tarea del bloque "Idea"
 tarea_bloque_idea:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Hueco" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta ÚNICAMENTE el bloque de "Idea o Enfoque" de la introducción, a partir de la sección "Idea" del informe validado.
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Hueco" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Idea o Enfoque" de la introducción, a partir de la sección "Idea" del informe validado.
     Presenta la propuesta central del trabajo como respuesta directa al hueco descrito: qué se hace para cubrirlo y por qué ese enfoque tiene sentido frente a la carencia identificada.
     Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado.
   expected_output: >
@@ -263,7 +259,7 @@ tarea_bloque_idea:
 # 14. Tarea del bloque "Contribuciones"
 tarea_bloque_contribuciones:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Idea" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta ÚNICAMENTE el bloque de "Contribuciones" de la introducción, a partir de la sección "Contribuciones" del informe validado.
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Idea" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Contribuciones" de la introducción, a partir de la sección "Contribuciones" del informe validado.
     Enumera las aportaciones concretas que concretan la idea propuesta. Si el informe validado indica en qué sección del documento se desarrolla cada contribución, inclúyelo entre paréntesis al final de la viñeta correspondiente; si no se indica, omite esa referencia sin inventarla.
     Redacta como una lista en viñetas, una por contribución, con tono académico. No inventes contribuciones que no estén en el informe validado.
   expected_output: >
@@ -273,7 +269,7 @@ tarea_bloque_contribuciones:
 # 15. Tarea del bloque "Evaluación"
 tarea_bloque_evaluacion:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta ÚNICAMENTE el bloque de "Evaluación" de la introducción, a partir de su sección "Evaluación".
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Evaluación" de la introducción, a partir de su sección "Evaluación".
     Adelanta cómo se valida el trabajo y qué respalda las contribuciones presentadas (qué experimentos, casos de estudio, análisis o ejemplos se utilizan), sin entrar en resultados numéricos detallados: es un avance, no la sección de resultados.
     Redacta en lenguaje natural, en un párrafo, con tono académico. No inventes información que no esté en el informe validado.
   expected_output: >
@@ -283,7 +279,7 @@ tarea_bloque_evaluacion:
 # 16. Tarea del bloque "Estructura del Documento"
 tarea_bloque_estructura_documento:
   description: >
-    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta ÚNICAMENTE el bloque de "Estructura del Documento" de la introducción, a partir de su sección "Estructura del Documento".
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Estructura del Documento" de la introducción, a partir de su sección "Estructura del Documento".
     Describe cómo se organiza el resto del artículo en secciones. Si el informe validado indica "No especificado en el documento" para este punto, redacta el bloque con una frase genérica que indique que el resto del artículo se organiza en las siguientes secciones, sin inventar nombres o números de sección concretos.
     Redacta en lenguaje natural, en un párrafo breve, con tono académico.
   expected_output: >
@@ -294,14 +290,13 @@ tarea_bloque_estructura_documento:
 tarea_fusion_intro:
   description: >
     Toma los seis bloques redactados por los especialistas (Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento) y fusiónalos en un único texto de introducción, fluido y coherente.
-    Instrucciones obligatorias:
     1. Ordena los bloques siguiendo el flujo: Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento.
     2. Suaviza las transiciones entre bloques, unifica la terminología y elimina las repeticiones que hayan podido surgir al redactarse cada bloque por separado.
     3. Comprueba, usando el informe validado (tarea_validacion_intro) como referencia de los ejes de Shaw, que el texto deja claro: qué pregunta de investigación se responde, qué se aporta (las contribuciones) y cómo se valida el trabajo. Si alguno de estos tres puntos no queda claro en el texto fusionado, ajusta la redacción para que lo esté, sin inventar información nueva.
     4. No elimines ni resumas en exceso el contenido de los bloques: tu trabajo es de fusión y pulido, no de recorte.
-    5. No añadas referencias a números o nombres de secciones del documento (p. ej. "Sección 2", "Sección 3") en el bloque de Contribuciones ni en ningún otro, salvo que esa referencia aparezca YA EXPLÍCITA y asociada a esa contribución concreta en el informe validado (tarea_validacion_intro). No infieras ni cruces la numeración de "Estructura del Documento" con las Contribuciones para inventar esas referencias.
+    5. No añadas referencias a números o nombres de secciones del documento (p. ej. "Sección 2", "Sección 3") en el bloque de Contribuciones ni en ningún otro, salvo que esa referencia aparezca ya explícita y asociada a esa contribución concreta en el informe validado. No infieras ni cruces la numeración de "Estructura del Documento" con las Contribuciones para inventar esas referencias.
     6. Escribe en lenguaje natural, organizado en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
-    7. MUY IMPORTANTE: NO incluyas etiquetas <think>, explicaciones de tu proceso mental ni ningún otro texto adicional. No envuelvas el resultado entre comillas triples ni lo marques como bloque de código: entrégalo como texto normal. Tu respuesta final debe contener ÚNICAMENTE el texto de la introducción.
+    7. Tu respuesta final debe contener únicamente el texto de la introducción, sin etiquetas, sin explicaciones del proceso y sin envolverlo entre comillas triples ni marcarlo como bloque de código.
   expected_output: >
     Una introducción científica única, cohesionada y organizada en varios párrafos, que combina los seis bloques en el orden Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento, dejando claros los tres ejes de Shaw (pregunta de investigación, contribución y validación).
   agent: agente_editor_intro
@@ -310,8 +305,8 @@ tarea_fusion_intro:
 tarea_control_calidad_intro:
   description: >
     Toma la introducción fusionada generada por la tarea de fusión (tarea_fusion_intro).
-    Debes realizar una verificación global del resultado final para asegurar que cumple todos los requisitos.
-    Comprueba estrictamente los siguientes puntos:
+    Realiza una verificación global del resultado final para asegurar que cumple todos los requisitos.
+    Comprueba los siguientes puntos:
     1. Que la introducción puede entenderse por sí sola (autosuficiencia).
     2. Que cubre los seis bloques: Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento.
     3. Que deja claros los tres ejes de Shaw: qué pregunta de investigación se responde, qué se aporta y cómo se valida.
