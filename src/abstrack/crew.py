@@ -162,6 +162,15 @@ class Abstrack():
             verbose=True
         )
 
+    # ── Agente de maquetación bibliográfica (usado por bib_writer.py, fuera del pipeline) ──
+    @agent
+    def agente_bibliografico(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_bibliografico'],
+            llm=self.llm,
+            verbose=False
+        )
+
     # ── Tareas modo interactivo ───────────────────────────────────────────────
     @task
     def tarea_adquisicion(self) -> Task:
@@ -224,8 +233,12 @@ class Abstrack():
     @task
     def tarea_validacion_intro(self) -> Task:
         tarea_previa = self.tarea_adquisicion_pdf_intro() if self.pdf_path else self.tarea_adquisicion_intro()
+        # En modo PDF los documentos son fijos: usamos la variante sin bucle de re-lectura
+        # para evitar que el coordinador re-delegue con el mismo input y quede atrapado
+        # en el guard de "acción repetida" de CrewAI hasta agotar max_iter.
+        config_key = 'tarea_validacion_pdf_intro' if self.pdf_path else 'tarea_validacion_intro'
         return Task(
-            config=self.tasks_config['tarea_validacion_intro'],
+            config=self.tasks_config[config_key],
             context=[tarea_previa],
         )
 

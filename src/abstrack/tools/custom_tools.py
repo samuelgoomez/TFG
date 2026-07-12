@@ -46,7 +46,7 @@ def read_pdf_tool(ruta_pdf: str) -> str:
     paginas = []
     with pdfplumber.open(ruta_pdf) as pdf:
         for pagina in pdf.pages:
-            texto = pagina.extract_text()
+            texto = pagina.extract_text(x_tolerance=1)
             if texto:
                 paginas.append(texto)
     return "\n\n".join(paginas)
@@ -76,7 +76,7 @@ def read_pdfs_folder_tool(ruta_carpeta: str) -> str:
         paginas = []
         with pdfplumber.open(fichero) as pdf:
             for pagina in pdf.pages:
-                texto = pagina.extract_text()
+                texto = pagina.extract_text(x_tolerance=1)
                 if texto:
                     paginas.append(texto)
         bloques.append(f"### Paper citado: {fichero.name}\n\n" + "\n\n".join(paginas))

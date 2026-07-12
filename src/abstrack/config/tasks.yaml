@@ -193,7 +193,7 @@ tarea_adquisicion_pdf_intro:
     A partir de ambos textos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
     1. Tipo de artículo y ejes de Shaw: el tipo de artículo (técnica, herramienta, sistema, modelo, resultado empírico, etc.), el tipo de pregunta de investigación que responde, el tipo de contribución que aporta y el tipo de validación con el que se respalda. Indica también el venue (si se menciona o se puede deducir del formato) y el idioma del artículo (dedúcelo del propio texto).
     2. Territorio: el contexto o panorama general del tema y por qué es relevante, apoyándote en el resumen o la motivación del artículo principal.
-    3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. A partir de los papers citados, indica qué propone cada uno y qué limitaciones o carencias tiene en relación con el trabajo del artículo principal.
+    3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. Para cada paper citado, indica qué propone y qué limitaciones o carencias tiene en relación con el trabajo del artículo principal, nombrándolo siempre con el formato "Apellido del primer autor et al. (Año)" (p.ej. "Bahdanau et al. (2014)"), tal como aparece en su propio texto.
     4. Idea o enfoque: la propuesta central del trabajo, como respuesta al hueco anterior.
     5. Contribuciones: la lista de aportaciones del trabajo, indicando la sección del documento donde se desarrolla cada una si se menciona.
     6. Evaluación: cómo se valida o evalúa el trabajo en el artículo (qué experimentos, casos de estudio o análisis se realizan).
@@ -202,7 +202,7 @@ tarea_adquisicion_pdf_intro:
     Instrucciones:
     - Extrae únicamente información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
     - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
-    - Para el hueco, identifica cada paper citado por su título o autores y describe su aportación de forma crítica, no como una simple lista de menciones.
+    - Para el hueco, identifica cada paper citado con "Apellido et al. (Año)" y describe su aportación de forma crítica, no como una simple lista de menciones.
     - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 7 puntos clave para la introducción, manteniendo los detalles técnicos y las referencias a los trabajos relacionados.
@@ -224,6 +224,19 @@ tarea_validacion_intro:
   expected_output: >
     El informe final completo, corregido y enriquecido con todos los detalles, organizado bajo los 7 encabezados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
 
+# 10b. Tarea de validación de completitud en modo PDF (introducción, sin bucle de re-lectura)
+tarea_validacion_pdf_intro:
+  description: >
+    Tu objetivo es obtener la validación definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos, nombrados como "Apellido et al. (Año)"), idea, contribuciones, evaluación y estructura del documento.
+    Consideración importante para el modo PDF: la información procede de documentos fijos (el artículo principal y los papers citados en su carpeta) y releerlos no aportará datos nuevos. Por ello:
+    - Si algún punto indica "No especificado en el documento", acéptalo como válido.
+    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No delegues de vuelta al agente de adquisición, ya que no es posible obtener información adicional a partir de los mismos documentos.
+  expected_output: >
+    El informe extraído del PDF con los 7 puntos identificados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO".
+    Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+
 # 11. Tarea del bloque "Territorio"
 tarea_bloque_territorio:
   description: >
@@ -240,10 +253,11 @@ tarea_bloque_hueco:
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Territorio" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Hueco" de la introducción, a partir de la sección "Hueco" del informe validado.
     Explica qué falta en el trabajo previo descrito en el territorio: la limitación, el problema sin resolver o la carencia que justifica la investigación, de forma que el hueco se entienda como contraste directo con lo que ya existe.
     - Usa únicamente los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí.
+    - Cada trabajo relacionado debe nombrarse siempre con el formato "Apellido et al. (Año)" tal como aparece en el informe validado. No lo sustituyas por descripciones genéricas ("un trabajo previo", "otros enfoques"): si el informe da el nombre y el año, consérvalos literalmente.
     - Si para algún trabajo relacionado la información del informe es insuficiente para describir su limitación con precisión, marca ese punto con [VERIFICAR] en lugar de completarlo por tu cuenta.
     - Redacta en lenguaje natural, en uno o dos párrafos, con tono académico.
   expected_output: >
-    Uno o dos párrafos en prosa que, en contraste con el territorio descrito, explican qué falta en el trabajo previo, citando únicamente los trabajos relacionados documentados en el informe validado y marcando con [VERIFICAR] los puntos con evidencia insuficiente.
+    Uno o dos párrafos en prosa que, en contraste con el territorio descrito, explican qué falta en el trabajo previo, nombrando cada referencia con el formato "Apellido et al. (Año)" y marcando con [VERIFICAR] los puntos con evidencia insuficiente.
   agent: agente_especialista_hueco
 
 # 13. Tarea del bloque "Idea"
@@ -295,8 +309,9 @@ tarea_fusion_intro:
     3. Comprueba, usando el informe validado (tarea_validacion_intro) como referencia de los ejes de Shaw, que el texto deja claro: qué pregunta de investigación se responde, qué se aporta (las contribuciones) y cómo se valida el trabajo. Si alguno de estos tres puntos no queda claro en el texto fusionado, ajusta la redacción para que lo esté, sin inventar información nueva.
     4. No elimines ni resumas en exceso el contenido de los bloques: tu trabajo es de fusión y pulido, no de recorte.
     5. No añadas referencias a números o nombres de secciones del documento (p. ej. "Sección 2", "Sección 3") en el bloque de Contribuciones ni en ningún otro, salvo que esa referencia aparezca ya explícita y asociada a esa contribución concreta en el informe validado. No infieras ni cruces la numeración de "Estructura del Documento" con las Contribuciones para inventar esas referencias.
-    6. Escribe en lenguaje natural, organizado en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
-    7. Tu respuesta final debe contener únicamente el texto de la introducción, sin etiquetas, sin explicaciones del proceso y sin envolverlo entre comillas triples ni marcarlo como bloque de código.
+    6. Conserva literalmente cualquier mención a trabajos relacionados con el formato "Apellido et al. (Año)" que venga en el bloque de "Hueco": no la sustituyas por una descripción genérica ni la elimines al suavizar las transiciones. Son las citas bibliográficas del artículo y deben llegar intactas al texto final.
+    7. Escribe en lenguaje natural, organizado en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
+    8. Tu respuesta final debe contener únicamente el texto de la introducción, sin etiquetas, sin explicaciones del proceso y sin envolverlo entre comillas triples ni marcarlo como bloque de código.
   expected_output: >
     Una introducción científica única, cohesionada y organizada en varios párrafos, que combina los seis bloques en el orden Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento, dejando claros los tres ejes de Shaw (pregunta de investigación, contribución y validación).
   agent: agente_editor_intro
@@ -314,7 +329,21 @@ tarea_control_calidad_intro:
     5. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales, y que los puntos marcados con [VERIFICAR] se mantienen como tales.
     6. Que su extensión y enfoque son adecuados para una introducción científica.
     7. Que el texto no está envuelto entre comillas triples ni marcado como bloque de código; si lo está, elimina esas marcas antes de devolverlo.
+    8. Que el bloque de "Hueco" nombra cada trabajo relacionado con el formato "Apellido et al. (Año)" (consulta el informe validado de tarea_validacion_intro si necesitas comprobar el nombre y año exactos). Si alguna mención se ha quedado genérica sin autor ni año pudiendo tenerlo, corrígela para incluirlo antes de devolver el texto.
     Si todo está correcto, devuelve el texto final. Esta es la última capa de control antes de entregar el resultado al usuario.
   expected_output: >
     La introducción final y definitiva, validada globalmente, garantizando que cumple con todos los requisitos académicos y de calidad, incluyendo los tres ejes de Shaw.
   agent: agente_de_control_de_calidad
+
+# 19. Tarea de maquetación de una cita BibTeX (fallback cuando no hay DOI/CrossRef)
+tarea_generar_bibtex:
+  description: >
+    Este es el texto extraído de las primeras páginas de un paper (fichero original: {nombre_fichero}):
+
+    {texto_pdf}
+
+    Identifica el título, los autores (todos, separados por " and "), el año de publicación y el venue (revista o conferencia) del paper.
+    Si algún dato no puede determinarse desde el texto, usa "[VERIFICAR]" para ese campo en concreto.
+  expected_output: >
+    Un objeto JSON estricto con exactamente estas claves: {"title": "...", "author": "...", "year": "....", "venue": "..."}. Sin texto adicional antes o después del JSON.
+  agent: agente_bibliografico
