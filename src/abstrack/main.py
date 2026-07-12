@@ -10,6 +10,8 @@ from abstrack.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )
+from abstrack.latex_writer import generar_latex
+from abstrack.bib_writer import generar_bib
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -28,12 +30,15 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
     destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Abstract guardado en: {destino}")
 
+    latex = generar_latex(str(resultado), "abstract", nombre)
+    print(f" LaTeX guardado en: {latex}")
+
     excel = generar_excel_comparacion_abstracts()
     if excel:
         print(f" Excel de comparación actualizado en: {excel}")
 
 
-def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None:
+def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_path: str = "") -> None:
     """Guarda la introducción generada en introducciones/generadas/."""
     carpeta = Path("introducciones/generadas")
     carpeta.mkdir(parents=True, exist_ok=True)
@@ -46,6 +51,16 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None) -> None
     destino = carpeta / f"{nombre}_generada.md"
     destino.write_text(str(resultado), encoding="utf-8-sig")
     print(f"\n Introducción guardada en: {destino}")
+
+    bib_text = None
+    if citas_path:
+        bib = generar_bib(citas_path, nombre, "introduccion")
+        if bib:
+            print(f" Bibliografía guardada en: {bib}")
+            bib_text = bib.read_text(encoding="utf-8")
+
+    latex = generar_latex(str(resultado), "introduccion", nombre, bib_text)
+    print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_introducciones()
     if excel:
@@ -106,7 +121,7 @@ def run():
         crew_instance.tipo = tipo
         resultado = crew_instance.crew().kickoff(inputs=inputs)
         if tipo == "introduccion":
-            _guardar_introduccion_generada(resultado, pdf_path)
+            _guardar_introduccion_generada(resultado, pdf_path, citas_path)
         else:
             _guardar_abstract_generado(resultado, pdf_path)
     except Exception as e:

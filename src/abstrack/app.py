@@ -403,6 +403,9 @@ def _init_session():
         "tipo": "abstract",
         "pdf_path": None,
         "saved_path": None,
+        "latex_path": None,
+        "bib_path": None,
+        "citas_path": None,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -486,10 +489,11 @@ def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files):
 
     st.session_state.update({
         "state": "running", "tipo": tipo, "pdf_path": pdf_path,
-        "tmp_dir": tmp_dir, "chat": [], "steps_done": [],
+        "citas_path": citas_path, "tmp_dir": tmp_dir, "chat": [], "steps_done": [],
         "q_questions": q_questions, "q_answers": q_answers,
         "q_result": q_result, "q_status": q_status,
-        "thread": thread, "resultado": None, "saved_path": None, "error_msg": None,
+        "thread": thread, "resultado": None, "saved_path": None,
+        "latex_path": None, "bib_path": None, "error_msg": None,
     })
 
 
@@ -663,6 +667,24 @@ def main():
                                 st.session_state.saved_path = str(dest)
                             except Exception:
                                 pass
+                            try:
+                                from abstrack.latex_writer import generar_latex
+                                from abstrack.bib_writer import generar_bib
+                                nombre = (
+                                    Path(st.session_state.pdf_path).stem
+                                    if st.session_state.pdf_path
+                                    else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                                )
+                                bib_text = None
+                                if st.session_state.citas_path:
+                                    bib_dest = generar_bib(st.session_state.citas_path, nombre, st.session_state.tipo)
+                                    if bib_dest:
+                                        st.session_state.bib_path = str(bib_dest)
+                                        bib_text = bib_dest.read_text(encoding="utf-8")
+                                latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)
+                                st.session_state.latex_path = str(latex_dest)
+                            except Exception:
+                                pass
                         else:
                             st.session_state.error_msg = payload
                             st.session_state.state = "error"
@@ -702,7 +724,7 @@ def main():
             st.markdown(resultado)
 
         st.divider()
-        col1, col2 = st.columns([3, 1])
+        col1, col2, col3, col4 = st.columns([3, 3, 3, 1])
         with col1:
             st.download_button(
                 label="⬇ Descargar resultado (.md)",
@@ -715,6 +737,26 @@ def main():
                 use_container_width=True,
             )
         with col2:
+            if st.session_state.latex_path and Path(st.session_state.latex_path).exists():
+                latex_content = Path(st.session_state.latex_path).read_text(encoding="utf-8")
+                st.download_button(
+                    label="⬇ Descargar plantilla IEEE (.tex)",
+                    data=latex_content.encode("utf-8"),
+                    file_name=Path(st.session_state.latex_path).name,
+                    mime="text/x-tex",
+                    use_container_width=True,
+                )
+        with col3:
+            if st.session_state.bib_path and Path(st.session_state.bib_path).exists():
+                bib_content = Path(st.session_state.bib_path).read_text(encoding="utf-8")
+                st.download_button(
+                    label="⬇ Descargar bibliografía (.bib)",
+                    data=bib_content.encode("utf-8"),
+                    file_name=Path(st.session_state.bib_path).name,
+                    mime="text/plain",
+                    use_container_width=True,
+                )
+        with col4:
             if st.button("↩ Nueva ejecución", use_container_width=True):
                 _reset()
 
