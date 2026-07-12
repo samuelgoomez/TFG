@@ -1,23 +1,24 @@
-### 1. Tipo de Artículo y Ejes de Shaw
-El artículo "Attention Is All You Need" es un trabajo de investigación que presenta una nueva arquitectura de red neural llamada Transformer, proponiendo una técnica para la traducción automática que utiliza mecanismos de atención en lugar de recurrencias o convoluciones. La pregunta de investigación aborda cómo mejorar la eficiencia y efectividad en la traducción automática a través de esta nueva arquitectura. La contribución clave es establecer un nuevo estado del arte en la traducción automática de inglés a alemán y francés. La validación del modelo se respalda a través de experimentos en tareas de traducción. Se publica en la Conferencia anual de Procesamiento de Información Neural (NIPS 2017) en inglés.
+**Tipo de Artículo y Ejes de Shaw**: Artículo científico. Este trabajo presenta un modelo de atención para la traducción automática, respondiendo a la pregunta de cómo manejar relaciones no monotónicas en traducciones de secuencias largas. La contribución principal es la introducción del Transformer, respaldada por validación empírica en tareas de traducción. El artículo está publicado en inglés.
 
-### 2. Territorio
-El contexto del artículo se enmarca dentro de la traducción automática, un área relevante debido a la creciente necesidad de tecnologías que faciliten la comunicación entre diferentes idiomas. La motivación del trabajo principal es la limitación de los modelos de traducción basados en redes neuronales recurrentes (RNN), que tienden a tener dificultades para manejar la longitud de las oraciones y requieren un tiempo sustancial para el entrenamiento. Esta arquitectura Transformer propone un nuevo enfoque, facilitando el procesamiento más paralelo y disminuyendo el tiempo de entrenamiento.
+**Territorio**: El contexto general se sitúa en el campo de la traducción automática, específicamente en el ámbito de la traducción neuronal. Se destaca la importancia de resolver problemas relacionados con las relaciones largas entre palabras y la eficiencia de la traducción.
 
-### 3. Hueco
-Los trabajos citados (Bahdanau et al. 2014, Sutskever et al. 2014) revelan la limitación de los enfoques anteriores que requieren la compresión de la información de una oración entera en un solo vector de longitud fija, lo que crea un cuello de botella en el aprendizaje de dependencias a largo plazo. Bahdanau et al. proponen un mecanismo de alineación que permite buscar partes relevantes de la oración del idioma fuente durante la generación de cada palabra en el idioma objetivo, pero los resultados aún no superan plenamente los modelos de traducción estadística más establecidos.
+**Hueco**: La investigación aborda la limitación de los modelos existentes que emplean redes neuronales recurrentes (RNN), que no manejan eficazmente las relaciones a largo plazo y presentan problemas de eficiencia en oraciones largas. Se citan trabajos como Bahdanau et al. (2015) que presentan una solución basada en alinear y traducir, aunque señalan que su enfoque todavía sufre de limitaciones al manejar secuencias extensas. 
 
-### 4. Idea o enfoque
-La propuesta central del trabajo es la arquitectura Transformer, que se basa exclusivamente en mecanismos de atención, eliminando la necesidad de recurrencia y convoluciones. Esta arquitectura permite que el modelo mantenga información de diferentes posiciones dentro del mismo paso a través de la atención auto-regresiva, lo que mejora la captura de dependencias a largo y corto plazo.
+**Idea**: La propuesta central del trabajo es el modelo Transformer, que utiliza un mecanismo de atención en lugar de depender de las RNN. Este modelo permite una atención flexible a diferentes partes de la secuencia de entrada, mejorando la calidad y eficiencia de la traducción.
 
-### 5. Contribuciones
-Las aportaciones del trabajo incluyen: 
-- Introducción de la arquitectura Transformer, que mejora significativamente la eficiencia en tareas de traducción automática.
-- Desarrollo de un nuevo modelo que establece un estado del arte en puntuaciones BLEU en traducción automática (28.4 BLEU inglés-alemán, 41.8 BLEU inglés-francés).
-- Implementación de un mecanismo de atención que permite que el modelo asigne relevancia a diferentes partes de la entrada a medida que genera la salida, documentada en la sección de experimentos del artículo.
+**Contribuciones**:
+1. Introducción del Transformer, que es un modelo que utiliza exclusivamente atención, el cual supera a técnicas anteriores como RNN y CNN.
+2. Alcance de puntuaciones BLEU significativamente mejores en conjuntos de datos WMT 2014 para traducción inglés-alemán y francés, estableciendo nuevos récords.
+3. Generalización efectiva del modelo en otras tareas de procesamiento del lenguaje natural.
 
-### 6. Evaluación
-La evaluación del modelo se realiza a través de experimentos en tareas de traducción automática, donde se compara su rendimiento con modelos de referencia y se analiza su eficacia en la generación de oraciones de diferentes longitudes. Se establece una nueva puntuación de referencia en el corpus de WMT 2014, superando en más de 2 BLEU la puntuación de los mejores resultados anteriores.
+**Evaluación**: La validación del trabajo se realiza a través de puntuaciones BLEU comparativas en los benchmarks de traducción de WMT 2014, donde el modelo demuestra mejoras notables respecto a las mejores prácticas anteriores.
 
-### 7. Estructura del Documento
-La organización del documento presenta una introducción a los métodos previos, seguida de la descripción técnica de la arquitectura del Transformer, los resultados experimentales que muestran la efectividad del modelo, y una discusión de las implicaciones de estos resultados para la traducción automática y el aprendizaje de secuencias. La conclusión resalta la promesa futura de modelos basados en atención en otros dominios.
+**Estructura del Documento**: 
+1. Introducción que se centra en el desafío de las relaciones de largo recorrido en la traducción automática.
+2. Sección sobre la arquitectura del Transformer, incluyendo el mecanismo de autoatención y el proceso de entrenamiento.
+3. Resultados que evidencian su eficacia en tareas específicas de traducción.
+4. Conclusiones sobre el impacto del modelo y su aplicabilidad futura.
+
+Referencias citadas:
+1. Bahdanau, D., Cho, K., & Bengio, Y. "Neural machine translation by jointly learning to align and translate." ICLR 2015.
+2. Sutskever, I., Vinyals, O., & Le, Q. "Sequence to Sequence Learning with Neural Networks." NIPS 2014.

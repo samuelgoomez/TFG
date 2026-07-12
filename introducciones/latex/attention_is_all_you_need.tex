@@ -1,0 +1,141 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by Abstrack (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+% [Pendiente de generacion]
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+El ámbito de la traducción automática ha experimentado una evolución significativa en las últimas décadas, transformándose de enfoques basados en reglas a sistemas más sofisticados, como la traducción neuronal, que ha redefinido el campo. Este avance ha permitido que las máquinas no solo interpreten el significado de palabras individuales, sino que también comprendan y reproduzcan estructuras complejas y matices del lenguaje, ofreciendo traducciones más precisas y contextualmente relevantes. En particular, la traducción neuronal ha demostrado ser eficaz en el manejo de diferentes pares de idiomas, así como en la captura de relaciones de larga distancia entre palabras, lo cual es fundamental para asegurar la coherencia y fluidez del texto traducido.
+
+A pesar de los avances logrados en el campo del procesamiento de secuencias mediante redes neuronales recurrentes (RNN), persisten limitaciones significativas en la gestión eficiente de relaciones a largo plazo. Aunque Bahdanau et al. (2015) proponen un enfoque innovador basado en alinear y traducir, sus resultados aún evidencian dificultades al manejar secuencias extensas, lo que sugiere que la solución presentada no resuelve completamente el problema de las interdependencias a largo plazo en los datos secuenciales. Esta carencia en los modelos existentes deja un vacío que justifica la necesidad de investigar nuevas estrategias o arquitecturas que puedan abordar estas limitaciones de manera más efectiva. Por lo tanto, se requiere una exploración más profunda en la optimización del manejo de relaciones a largo plazo en secuencias, dado que los enfoques actuales no son suficientes para superar estos desafíos, lo que abre la puerta a estudios que busquen innovar en esta dirección.
+
+En respuesta a las limitaciones evidenciadas en los modelos basados en redes neuronales recurrentes (RNN), este trabajo propone la implementación y evaluación de un modelo Transformer. Este enfoque se fundamenta en la arquitectura innovadora del Transformer, que utiliza un mecanismo de atención para capturar de manera efectiva las dependencias globales en las secuencias de datos. A diferencia de las RNN, que procesan la información de manera secuencial y, por ende, suelen enfrentarse a dificultades en la memorización de información distante, el modelo Transformer permite que cada entrada interactúe con todas las demás de forma simultánea gracias a su estructura de autoatención. Esto no solo optimiza el tiempo de cálculo, sino que también potencializa la comprensión contextual de relaciones complejas en datos extensos. Al centrarse en este modelo, la investigación busca no solo resolver las deficiencias detectadas en la gestión de relaciones a largo plazo, sino también mejorar la eficiencia en el entrenamiento y la inferencia.
+
+Las contribuciones del trabajo son notables y se detallan de la siguiente manera: se introduce el Transformer, que utiliza exclusivamente atención, superando así a técnicas anteriores como RNN y CNN; se alcanzan puntuaciones BLEU significativamente mejores en conjuntos de datos WMT 2014 para traducción inglés-alemán y francés, estableciendo nuevos récords; y se verifica la generalización efectiva del modelo en otras tareas de procesamiento del lenguaje natural. La validación del trabajo se fundamenta en comparaciones de puntuaciones BLEU obtenidas en los benchmarks de traducción de WMT 2014, donde el modelo exhibe mejoras significativas en relación con las mejores prácticas previamente establecidas. Esta validación resalta la efectividad de las contribuciones propuestas y su impacto en el ámbito de la traducción automática.
+
+El resto del artículo se organiza en las siguientes secciones.
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{attention_is_all_you_need}
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}
