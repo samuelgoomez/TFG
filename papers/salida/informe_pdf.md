@@ -1,17 +1,17 @@
-**Problema**  
-El problema abordado en el artículo "Attention Is All You Need" es la limitación de las redes neuronales recurrentes (RNN) en tareas de modelado secuencial, como la traducción automática, que requieren computación secuencial y dificultan el paralelismo, especialmente con secuencias largas.
+# Problema
+El Internet de las Cosas (IoT) se aplica ampliamente en varias áreas como ciudades inteligentes, entornos domésticos y agricultura, pero la falta de herramientas y metodologías para simular entornos IoT complica su desarrollo y prueba. Esto implica que hay una alta inversión en tiempo, dinero y esfuerzo para implementar, desplegar y probar los sistemas IoT, lo que puede ser desalentador para los desarrolladores.
 
-**Objetivo**  
-El objetivo principal del trabajo es proponer un nuevo modelo de arquitectura denominado Transformer, que elimine la recurrencia y se base completamente en un mecanismo de atención para mejorar la eficiencia y calidad en tareas de traducción automática.
+# Objetivo
+El objetivo principal del trabajo es proponer SimulateIoT, un lenguaje específico de dominio (DSL) que permite diseñar, generar código y ejecutar entornos de simulación IoT, facilitando así la creación de simulaciones de sistemas IoT de manera eficiente y gestionando la complejidad de las tecnologías heterogéneas involucradas.
 
-**Metodología**  
-La metodología seguida incluye el uso de un modelo Transformer que consta de secciones de codificación y decodificación apiladas, cada una compuesta por sub-capacidades de auto-atención y redes neuronales totalmente conectadas. Se utilizó un mecanismo de atención ponderado, así como codificaciones posicionales para proporcionar información sobre la orden en la que aparecen las palabras.
+# Metodología
+Se propuso una solución basada en el desarrollo guiado por modelos (MDD) que permite a los desarrolladores describir cada paso necesario para definir y ejecutar un entorno de simulación IoT. Esto incluye (1) especificación de datos y redes de sensores, (2) definición de computación de niebla/nube, (3) especificación de procesamiento de datos, y (4) ejecución de la simulación. La generación de código se realiza a través de transformaciones de modelo a texto utilizando un modelo de metamodelado que encapsula conceptos y relaciones en el dominio.
 
-**Resultados**  
-Los resultados obtenidos indican que el modelo Transformer logra un puntaje BLEU de 28.4 en la tarea de traducción inglés-alemán, y un puntaje de 41.0 en inglés-francés, estableciendo un nuevo estado del arte. Estos resultados se lograron en 12 horas de entrenamiento en 8 GPU P100 para el modelo básico y 3.5 días para el modelo grande.
+# Resultados
+Los resultados del enfoque principal pudieron ser evaluados mediante la aplicación de SimulateIoT a dos estudios de caso: entornos de edificios inteligentes y sistemas agrícolas. Las métricas específicas no fueron detalladas numéricamente en el documento y por lo tanto se indican como "No especificado en el documento".
 
-**Conclusión**  
-La principal conclusión del trabajo es que el modelo Transformer no solo supera el rendimiento de modelos previos basados en RNN y convolucionales en tareas de traducción, sino que también permite un entrenamiento significativamente más rápido al eliminar la naturaleza secuencial de los cálculos.
+# Conclusión
+La conclusión principal del trabajo es que la técnica de desarrollo guiado por modelos resulta adecuada para abordar la complejidad del dominio IoT, permitiendo a los desarrolladores crear herramientas y metodologías centradas en la simulación que son necesarias para facilitar esta tarea.
 
-**Restricciones**  
-Las restricciones de formato no se especifican de manera explícita en el documento. Sin embargo, se mencionan limitaciones en términos de dependencia de la longitud del texto, donde el modelo se probó en conjuntos de datos estándar como WMT 2014.
+# Restricciones
+Las restricciones de formato mencionadas en el documento se refieren a que el entorno de simulación de IoT debe facilitar la definición de las clases de nodos y sus interacciones mediante un enfoque de alto nivel, incrementando la usabilidad y minimizando el error al desarrollar simulaciones complejas.

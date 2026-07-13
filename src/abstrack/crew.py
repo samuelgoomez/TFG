@@ -25,6 +25,9 @@ class Abstrack():
     # Tipo de contenido a generar: "abstract" (por defecto) o "introduccion"
     tipo: str = "abstract"
 
+    # Idioma de redacción del texto generado (lo elige el usuario, no lo decide el LLM)
+    idioma: str = "Español"
+
     # Callback opcional: se llama con un TaskOutput cada vez que una tarea termina
     task_callback: object = None
 

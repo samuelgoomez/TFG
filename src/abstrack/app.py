@@ -297,7 +297,7 @@ hr { border-color: rgba(255,255,255,0.07) !important; margin: 1.25rem 0 !importa
 
 # ── Pipeline runner (hilo secundario) ─────────────────────────────────────────
 
-def _run_pipeline(tipo, pdf_path, citas_path, q_questions, q_answers, q_result, q_status):
+def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_result, q_status):
     from abstrack.tools.custom_tools import set_web_queues, clear_web_queues
     from abstrack.crew import Abstrack
 
@@ -370,11 +370,13 @@ def _run_pipeline(tipo, pdf_path, citas_path, q_questions, q_answers, q_result, 
             "current_year": str(datetime.now().year),
             "pdf_path": pdf_path or "",
             "citas_path": citas_path or "",
+            "idioma": idioma,
         }
         crew = Abstrack()
         crew.pdf_path = pdf_path
         crew.citas_path = citas_path or ""
         crew.tipo = tipo
+        crew.idioma = idioma
         crew.task_callback = on_task_done
         resultado = crew.crew().kickoff(inputs=inputs)
         q_result.put(("ok", str(resultado)))
@@ -453,7 +455,7 @@ def _reset():
     st.rerun()
 
 
-def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files):
+def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma):
     tmp_dir = None
     pdf_path = None
     citas_path = ""
@@ -482,7 +484,7 @@ def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files):
 
     thread = threading.Thread(
         target=_run_pipeline,
-        args=(tipo, pdf_path, citas_path, q_questions, q_answers, q_result, q_status),
+        args=(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_result, q_status),
         daemon=True,
     )
     thread.start()
@@ -526,6 +528,8 @@ def main():
             )
             modo_pdf = modo_label == "Desde PDF"
 
+            idioma = st.selectbox("**Idioma de redacción**", ["Español", "Inglés"], index=0)
+
             pdf_file = None
             citas_files = []
 
@@ -543,7 +547,7 @@ def main():
             st.divider()
 
             if st.button("▶ Iniciar", disabled=not can_start, use_container_width=True, type="primary"):
-                _start_pipeline(tipo, modo_pdf, pdf_file, citas_files)
+                _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma)
                 st.rerun()
 
         else:

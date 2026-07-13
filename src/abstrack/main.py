@@ -83,9 +83,13 @@ def run():
 
     Modo PDF, introducción (requiere los papers citados en papers/sin_introduccion/<paper>_citas/):
         abstrack --tipo introduccion --pdf papers/sin_introduccion/paper.pdf
+
+    Elegir el idioma de redacción (por defecto Español):
+        abstrack --pdf papers/sin_abstract/paper.pdf --idioma Inglés
     """
     pdf_path = None
     tipo = "abstract"
+    idioma = "Español"
     args = sys.argv[1:]
 
     if "--pdf" in args:
@@ -104,6 +108,12 @@ def run():
         if tipo not in ("abstract", "introduccion"):
             raise SystemExit(f"Error: tipo desconocido '{tipo}'. Usa 'abstract' o 'introduccion'.")
 
+    if "--idioma" in args:
+        idx = args.index("--idioma")
+        if idx + 1 >= len(args):
+            raise SystemExit("Error: indica el idioma tras --idioma")
+        idioma = args[idx + 1]
+
     citas_path = ""
     if pdf_path and tipo == "introduccion":
         citas_path = str(Path(pdf_path).with_name(f"{Path(pdf_path).stem}_citas"))
@@ -113,6 +123,7 @@ def run():
         "current_year": str(datetime.now().year),
         "pdf_path": pdf_path or "",
         "citas_path": citas_path,
+        "idioma": idioma,
     }
 
     try:
@@ -120,6 +131,7 @@ def run():
         crew_instance.pdf_path = pdf_path
         crew_instance.citas_path = citas_path
         crew_instance.tipo = tipo
+        crew_instance.idioma = idioma
         resultado = crew_instance.crew().kickoff(inputs=inputs)
         if tipo == "introduccion":
             _guardar_introduccion_generada(resultado, pdf_path, citas_path)
@@ -134,6 +146,7 @@ def train():
         "topic": "AI LLMs",
         "current_year": str(datetime.now().year),
         "pdf_path": "",
+        "idioma": "Español",
     }
     try:
         Abstrack().crew().train(
@@ -155,6 +168,7 @@ def test():
         "topic": "AI LLMs",
         "current_year": str(datetime.now().year),
         "pdf_path": "",
+        "idioma": "Español",
     }
     try:
         Abstrack().crew().test(
@@ -180,6 +194,7 @@ def run_with_trigger():
         "topic": "",
         "current_year": "",
         "pdf_path": "",
+        "idioma": "Español",
     }
 
     try:
