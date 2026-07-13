@@ -11,7 +11,7 @@ from abstrack.comparacion import (
     generar_excel_comparacion_introducciones,
 )
 from abstrack.latex_writer import generar_latex
-from abstrack.bib_writer import generar_bib
+from abstrack.bib_writer import generar_bib, limpiar_marcadores_cita
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -48,8 +48,9 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_p
     else:
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+    resultado = str(resultado)
     destino = carpeta / f"{nombre}_generada.md"
-    destino.write_text(str(resultado), encoding="utf-8-sig")
+    destino.write_text(limpiar_marcadores_cita(resultado), encoding="utf-8-sig")
     print(f"\n Introducción guardada en: {destino}")
 
     bib_text = None
@@ -59,7 +60,7 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_p
             print(f" Bibliografía guardada en: {bib}")
             bib_text = bib.read_text(encoding="utf-8")
 
-    latex = generar_latex(str(resultado), "introduccion", nombre, bib_text)
+    latex = generar_latex(resultado, "introduccion", nombre, bib_text)
     print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_introducciones()

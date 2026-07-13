@@ -660,10 +660,12 @@ def main():
                                     break
                         status, payload = st.session_state.q_result.get()
                         if status == "ok":
-                            st.session_state.resultado = payload
+                            from abstrack.bib_writer import limpiar_marcadores_cita
+                            payload_limpio = limpiar_marcadores_cita(payload)
+                            st.session_state.resultado = payload_limpio
                             st.session_state.state = "done"
                             try:
-                                dest = _save_result(payload, st.session_state.tipo, st.session_state.pdf_path)
+                                dest = _save_result(payload_limpio, st.session_state.tipo, st.session_state.pdf_path)
                                 st.session_state.saved_path = str(dest)
                             except Exception:
                                 pass
@@ -681,6 +683,8 @@ def main():
                                     if bib_dest:
                                         st.session_state.bib_path = str(bib_dest)
                                         bib_text = bib_dest.read_text(encoding="utf-8")
+                                # payload (no payload_limpio): generar_latex necesita los marcadores
+                                # [[CITA: ...]] intactos para poder enlazar las citas con \cite{}.
                                 latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)
                                 st.session_state.latex_path = str(latex_dest)
                             except Exception:

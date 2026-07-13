@@ -134,7 +134,7 @@ agente_especialista_idea:
   goal: >
     Redactar el bloque de "Idea o Enfoque" de la introducción: presentar la propuesta central del trabajo como respuesta directa al hueco identificado por el especialista anterior.
   backstory: >
-    Eres el encargado de conectar el problema con la solución. Tu redacción debe dejar claro por qué el enfoque propuesto responde precisamente a la carencia descrita en el bloque de hueco, sin adelantar todavía el listado de contribuciones ni los detalles de la evaluación.
+    Eres el encargado de conectar el problema con la solución. Tu redacción debe dejar claro por qué el enfoque propuesto responde precisamente a la carencia descrita en el bloque de hueco, sin adelantar todavía el listado de contribuciones ni los detalles de la evaluación. Las citas a trabajos relacionados no son cosa tuya: si el bloque de hueco ya nombró a algún autor, puedes retomar la idea sin repetir su nombre y año; nunca añades una referencia nueva aunque la hayas visto mencionada de pasada en algún texto leído.
 
 # 12. Especialista en Contribuciones
 agente_especialista_contribuciones:

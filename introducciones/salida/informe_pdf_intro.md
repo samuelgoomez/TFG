@@ -1,24 +1,26 @@
-**Tipo de Artículo y Ejes de Shaw**: Artículo científico. Este trabajo presenta un modelo de atención para la traducción automática, respondiendo a la pregunta de cómo manejar relaciones no monotónicas en traducciones de secuencias largas. La contribución principal es la introducción del Transformer, respaldada por validación empírica en tareas de traducción. El artículo está publicado en inglés.
+**Introducción**  
+El presente artículo se centra en el modelo Transformer, un progreso significativo en el campo de la traducción automática y procesamiento de lenguaje natural, caracterizado por su eliminación de las limitaciones impuestas por las arquitecturas de arquitecturas neuronales recurrentes (RNN) y convolucionales (CNN) en el aprendizaje de dependencias a largo plazo. Esto es de gran relevancia para aplicaciones que requieren una comprensión profunda, transformaciones significativas y representaciones contextuales de la información.
 
-**Territorio**: El contexto general se sitúa en el campo de la traducción automática, específicamente en el ámbito de la traducción neuronal. Se destaca la importancia de resolver problemas relacionados con las relaciones largas entre palabras y la eficiencia de la traducción.
+**1. Tipo de Artículo y Ejes de Shaw**:  
+Este es un artículo científico que introduce el modelo Transformer, diseñado exclusivamente en función de mecanismos de atención, que lo distingue de todos los modelos anteriores. Sin embargo, los ejes de Shaw no se abordan explícitamente en el documento.
 
-**Hueco**: La investigación aborda la limitación de los modelos existentes que emplean redes neuronales recurrentes (RNN), que no manejan eficazmente las relaciones a largo plazo y presentan problemas de eficiencia en oraciones largas. Se citan trabajos como Bahdanau et al. (2015) que presentan una solución basada en alinear y traducir, aunque señalan que su enfoque todavía sufre de limitaciones al manejar secuencias extensas. 
+**2. Territorio**:  
+El trabajo se sitúa en el territorio de técnicas de aprendizaje profundo, específicamente en el ámbito de la transducción de secuencias, y se dirige a la mejora de la calidad y la eficacia en las tareas de traducción automática.
 
-**Idea**: La propuesta central del trabajo es el modelo Transformer, que utiliza un mecanismo de atención en lugar de depender de las RNN. Este modelo permite una atención flexible a diferentes partes de la secuencia de entrada, mejorando la calidad y eficiencia de la traducción.
+**3. Hueco**:  
+Se identifica un claro hueco en la necesidad de superar las limitaciones actuales de los modelos que utilizan redes neuronales recurrentes y convolucionales, que han demostrado tener problemas para aprender dependencias a largo plazo y el modelo Transformer provisiona una solución innovadora.
 
-**Contribuciones**:
-1. Introducción del Transformer, que es un modelo que utiliza exclusivamente atención, el cual supera a técnicas anteriores como RNN y CNN.
-2. Alcance de puntuaciones BLEU significativamente mejores en conjuntos de datos WMT 2014 para traducción inglés-alemán y francés, estableciendo nuevos récords.
-3. Generalización efectiva del modelo en otras tareas de procesamiento del lenguaje natural.
+**4. Idea o Enfoque**:  
+La propuesta central del artículo es el modelo Transformer, que elimina la recurrencia y las convoluciones, aprovechando el potencial de la atención. Este enfoque permite una mayor paralelización y una reducción drástica en el tiempo de entrenamiento.
 
-**Evaluación**: La validación del trabajo se realiza a través de puntuaciones BLEU comparativas en los benchmarks de traducción de WMT 2014, donde el modelo demuestra mejoras notables respecto a las mejores prácticas anteriores.
+**5. Contribuciones**:  
+Las contribuciones clave de este trabajo incluyen:
+   - El desarrollo del Transformer como una arquitectura que se basa únicamente en atención.
+   - Récords de rendimiento en las tareas de traducción automática, alcanzando puntuaciones BLEU que superan modelos existentes.
+   - La demostración de que el Transformer puede generalizar a otras tareas de procesamiento del lenguaje natural, como el análisis sintáctico.
 
-**Estructura del Documento**: 
-1. Introducción que se centra en el desafío de las relaciones de largo recorrido en la traducción automática.
-2. Sección sobre la arquitectura del Transformer, incluyendo el mecanismo de autoatención y el proceso de entrenamiento.
-3. Resultados que evidencian su eficacia en tareas específicas de traducción.
-4. Conclusiones sobre el impacto del modelo y su aplicabilidad futura.
+**6. Evaluación**:  
+La evaluación del modelo se realiza a través de comparaciones exhaustivas con arquitecturas previas en tareas de traducción automática, destacando no solo su precisión, sino también la eficiencia de su proceso de entrenamiento y los costos relacionados.
 
-Referencias citadas:
-1. Bahdanau, D., Cho, K., & Bengio, Y. "Neural machine translation by jointly learning to align and translate." ICLR 2015.
-2. Sutskever, I., Vinyals, O., & Le, Q. "Sequence to Sequence Learning with Neural Networks." NIPS 2014.
+**7. Estructura del Documento**:  
+El artículo está organizado en secciones que abordan el contexto y los antecedentes, la descripción detallada de la arquitectura del modelo, la motivación para utilizar mecanismos de atención, los resultados obtenidos en comparación con otros modelos, y finaliza con conclusiones que esbozan futuras investigaciones.

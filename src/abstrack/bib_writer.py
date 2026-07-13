@@ -234,6 +234,8 @@ def generar_bib(citas_path: str, nombre_base: str, tipo: str) -> Path | None:
 _ENTRY_KEY_RE = re.compile(r'^@\w+\{([^,]+),', re.MULTILINE)
 _AUTHOR_FIELD_RE = re.compile(r'author\s*=\s*\{([^}]*)\}')
 _YEAR_FIELD_RE = re.compile(r'year\s*=\s*\{(\d{4})\}')
+_CITA_MARKER_RE = re.compile(r'\s?\[\[CITA:\s*([^,\]]+?)\s*,\s*(\d{4})\s*\]\]')
+_CITA_MARKER_CLEANUP_RE = re.compile(r'\s?\[\[CITA:[^\]]*\]\]')
 
 
 def _referencias_citables(bib_text: str) -> list[tuple[str, str, str]]:
@@ -256,11 +258,36 @@ def _referencias_citables(bib_text: str) -> list[tuple[str, str, str]]:
 
 
 def insertar_citas(texto: str, bib_text: str) -> str:
-    """Busca menciones tipo 'Bahdanau et al. (2014)' en el texto y les añade
-    '\\cite{clave}' detrás, usando las referencias que sí tienen autor/año reales."""
-    for apellido, year, clave in _referencias_citables(bib_text):
-        patron = re.compile(
-            rf'{re.escape(apellido)}(\s+et\s+al\.?)?\s*\({year}\)'
-        )
+    """Sustituye los marcadores '[[CITA: Apellido, Año]]' que los agentes insertan
+    junto a cada mención por '~\\cite{clave}', usando las referencias reales del
+    .bib. Si un marcador no tiene entrada correspondiente en el .bib, se elimina
+    sin dejar rastro. Como red de seguridad para texto que no lleve marcador
+    (compatibilidad con generaciones antiguas o descuidos del LLM), también se
+    intenta la detección por prosa 'Apellido et al. (Año)' en lo que quede."""
+    referencias = _referencias_citables(bib_text)
+    clave_por_ref = {(apellido.lower(), year): clave for apellido, year, clave in referencias}
+    citadas: set[tuple[str, str]] = set()
+
+    def _sustituir_marcador(m: re.Match) -> str:
+        apellido, year = m.group(1).strip(), m.group(2)
+        clave = clave_por_ref.get((apellido.lower(), year))
+        if not clave:
+            return ""
+        citadas.add((apellido.lower(), year))
+        return f"~\\cite{{{clave}}}"
+
+    texto = _CITA_MARKER_RE.sub(_sustituir_marcador, texto)
+
+    for apellido, year, clave in referencias:
+        if (apellido.lower(), year) in citadas:
+            continue
+        patron = re.compile(rf'{re.escape(apellido)}(\s+et\s+al\.?)?\s*\({year}\)')
         texto = patron.sub(lambda m: f"{m.group(0)}~\\cite{{{clave}}}", texto)
+
     return texto
+
+
+def limpiar_marcadores_cita(texto: str) -> str:
+    """Elimina los marcadores '[[CITA: Apellido, Año]]' de un texto (para el .md
+    guardado y la vista web, donde no deben ser visibles)."""
+    return _CITA_MARKER_CLEANUP_RE.sub("", texto)
