@@ -1,17 +1,17 @@
-# Problema
-El Internet de las Cosas (IoT) se aplica ampliamente en varias áreas como ciudades inteligentes, entornos domésticos y agricultura, pero la falta de herramientas y metodologías para simular entornos IoT complica su desarrollo y prueba. Esto implica que hay una alta inversión en tiempo, dinero y esfuerzo para implementar, desplegar y probar los sistemas IoT, lo que puede ser desalentador para los desarrolladores.
+**Problema:**
+La falta de herramientas y metodologías efectivas para simular entornos de IoT que permitan un diseño adecuado y pruebas de comunicación entre dispositivos heterogéneos plantean un reto significativo para la implementación eficiente de sistemas IoT.
 
-# Objetivo
-El objetivo principal del trabajo es proponer SimulateIoT, un lenguaje específico de dominio (DSL) que permite diseñar, generar código y ejecutar entornos de simulación IoT, facilitando así la creación de simulaciones de sistemas IoT de manera eficiente y gestionando la complejidad de las tecnologías heterogéneas involucradas.
+**Objetivo:**
+Desarrollar una metodología denominada SimulateIoT y un lenguaje específico de dominio para facilitar el diseño, la generación de código y la ejecución de simulaciones de entornos IoT.
 
-# Metodología
-Se propuso una solución basada en el desarrollo guiado por modelos (MDD) que permite a los desarrolladores describir cada paso necesario para definir y ejecutar un entorno de simulación IoT. Esto incluye (1) especificación de datos y redes de sensores, (2) definición de computación de niebla/nube, (3) especificación de procesamiento de datos, y (4) ejecución de la simulación. La generación de código se realiza a través de transformaciones de modelo a texto utilizando un modelo de metamodelado que encapsula conceptos y relaciones en el dominio.
+**Metodología:**
+La metodología implica la definición de un entorno de simulación de IoT a través de un lenguaje específico que utiliza técnicas de desarrollo basado en modelos, permitiendo la abstracción de los conceptos de dominio y ofreciendo un editor gráfico para la definición de modelos.
 
-# Resultados
-Los resultados del enfoque principal pudieron ser evaluados mediante la aplicación de SimulateIoT a dos estudios de caso: entornos de edificios inteligentes y sistemas agrícolas. Las métricas específicas no fueron detalladas numéricamente en el documento y por lo tanto se indican como "No especificado en el documento".
+**Resultados:**
+Se aplicó SimulateIoT a dos estudios de caso, uno en edificios inteligentes y otro en entornos agrícolas. Se logró la generación automática de código para simular dispositivos y sistemas con un enfoque en la conectividad y el procesamiento de datos en tiempo real. La implementación exitosa se validó a través de simulaciones que facilitaron la identificación de requerimientos de red y almacenamiento.
 
-# Conclusión
-La conclusión principal del trabajo es que la técnica de desarrollo guiado por modelos resulta adecuada para abordar la complejidad del dominio IoT, permitiendo a los desarrolladores crear herramientas y metodologías centradas en la simulación que son necesarias para facilitar esta tarea.
+**Conclusión:**
+El enfoque basado en el desarrollo guiado por modelos es válido para abordar la complejidad de las tecnologías heterogéneas en el contexto del IoT, permitiendo una mejor comprensión y análisis de los sistemas, así como ofreciendo una base sólida para futuras extensiones y mejoras de la metodología.
 
-# Restricciones
-Las restricciones de formato mencionadas en el documento se refieren a que el entorno de simulación de IoT debe facilitar la definición de las clases de nodos y sus interacciones mediante un enfoque de alto nivel, incrementando la usabilidad y minimizando el error al desarrollar simulaciones complejas.
+**Restricciones:**
+No se mencionan restricciones de formato específicas en el documento. Sin embargo, se destaca que la simulación se centra en la conectividad y que la movilidad de los nodos ha sido parcialmente abordada, lo que limita la capacidad de modelar entornos dinámicos más complejos.

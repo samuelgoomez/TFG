@@ -43,6 +43,7 @@ tarea_adquisicion_pdf:
     - Extrae únicamente información que esté presente en el texto del PDF. No inventes ni inferas datos.
     - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
     - Muchos artículos comparan varios modelos o configuraciones experimentales. Identifica cuál es el modelo o enfoque principal propuesto por los autores y reporta en "Resultados" únicamente sus métricas, sin mezclarlas con las de otros modelos o experimentos secundarios mencionados como comparación.
+    - Casi todos los artículos tienen también una sección de trabajo relacionado, donde se repasan herramientas y propuestas de otros autores para situar el contexto. Eso no son resultados del propio trabajo, aunque aparezcan descritas con detalle: si una herramienta o técnica se menciona para explicar qué hacían otros antes o para compararse con ellos, no la pongas en "Resultados" como si fuera algo que aporta o construye este trabajo.
     - Si algún punto no puede determinarse desde el texto, indícalo como "No especificado en el documento".
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave extraídos del PDF,
@@ -110,8 +111,8 @@ tarea_redaccion:
     Toma el informe final de la entrevista generado por el agente recopilador y redacta una primera versión completa del abstract a partir de esa información.
     Tu tarea es encargarte de producir una primera versión completa del abstract a partir de esa información.
     Instrucciones obligatorias:
-    1. Redacta exclusivamente a partir de la información validada. NO "inventes" contenido ni rellenes huecos por tu cuenta bajo ninguna circunstancia.
-    2. Mantén la brevedad exigible en un abstract, respetando el límite de palabras que haya indicado el autor en Restricciones; si no ha indicado ninguno, usa el rango que exige la plantilla IEEE IoT-J: entre 150 y 250 palabras.
+    1. Redacta exclusivamente a partir de la información validada. No inventes contenido ni rellenes huecos por tu cuenta bajo ninguna circunstancia, ni siquiera con lo que se suele decir sobre estos temas en general (retos típicos del sector, cifras habituales, fases estándar de una metodología...): si no está en el informe, no va en el abstract.
+    2. Mantén la brevedad exigible en un abstract, respetando el límite de palabras que haya indicado el autor en Restricciones; si no ha indicado ninguno, usa el rango que exige la plantilla IEEE IoT-J: entre 150 y 250 palabras. Si te vas a quedar corto, no lo arregles con frases de cierre vacías: repasa el informe y añade el detalle concreto que te hayas dejado fuera (nombres, siglas, componentes del sistema, lo que sea que ya esté ahí), no algo nuevo.
     3. Asegura la autosuficiencia del texto (que se entienda por sí solo sin leer el resto del artículo).
     4. Pon el foco en la aportación real del trabajo.
     5. Evita a toda costa los detalles secundarios o un excesivo contexto general.
@@ -149,7 +150,7 @@ tarea_control_calidad:
     1. Que el abstract puede entenderse por sí solo (autosuficiencia).
     2. Que resume adecuadamente el trabajo y contiene sus elementos esenciales.
     3. Que mantiene coherencia interna.
-    4. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales.
+    4. Repasa el abstract frase por frase y comprueba que cada una tiene respaldo en alguno de los seis apartados del informe (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones). Si encuentras una cifra, una fase, un reto o un beneficio que no viene de ahí, no lo dejes pasar aunque suene razonable o sea de las cosas que se suelen decir sobre este tipo de trabajos: corrígelo o quítalo, aunque el abstract quede más corto.
     5. Que respeta el límite de palabras del autor si lo indicó, o si no, que se mueve entre 150 y 250 palabras (el rango de la plantilla IEEE IoT-J). Si se sale de ese rango, ajústalo tú mismo antes de devolverlo.
     6. Que está redactado en este idioma: {idioma}. Si está en un idioma distinto, tradúcelo tú mismo antes de devolverlo; no dejes pasar un idioma equivocado.
     Si todo está correcto, devuelve únicamente el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional.
