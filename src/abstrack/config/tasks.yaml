@@ -40,7 +40,7 @@ tarea_adquisicion_pdf:
     6. Restricciones de formato (límite de palabras, contexto del documento) si se mencionan.
 
     Instrucciones:
-    - Extrae únicamente información que esté presente en el texto del PDF. No inventes ni inferas datos.
+    - Extrae únicamente información que esté presente en el texto del PDF. No inventes ni inferas datos, ni siquiera tecnologías o herramientas que "suelen" usarse en este tipo de proyectos (por ejemplo, dar por hecho un framework o lenguaje concreto solo porque encaja con el resto del stack). Si el texto no lo dice, no lo pongas.
     - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
     - Muchos artículos comparan varios modelos o configuraciones experimentales. Identifica cuál es el modelo o enfoque principal propuesto por los autores y reporta en "Resultados" únicamente sus métricas, sin mezclarlas con las de otros modelos o experimentos secundarios mencionados como comparación.
     - Casi todos los artículos tienen también una sección de trabajo relacionado, donde se repasan herramientas y propuestas de otros autores para situar el contexto. Eso no son resultados del propio trabajo, aunque aparezcan descritas con detalle: si una herramienta o técnica se menciona para explicar qué hacían otros antes o para compararse con ellos, no la pongas en "Resultados" como si fuera algo que aporta o construye este trabajo.
@@ -246,7 +246,7 @@ tarea_bloque_territorio:
   description: >
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Territorio" de la introducción, a partir de su sección "Territorio".
     Sitúa el área de trabajo y muestra por qué es relevante, con un esbozo de alto nivel del estado del arte. No menciones todavía el problema o hueco concreto: eso lo cubre otro especialista a continuación.
-    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado. Escribe en este idioma: {idioma}.
+    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
   expected_output: >
     Uno o dos párrafos en prosa que sitúan el tema, explican su relevancia y esbozan el estado del arte, sin abordar todavía el hueco o problema.
   agent: agente_especialista_territorio
@@ -256,7 +256,7 @@ tarea_bloque_hueco:
   description: >
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Territorio" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Hueco" de la introducción, a partir de la sección "Hueco" del informe validado.
     Explica qué falta en el trabajo previo descrito en el territorio: la limitación, el problema sin resolver o la carencia que justifica la investigación, de forma que el hueco se entienda como contraste directo con lo que ya existe.
-    - Usa únicamente los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí, ni siquiera si te suena porque se menciona de pasada en algún otro punto del informe: solo cuentan los papers que el informe identifica como leídos de la carpeta de citas.
+    - Usa únicamente los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí, ni siquiera si te suena porque se menciona de pasada en algún otro punto del informe, ni siquiera si conoces otros trabajos del mismo tema que encajarían bien: solo cuentan los papers que el informe identifica como leídos de la carpeta de citas, ni uno más.
     - Cada trabajo relacionado debe nombrarse siempre con el formato "Apellido et al. (Año)" tal como aparece en el informe validado. No lo sustituyas por descripciones genéricas ("un trabajo previo", "otros enfoques"): si el informe da el nombre y el año, consérvalos literalmente.
     - Inmediatamente después de cada mención "Apellido et al. (Año)", añade pegado el marcador técnico "[[CITA: Apellido, Año]]", reutilizando exactamente el mismo apellido y año que acabas de escribir (p.ej. "Bahdanau et al. (2014) [[CITA: Bahdanau, 2014]]"). Este marcador lo usa el sistema para enlazar la cita bibliográfica; no lo omitas, no lo traduzcas ni lo expliques.
     - Si para algún trabajo relacionado la información del informe es insuficiente para describir su limitación con precisión, marca ese punto con [VERIFICAR] en lugar de completarlo por tu cuenta.
@@ -270,7 +270,7 @@ tarea_bloque_idea:
   description: >
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Hueco" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Idea o Enfoque" de la introducción, a partir de la sección "Idea" del informe validado.
     Presenta la propuesta central del trabajo como respuesta directa al hueco descrito: qué se hace para cubrirlo y por qué ese enfoque tiene sentido frente a la carencia identificada.
-    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado. Escribe en este idioma: {idioma}.
+    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
     No nombres ningún trabajo relacionado con el formato "Apellido et al. (Año)" salvo que ya aparezca exactamente así en el bloque de "Hueco" que te han pasado como contexto: no añadas ninguna referencia nueva, aunque la hayas visto de pasada en algún texto leído. Si necesitas referirte otra vez a lo dicho en el hueco, hazlo retomando la idea, no repitiendo ni sumando nombres y años.
   expected_output: >
     Uno o dos párrafos en prosa que presentan la idea o enfoque propuesto como respuesta directa al hueco descrito previamente, sin introducir referencias a trabajos relacionados que no vinieran ya citadas en el hueco.
@@ -281,7 +281,7 @@ tarea_bloque_contribuciones:
   description: >
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Idea" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Contribuciones" de la introducción, a partir de la sección "Contribuciones" del informe validado.
     Enumera las aportaciones concretas que concretan la idea propuesta. Si el informe validado indica en qué sección del documento se desarrolla cada contribución, inclúyelo entre paréntesis al final de la viñeta correspondiente; si no se indica, omite esa referencia sin inventarla.
-    Redacta como una lista en viñetas, una por contribución, con tono académico. No inventes contribuciones que no estén en el informe validado. Escribe en este idioma: {idioma}.
+    Redacta como una lista en viñetas, una por contribución, con tono académico. No inventes contribuciones que no estén en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
   expected_output: >
     Una lista en viñetas con las contribuciones del trabajo, remitiendo a la sección del documento correspondiente cuando esa información esté disponible en el informe validado.
   agent: agente_especialista_contribuciones
@@ -291,7 +291,7 @@ tarea_bloque_evaluacion:
   description: >
     Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Evaluación" de la introducción, a partir de su sección "Evaluación".
     Adelanta cómo se valida el trabajo y qué respalda las contribuciones presentadas (qué experimentos, casos de estudio, análisis o ejemplos se utilizan), sin entrar en resultados numéricos detallados: es un avance, no la sección de resultados.
-    Redacta en lenguaje natural, en un párrafo, con tono académico. No inventes información que no esté en el informe validado. Escribe en este idioma: {idioma}.
+    Redacta en lenguaje natural, en un párrafo, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
   expected_output: >
     Un párrafo en prosa que adelanta cómo se valida el trabajo y qué respalda las contribuciones, sin detallar resultados numéricos.
   agent: agente_especialista_evaluacion
@@ -334,14 +334,15 @@ tarea_control_calidad_intro:
     2. Que cubre los seis bloques: Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento.
     3. Que deja claros los tres ejes de Shaw: qué pregunta de investigación se responde, qué se aporta y cómo se valida.
     4. Que mantiene coherencia interna y un flujo de lo general a lo específico.
-    5. Que no incorpora información irrelevante o alucinada que no estaba en los datos originales, y que los puntos marcados con [VERIFICAR] se mantienen como tales.
+    5. Repasa la introducción frase por frase y comprueba que cada una tiene respaldo en el informe validado (tarea_validacion_intro). Si encuentras un dato, una cifra, un reto o una herramienta que no viene de ahí, no lo dejes pasar aunque suene razonable o sea de lo que se suele decir sobre este tipo de trabajos: corrígelo o quítalo, aunque el texto quede más corto. Los puntos marcados con [VERIFICAR] se mantienen como tales.
     6. Que su extensión y enfoque son adecuados para una introducción científica.
     7. Que el texto no está envuelto entre comillas triples ni marcado como bloque de código; si lo está, elimina esas marcas antes de devolverlo.
     8. Que el bloque de "Hueco" nombra cada trabajo relacionado con el formato "Apellido et al. (Año)" (consulta el informe validado de tarea_validacion_intro si necesitas comprobar el nombre y año exactos). Si alguna mención se ha quedado genérica sin autor ni año pudiendo tenerlo, corrígela para incluirlo antes de devolver el texto.
     9. Que cada mención "Apellido et al. (Año)" del bloque de "Hueco" lleva pegado justo detrás su marcador técnico "[[CITA: Apellido, Año]]". Si el marcador falta pero la mención sí tiene autor y año, añádelo tú mismo con ese mismo apellido y año (p.ej. "Bahdanau et al. (2014) [[CITA: Bahdanau, 2014]]"); no lo inventes para menciones que no tengan autor y año concretos.
-    10. Que el bloque de Contribuciones sigue en viñetas, una por aportación, como manda la convención de este campo para dejar claro qué es nuevo. Si el editor lo ha convertido en un párrafo de prosa, deshazlo y devuélvelo como lista, sin perder ni una sola contribución ni las referencias a sección que llevara cada una.
-    11. Que ninguna mención con formato "Apellido et al. (Año)" aparece fuera del bloque de Hueco si no estaba ya citada así en ese mismo bloque (consulta el informe validado de tarea_validacion_intro si necesitas comprobarlo). Si el bloque de Idea, Contribuciones, Evaluación o Estructura del Documento ha añadido un nombre y año que no vinieran ya del hueco, quita el nombre y el año concretos y déjalo como una alusión genérica ("otros enfoques previos", "trabajos anteriores"), sin inventar ni completar el dato por tu cuenta.
-    12. Que todo el texto está en este idioma: {idioma}. Si hay frases o bloques en un idioma distinto, tradúcelos tú mismo antes de devolver el resultado.
+    10. Cuenta cuántos trabajos relacionados trae la sección "Hueco" del informe validado (tarea_validacion_intro) y compáralos uno a uno con los que aparecen citados en el bloque de Hueco del texto final. Si hay algún nombre y año de más que no esté en esa sección del informe, por muy real o conocido que te resulte, quítalo junto con su marcador: no puede quedar ninguna referencia que no venga del informe.
+    11. Que el bloque de Contribuciones sigue en viñetas, una por aportación, como manda la convención de este campo para dejar claro qué es nuevo. Si el editor lo ha convertido en un párrafo de prosa, deshazlo y devuélvelo como lista, sin perder ni una sola contribución ni las referencias a sección que llevara cada una.
+    12. Que ninguna mención con formato "Apellido et al. (Año)" aparece fuera del bloque de Hueco si no estaba ya citada así en ese mismo bloque (consulta el informe validado de tarea_validacion_intro si necesitas comprobarlo). Si el bloque de Idea, Contribuciones, Evaluación o Estructura del Documento ha añadido un nombre y año que no vinieran ya del hueco, quita el nombre y el año concretos y déjalo como una alusión genérica ("otros enfoques previos", "trabajos anteriores"), sin inventar ni completar el dato por tu cuenta.
+    13. Que todo el texto está en este idioma: {idioma}. Si hay frases o bloques en un idioma distinto, tradúcelos tú mismo antes de devolver el resultado.
     Si todo está correcto, devuelve el texto final. Esta es la última capa de control antes de entregar el resultado al usuario.
   expected_output: >
     La introducción final y definitiva, validada globalmente, garantizando que cumple con todos los requisitos académicos y de calidad, incluyendo los tres ejes de Shaw.

@@ -322,6 +322,7 @@ def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_
     elif pdf_path:
         _task_labels = [
             "Agente de Adquisición desde PDF",
+            "Agente de Validación de Completitud",
             "Agente de Estructuración del Contenido",
             "Agente Redactor",
             "Agente de Revisión de Estilo",
@@ -664,8 +665,24 @@ def main():
                                     break
                         status, payload = st.session_state.q_result.get()
                         if status == "ok":
-                            from abstrack.bib_writer import limpiar_marcadores_cita
-                            payload_limpio = limpiar_marcadores_cita(payload)
+                            from abstrack.bib_writer import limpiar_marcadores_cita, marcar_citas_sin_respaldo, generar_bib
+                            nombre = (
+                                Path(st.session_state.pdf_path).stem
+                                if st.session_state.pdf_path
+                                else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                            )
+                            bib_text = None
+                            if st.session_state.citas_path:
+                                try:
+                                    bib_dest = generar_bib(st.session_state.citas_path, nombre, st.session_state.tipo)
+                                    if bib_dest:
+                                        st.session_state.bib_path = str(bib_dest)
+                                        bib_text = bib_dest.read_text(encoding="utf-8")
+                                except Exception:
+                                    pass
+
+                            payload_marcado = marcar_citas_sin_respaldo(payload, bib_text) if bib_text else payload
+                            payload_limpio = limpiar_marcadores_cita(payload_marcado)
                             st.session_state.resultado = payload_limpio
                             st.session_state.state = "done"
                             try:
@@ -675,18 +692,6 @@ def main():
                                 pass
                             try:
                                 from abstrack.latex_writer import generar_latex
-                                from abstrack.bib_writer import generar_bib
-                                nombre = (
-                                    Path(st.session_state.pdf_path).stem
-                                    if st.session_state.pdf_path
-                                    else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-                                )
-                                bib_text = None
-                                if st.session_state.citas_path:
-                                    bib_dest = generar_bib(st.session_state.citas_path, nombre, st.session_state.tipo)
-                                    if bib_dest:
-                                        st.session_state.bib_path = str(bib_dest)
-                                        bib_text = bib_dest.read_text(encoding="utf-8")
                                 # payload (no payload_limpio): generar_latex necesita los marcadores
                                 # [[CITA: ...]] intactos para poder enlazar las citas con \cite{}.
                                 latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)

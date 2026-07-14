@@ -1,17 +1,11 @@
-**Problema:**
-La falta de herramientas y metodologías efectivas para simular entornos de IoT que permitan un diseño adecuado y pruebas de comunicación entre dispositivos heterogéneos plantean un reto significativo para la implementación eficiente de sistemas IoT.
+Problema: La falta de herramientas y metodologías para simular entornos de Internet de las Cosas (IoT) que permitan a los usuarios describir adecuadamente el entorno IoT, incluyendo la gestión e integración de tecnologías heterogéneas como dispositivos, bases de datos, y protocolos de comunicación.
 
-**Objetivo:**
-Desarrollar una metodología denominada SimulateIoT y un lenguaje específico de dominio para facilitar el diseño, la generación de código y la ejecución de simulaciones de entornos IoT.
+Objetivo: Proponer una metodología llamada SimulateIoT que permita describir cada paso necesario para definir un entorno de simulación IoT, así como un modelo impulsado por el desarrollo de modelos que soporte esta metodología.
 
-**Metodología:**
-La metodología implica la definición de un entorno de simulación de IoT a través de un lenguaje específico que utiliza técnicas de desarrollo basado en modelos, permitiendo la abstracción de los conceptos de dominio y ofreciendo un editor gráfico para la definición de modelos.
+Metodología: Se utiliza un enfoque de Desarrollo Guiado por Modelos (MDD) que implica la definición de un metamodelo (M2), la creación de una sintaxis gráfica para definir modelos (M1), y transformaciones de modelo a texto para la generación de código que ejecuta la simulación.
 
-**Resultados:**
-Se aplicó SimulateIoT a dos estudios de caso, uno en edificios inteligentes y otro en entornos agrícolas. Se logró la generación automática de código para simular dispositivos y sistemas con un enfoque en la conectividad y el procesamiento de datos en tiempo real. La implementación exitosa se validó a través de simulaciones que facilitaron la identificación de requerimientos de red y almacenamiento.
+Resultados: Se presentó la aplicación de SimulateIoT en dos casos de estudio, uno relacionado con edificios inteligentes y otro con entornos agrícolas. En el contexto de un Smart Building, se gestionó la temperatura y presencia mediante sensores, y los resultados indicaron una mejora en la eficiencia del uso de recursos mediante la gestión adecuada de los datos y la automatización.
 
-**Conclusión:**
-El enfoque basado en el desarrollo guiado por modelos es válido para abordar la complejidad de las tecnologías heterogéneas en el contexto del IoT, permitiendo una mejor comprensión y análisis de los sistemas, así como ofreciendo una base sólida para futuras extensiones y mejoras de la metodología.
+Conclusión: La metodología y herramientas propuestas permiten a los usuarios comparar y proponer diversas políticas antes de implementar sistemas IoT reales, facilitando el análisis y comprensión de sistemas IoT complejos.
 
-**Restricciones:**
-No se mencionan restricciones de formato específicas en el documento. Sin embargo, se destaca que la simulación se centra en la conectividad y que la movilidad de los nodos ha sido parcialmente abordada, lo que limita la capacidad de modelar entornos dinámicos más complejos.
+Restricciones: No se especifican restricciones de formato en el documento. Sin embargo, se indica que la simulación debe llevarse a cabo en un entorno que garantice la conectividad y se asume que esta es estable durante la simulación.

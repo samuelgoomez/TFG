@@ -395,7 +395,9 @@ class Abstrack():
             tareas = [self.tarea_adquisicion_pdf_intro()] + tareas_cars_intro
         elif self.pdf_path:
             agentes = agentes_pdf
-            tareas = [self.tarea_adquisicion_pdf(),
+            tarea_adq_pdf = self.tarea_adquisicion_pdf()
+            tareas = [tarea_adq_pdf,
+                      self.tarea_validacion_pdf(tarea_adq_pdf),
                       self.tarea_estructuracion(),
                       self.tarea_redaccion(),
                       self.tarea_revision(),

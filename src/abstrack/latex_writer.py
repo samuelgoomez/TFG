@@ -1,7 +1,7 @@
 """Genera un fichero .tex a partir de la plantilla IEEE con la salida del pipeline."""
 from pathlib import Path
 
-from abstrack.bib_writer import insertar_citas, limpiar_marcadores_cita
+from abstrack.bib_writer import insertar_citas, limpiar_marcadores_cita, marcar_citas_sin_respaldo
 
 _TEMPLATE = Path(__file__).parent / "templates" / "ieee_template.tex"
 
@@ -21,6 +21,7 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     template = _TEMPLATE.read_text(encoding="utf-8")
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
+        resultado = marcar_citas_sin_respaldo(resultado, bib_text)
     else:
         resultado = limpiar_marcadores_cita(resultado)
     contenido = _escapar_latex(resultado.strip())

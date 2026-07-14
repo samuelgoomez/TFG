@@ -287,6 +287,32 @@ def insertar_citas(texto: str, bib_text: str) -> str:
     return texto
 
 
+_CITA_PROSA_RE = re.compile(
+    r"([A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+"
+    r"(?:\s+(?:et\s+al\.?|y\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+|and\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+))?)"
+    r"\s*\(((?:19|20)\d{2})\)(?!\s*\[VERIFICAR)"
+)
+
+
+def marcar_citas_sin_respaldo(texto: str, bib_text: str) -> str:
+    """Recorre el texto buscando menciones tipo 'Apellido et al. (Año)' y, para
+    cada una que no corresponda a un paper real del .bib (aportado de verdad
+    por el autor), la marca con [VERIFICAR: sin referencia bibliográfica].
+    Es la red de seguridad final para cuando un agente nombra un trabajo que
+    conoce de memoria en vez de limitarse a los papers que se le han dado:
+    aquí ya no depende de que el propio agente se acuerde de avisarlo."""
+    pares_validos = {(apellido.lower(), year) for apellido, year, _ in _referencias_citables(bib_text)}
+
+    def _marcar(m: re.Match) -> str:
+        primer_apellido = m.group(1).split()[0].lower().rstrip('.,')
+        year = m.group(2)
+        if (primer_apellido, year) in pares_validos:
+            return m.group(0)
+        return f"{m.group(0)} [VERIFICAR: sin referencia bibliográfica]"
+
+    return _CITA_PROSA_RE.sub(_marcar, texto)
+
+
 def limpiar_marcadores_cita(texto: str) -> str:
     """Elimina los marcadores '[[CITA: Apellido, Año]]' de un texto (para el .md
     guardado y la vista web, donde no deben ser visibles)."""
