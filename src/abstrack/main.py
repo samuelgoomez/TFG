@@ -10,13 +10,13 @@ from abstrack.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )
-from abstrack.latex_writer import generar_latex
-from abstrack.bib_writer import generar_bib, limpiar_marcadores_cita, marcar_citas_sin_respaldo
+from abstrack.latex_writer import generar_latex, actualizar_latex_existente
+from abstrack.bib_writer import generar_bib, limpiar_marcadores_cita, marcar_citas_sin_respaldo, limpiar_markdown
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 
-def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
+def _guardar_abstract_generado(resultado: str, pdf_path: str | None, tex_existente: str = "") -> None:
     """Guarda el abstract generado en abstracts/generados/ con el nombre del paper."""
     carpeta = Path("abstracts/generados")
     carpeta.mkdir(parents=True, exist_ok=True)
@@ -26,11 +26,15 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
     else:
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+    resultado = limpiar_markdown(str(resultado))
     destino = carpeta / f"{nombre}_generado.md"
-    destino.write_text(str(resultado), encoding="utf-8-sig")
+    destino.write_text(resultado, encoding="utf-8-sig")
     print(f"\n Abstract guardado en: {destino}")
 
-    latex = generar_latex(str(resultado), "abstract", nombre)
+    if tex_existente:
+        latex = actualizar_latex_existente(tex_existente, resultado, "abstract", nombre)
+    else:
+        latex = generar_latex(resultado, "abstract", nombre)
     print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_abstracts()
@@ -38,7 +42,9 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None) -> None:
         print(f" Excel de comparación actualizado en: {excel}")
 
 
-def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_path: str = "") -> None:
+def _guardar_introduccion_generada(
+    resultado: str, pdf_path: str | None, citas_path: str = "", tex_existente: str = ""
+) -> None:
     """Guarda la introducción generada en introducciones/generadas/."""
     carpeta = Path("introducciones/generadas")
     carpeta.mkdir(parents=True, exist_ok=True)
@@ -48,7 +54,7 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_p
     else:
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-    resultado = str(resultado)
+    resultado = limpiar_markdown(str(resultado))
 
     bib_text = None
     if citas_path:
@@ -64,7 +70,10 @@ def _guardar_introduccion_generada(resultado: str, pdf_path: str | None, citas_p
     destino.write_text(limpiar_marcadores_cita(resultado), encoding="utf-8-sig")
     print(f"\n Introducción guardada en: {destino}")
 
-    latex = generar_latex(resultado, "introduccion", nombre, bib_text)
+    if tex_existente:
+        latex = actualizar_latex_existente(tex_existente, resultado, "introduccion", nombre, bib_text)
+    else:
+        latex = generar_latex(resultado, "introduccion", nombre, bib_text)
     print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_introducciones()
@@ -90,10 +99,14 @@ def run():
 
     Elegir el idioma de redacción (por defecto Español):
         abstrack --pdf papers/sin_abstract/paper.pdf --idioma Inglés
+
+    Insertar el resultado en un .tex que ya tienes maquetado, en vez de partir de la plantilla en blanco:
+        abstrack --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
     """
     pdf_path = None
     tipo = "abstract"
     idioma = "Español"
+    tex_existente = ""
     args = sys.argv[1:]
 
     if "--pdf" in args:
@@ -118,6 +131,14 @@ def run():
             raise SystemExit("Error: indica el idioma tras --idioma")
         idioma = args[idx + 1]
 
+    if "--tex-existente" in args:
+        idx = args.index("--tex-existente")
+        if idx + 1 >= len(args):
+            raise SystemExit("Error: indica la ruta al .tex tras --tex-existente")
+        tex_existente = args[idx + 1]
+        if not os.path.isfile(tex_existente):
+            raise SystemExit(f"Error: no se encuentra el fichero '{tex_existente}'")
+
     citas_path = ""
     if pdf_path and tipo == "introduccion":
         citas_path = str(Path(pdf_path).with_name(f"{Path(pdf_path).stem}_citas"))
@@ -138,9 +159,9 @@ def run():
         crew_instance.idioma = idioma
         resultado = crew_instance.crew().kickoff(inputs=inputs)
         if tipo == "introduccion":
-            _guardar_introduccion_generada(resultado, pdf_path, citas_path)
+            _guardar_introduccion_generada(resultado, pdf_path, citas_path, tex_existente)
         else:
-            _guardar_abstract_generado(resultado, pdf_path)
+            _guardar_abstract_generado(resultado, pdf_path, tex_existente)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 

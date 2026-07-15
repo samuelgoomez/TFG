@@ -73,21 +73,22 @@ tarea_validacion:
 # 3b. Tarea de validación de completitud en modo PDF (sin bucle de re-lectura)
 tarea_validacion_pdf:
   description: >
-    Tu objetivo es obtener la validación definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe estos 6 puntos:
+    Revisa el informe que ha extraído del PDF el agente de adquisición y comprueba que cubre estos 6 puntos:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
     4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
+    Basa la revisión únicamente en el texto del informe: no completes ni des por buena información que no esté ahí, aunque el tema te resulte familiar.
     Consideración importante para el modo PDF: la información procede de un documento fijo y releer el mismo PDF no aportará datos nuevos. Por ello:
     - Si algún punto indica "No especificado en el documento", acéptalo como válido.
-    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
-    - No delegar de vuelta al agente de adquisición, ya que no es posible obtener información adicional.
+    - Da la validación por buena en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No hace falta pedir más información a nadie: no es posible obtener nada adicional del mismo documento.
   expected_output: >
     El informe extraído del PDF con los 6 puntos identificados, seguido de la frase "ESTADO: VALIDADO".
     Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+  agent: agente_de_validacion_de_completitud
 
 # 4. Tarea de estructuración del contenido
 tarea_estructuracion:
@@ -197,7 +198,7 @@ tarea_adquisicion_pdf_intro:
     A partir de ambos textos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
     1. Tipo de artículo y ejes de Shaw: el tipo de artículo (técnica, herramienta, sistema, modelo, resultado empírico, etc.), el tipo de pregunta de investigación que responde, el tipo de contribución que aporta y el tipo de validación con el que se respalda. Indica también el venue (si se menciona o se puede deducir del formato) y el idioma del artículo (dedúcelo del propio texto).
     2. Territorio: el contexto o panorama general del tema y por qué es relevante, apoyándote en el resumen o la motivación del artículo principal.
-    3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. Para cada paper de la carpeta de citas (los que has leído tú mismo con 'leer_pdfs_carpeta'), indica qué propone y qué limitaciones o carencias tiene en relación con el trabajo del artículo principal, nombrándolo siempre con el formato "Apellido del primer autor et al. (Año)" (p.ej. "Bahdanau et al. (2014)"), tal como aparece en su propio texto. Dentro de esos papers encontrarás a su vez menciones a otros trabajos (en su propia introducción o bibliografía): esos no cuentan como "paper citado" a efectos de este punto, porque tú no los has leído directamente; no los nombres con "Apellido et al. (Año)" como si los hubieras evaluado.
+    3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. Repasa uno a uno, por separado, los papers de la carpeta de citas (los que has leído tú mismo con 'leer_pdfs_carpeta'): para cada uno escribe su propia frase con qué propone y qué limitación tiene frente al trabajo del artículo principal, nombrándolo siempre con el formato "Apellido del primer autor et al. (Año)" (p.ej. "Bahdanau et al. (2014)"), tal como aparece en su propio texto. No los mezcles a todos en una única frase genérica ni te limites a enumerar sus nombres: cada paper de la carpeta de citas necesita su propia crítica, con su autor y año puestos, aunque solo haya uno. Dentro de esos papers encontrarás a su vez menciones a otros trabajos (en su propia introducción o bibliografía): esos no cuentan como "paper citado" a efectos de este punto, porque tú no los has leído directamente; no los nombres con "Apellido et al. (Año)" como si los hubieras evaluado. Lo mismo vale si es el propio artículo principal el que describe con detalle otros trabajos previos en su apartado de estado del arte o trabajo relacionado: por muy bien explicados que estén ahí, tampoco los has leído tú directamente, así que no los nombres con "Apellido et al. (Año)" en el Hueco; esa descripción solo te sirve como apoyo para el Territorio.
     4. Idea o enfoque: la propuesta central del trabajo, como respuesta al hueco anterior.
     5. Contribuciones: la lista de aportaciones del trabajo, indicando la sección del documento donde se desarrolla cada una si se menciona.
     6. Evaluación: cómo se valida o evalúa el trabajo en el artículo (qué experimentos, casos de estudio o análisis se realizan).
@@ -205,8 +206,10 @@ tarea_adquisicion_pdf_intro:
 
     Instrucciones:
     - Extrae únicamente información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
+    - Lo que leas con 'leer_pdfs_carpeta' son los papers citados, no el artículo que estás resumiendo: solo te sirven para contrastar en el punto del Hueco. El resto de puntos (Territorio, Idea, Contribuciones, Evaluación, Estructura del Documento) tienen que salir únicamente de lo que leas con 'leer_pdf', el artículo principal, por mucho que el tema de algún paper citado se parezca.
+    - En el Hueco puede aparecer el nombre de un trabajo previo solo si viene de un paper de la carpeta de citas. Si el artículo principal menciona otros trabajos en su propio estado del arte, puedes usar esa idea para el Territorio, pero no le pongas "Apellido et al. (Año)" en el Hueco: no lo has leído tú mismo, así que no puedes evaluarlo como si lo hubieras hecho.
     - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
-    - Para el hueco, identifica cada paper de la carpeta de citas con "Apellido et al. (Año)" y describe su aportación de forma crítica, no como una simple lista de menciones. No apliques ese mismo formato a otros nombres que solo veas mencionados dentro de esos papers.
+    - Para el hueco, identifica cada paper de la carpeta de citas con "Apellido et al. (Año)" y describe su aportación de forma crítica, en su propia frase, no como una simple lista de nombres metidos en una frase compartida con otros trabajos. Esto vale igual si en la carpeta de citas solo hay un paper: dale su frase propia con su "Apellido et al. (Año)", no lo diluyas junto a otros nombres que solo hayas visto mencionados de pasada. No apliques ese mismo formato a otros nombres que solo veas mencionados dentro de esos papers.
     - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 7 puntos clave para la introducción, manteniendo los detalles técnicos y las referencias a los trabajos relacionados.
@@ -231,15 +234,16 @@ tarea_validacion_intro:
 # 10b. Tarea de validación de completitud en modo PDF (introducción, sin bucle de re-lectura)
 tarea_validacion_pdf_intro:
   description: >
-    Tu objetivo es obtener la validación definitiva del informe extraído del PDF por parte del 'Agente de Validación de Completitud'.
-    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos, nombrados como "Apellido et al. (Año)"), idea, contribuciones, evaluación y estructura del documento.
+    Revisa el informe que ha extraído del PDF el agente de adquisición y comprueba que cubre los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos, nombrados como "Apellido et al. (Año)"), idea, contribuciones, evaluación y estructura del documento.
+    Basa la revisión únicamente en el texto del informe: no completes ni des por buena información que no esté ahí, aunque el tema te resulte familiar.
     Consideración importante para el modo PDF: la información procede de documentos fijos (el artículo principal y los papers citados en su carpeta) y releerlos no aportará datos nuevos. Por ello:
     - Si algún punto indica "No especificado en el documento", acéptalo como válido.
-    - Devuelve VALIDADO en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
-    - No delegues de vuelta al agente de adquisición, ya que no es posible obtener información adicional a partir de los mismos documentos.
+    - Da la validación por buena en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No hace falta pedir más información a nadie, ya que no es posible obtener nada adicional a partir de los mismos documentos.
   expected_output: >
     El informe extraído del PDF con los 7 puntos identificados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO".
     Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+  agent: agente_de_validacion_de_completitud
 
 # 11. Tarea del bloque "Territorio"
 tarea_bloque_territorio:

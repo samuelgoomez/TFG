@@ -409,6 +409,10 @@ def _init_session():
         "latex_path": None,
         "bib_path": None,
         "citas_path": None,
+        "tex_existente": None,
+        "latex_error": None,
+        "bib_error": None,
+        "uploader_key": 0,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -451,18 +455,27 @@ def _cleanup_tmp():
 
 def _reset():
     _cleanup_tmp()
+    contador_uploaders = st.session_state.get("uploader_key", 0) + 1
     for k in list(st.session_state.keys()):
         del st.session_state[k]
+    st.session_state["uploader_key"] = contador_uploaders
     st.rerun()
 
 
-def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma):
+def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma, tex_file=None):
     tmp_dir = None
     pdf_path = None
     citas_path = ""
+    tex_existente = ""
+
+    if tex_file is not None:
+        tmp_dir = tmp_dir or tempfile.mkdtemp()
+        tex_existente = os.path.join(tmp_dir, tex_file.name)
+        with open(tex_existente, "wb") as f:
+            f.write(tex_file.getbuffer())
 
     if modo_pdf and pdf_file is not None:
-        tmp_dir = tempfile.mkdtemp()
+        tmp_dir = tmp_dir or tempfile.mkdtemp()
         pdf_path = os.path.join(tmp_dir, pdf_file.name)
         with open(pdf_path, "wb") as f:
             f.write(pdf_file.getbuffer())
@@ -497,6 +510,7 @@ def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma):
         "q_result": q_result, "q_status": q_status,
         "thread": thread, "resultado": None, "saved_path": None,
         "latex_path": None, "bib_path": None, "error_msg": None,
+        "tex_existente": tex_existente, "latex_error": None, "bib_error": None,
     })
 
 
@@ -536,19 +550,30 @@ def main():
 
             if modo_pdf:
                 st.caption("Paper principal (sin abstract/introducción):")
-                pdf_file = st.file_uploader("paper_pdf", type="pdf", label_visibility="collapsed")
+                pdf_file = st.file_uploader(
+                    "paper_pdf", type="pdf", label_visibility="collapsed",
+                    key=f"paper_pdf_{st.session_state.uploader_key}",
+                )
                 if tipo == "introduccion":
                     st.caption("Papers citados (opcional):")
                     citas_files = st.file_uploader(
                         "citas_pdf", type="pdf", accept_multiple_files=True,
                         label_visibility="collapsed",
+                        key=f"citas_pdf_{st.session_state.uploader_key}",
                     )
+
+            st.divider()
+            st.caption("¿Ya tienes el paper maquetado en LaTeX? Sube el .tex y el resultado se insertará en su sección de abstract o introducción, sin tocar el resto del documento (opcional):")
+            tex_file = st.file_uploader(
+                "tex_existente", type="tex", label_visibility="collapsed",
+                key=f"tex_existente_{st.session_state.uploader_key}",
+            )
 
             can_start = not modo_pdf or pdf_file is not None
             st.divider()
 
             if st.button("▶ Iniciar", disabled=not can_start, use_container_width=True, type="primary"):
-                _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma)
+                _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma, tex_file)
                 st.rerun()
 
         else:
@@ -665,12 +690,13 @@ def main():
                                     break
                         status, payload = st.session_state.q_result.get()
                         if status == "ok":
-                            from abstrack.bib_writer import limpiar_marcadores_cita, marcar_citas_sin_respaldo, generar_bib
+                            from abstrack.bib_writer import limpiar_marcadores_cita, marcar_citas_sin_respaldo, generar_bib, limpiar_markdown
                             nombre = (
                                 Path(st.session_state.pdf_path).stem
                                 if st.session_state.pdf_path
                                 else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
                             )
+                            payload = limpiar_markdown(payload)
                             bib_text = None
                             if st.session_state.citas_path:
                                 try:
@@ -678,8 +704,8 @@ def main():
                                     if bib_dest:
                                         st.session_state.bib_path = str(bib_dest)
                                         bib_text = bib_dest.read_text(encoding="utf-8")
-                                except Exception:
-                                    pass
+                                except Exception as exc:
+                                    st.session_state.bib_error = str(exc)
 
                             payload_marcado = marcar_citas_sin_respaldo(payload, bib_text) if bib_text else payload
                             payload_limpio = limpiar_marcadores_cita(payload_marcado)
@@ -691,13 +717,20 @@ def main():
                             except Exception:
                                 pass
                             try:
-                                from abstrack.latex_writer import generar_latex
-                                # payload (no payload_limpio): generar_latex necesita los marcadores
-                                # [[CITA: ...]] intactos para poder enlazar las citas con \cite{}.
-                                latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)
+                                # payload (no payload_limpio): generar_latex/actualizar_latex_existente
+                                # necesitan los marcadores [[CITA: ...]] intactos para poder enlazar
+                                # las citas con \cite{}.
+                                if st.session_state.tex_existente:
+                                    from abstrack.latex_writer import actualizar_latex_existente
+                                    latex_dest = actualizar_latex_existente(
+                                        st.session_state.tex_existente, payload, st.session_state.tipo, nombre, bib_text
+                                    )
+                                else:
+                                    from abstrack.latex_writer import generar_latex
+                                    latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)
                                 st.session_state.latex_path = str(latex_dest)
-                            except Exception:
-                                pass
+                            except Exception as exc:
+                                st.session_state.latex_error = str(exc)
                         else:
                             st.session_state.error_msg = payload
                             st.session_state.state = "error"
@@ -759,6 +792,8 @@ def main():
                     mime="text/x-tex",
                     use_container_width=True,
                 )
+            elif st.session_state.latex_error:
+                st.error(f"No se pudo generar el .tex:\n\n{st.session_state.latex_error}")
         with col3:
             if st.session_state.bib_path and Path(st.session_state.bib_path).exists():
                 bib_content = Path(st.session_state.bib_path).read_text(encoding="utf-8")
@@ -769,6 +804,8 @@ def main():
                     mime="text/plain",
                     use_container_width=True,
                 )
+            elif st.session_state.bib_error:
+                st.error(f"No se pudo generar el .bib:\n\n{st.session_state.bib_error}")
         with col4:
             if st.button("↩ Nueva ejecución", use_container_width=True):
                 _reset()

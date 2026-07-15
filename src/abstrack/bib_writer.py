@@ -231,27 +231,49 @@ def generar_bib(citas_path: str, nombre_base: str, tipo: str) -> Path | None:
     return destino
 
 
-_ENTRY_KEY_RE = re.compile(r'^@\w+\{([^,]+),', re.MULTILINE)
+_ENTRY_KEY_RE = re.compile(r'^[ \t]*@\w+\{([^,]+),', re.MULTILINE)
 _AUTHOR_FIELD_RE = re.compile(r'author\s*=\s*\{([^}]*)\}')
 _YEAR_FIELD_RE = re.compile(r'year\s*=\s*\{(\d{4})\}')
 _CITA_MARKER_RE = re.compile(r'\s?\[\[CITA:\s*([^,\]]+?)\s*,\s*(\d{4})\s*\]\]')
 _CITA_MARKER_CLEANUP_RE = re.compile(r'\s?\[\[CITA:[^\]]*\]\]')
+_CONECTORES_APELLIDO = {"de", "del", "dos", "das", "van", "von", "di", "la", "le", "da"}
+
+
+def _apellido_de_autor(autor: str) -> str:
+    """Obtiene el apellido de un autor tanto si el .bib lo trae en formato
+    'Apellido, Nombre' (habitual en el bibtex de DOI/CrossRef) como en
+    'Nombre Apellido' (lo que suele escribir el agente bibliografico cuando
+    maqueta la entrada a mano), incluyendo apellidos compuestos con un
+    conector en minuscula delante (de Farias, van der Berg...)."""
+    autor = autor.strip()
+    if "," in autor:
+        return autor.split(",")[0].strip()
+    tokens = autor.split()
+    if len(tokens) >= 2 and tokens[-2].lower() in _CONECTORES_APELLIDO:
+        return f"{tokens[-2]} {tokens[-1]}"
+    return tokens[-1] if tokens else autor
 
 
 def _referencias_citables(bib_text: str) -> list[tuple[str, str, str]]:
     """Devuelve (apellido primer autor, año, clave) por cada entrada del .bib
-    que tenga autor real (se descartan las de fallback, con [VERIFICAR AUTORES])."""
+    que tenga autor real (se descartan las de fallback, con [VERIFICAR AUTORES]).
+    Localiza cada entrada por su '@tipo{clave,' en vez de partir el texto por
+    líneas en blanco, para no depender de cómo se hayan separado las entradas
+    al escribir el fichero (algunas fuentes, como el bibtex que devuelve
+    doi.org, no dejan línea en blanco entre entradas ni espacios consistentes)."""
     referencias = []
-    for entrada in bib_text.split("\n\n"):
-        clave_m = _ENTRY_KEY_RE.search(entrada)
+    inicios = list(_ENTRY_KEY_RE.finditer(bib_text))
+    for i, clave_m in enumerate(inicios):
+        fin = inicios[i + 1].start() if i + 1 < len(inicios) else len(bib_text)
+        entrada = bib_text[clave_m.start():fin]
         autor_m = _AUTHOR_FIELD_RE.search(entrada)
         year_m = _YEAR_FIELD_RE.search(entrada)
-        if not (clave_m and autor_m and year_m):
+        if not (autor_m and year_m):
             continue
         primer_autor = autor_m.group(1).split(" and ")[0]
         if "VERIFICAR" in primer_autor:
             continue
-        apellido = primer_autor.split(",")[0].strip()
+        apellido = _apellido_de_autor(primer_autor)
         if apellido:
             referencias.append((apellido, year_m.group(1), clave_m.group(1)))
     return referencias
@@ -281,36 +303,62 @@ def insertar_citas(texto: str, bib_text: str) -> str:
     for apellido, year, clave in referencias:
         if (apellido.lower(), year) in citadas:
             continue
-        patron = re.compile(rf'{re.escape(apellido)}(\s+et\s+al\.?)?\s*\({year}\)')
+        patron = re.compile(
+            rf'{re.escape(apellido)}(\s+et\s+al\.?)?\s*\({year}\)'
+            rf'|\({re.escape(apellido)}(\s+et\s+al\.?)?\s+{year}\)'
+        )
         texto = patron.sub(lambda m: f"{m.group(0)}~\\cite{{{clave}}}", texto)
 
     return texto
 
 
+_NOMBRE_RE = (
+    r"(?:(?:de|del|dos|das|van|von|di|la|le|da)\s+)?"
+    r"[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+"
+    r"(?:\s+(?:et\s+al\.?|y\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+|and\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+))?"
+)
 _CITA_PROSA_RE = re.compile(
-    r"([A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+"
-    r"(?:\s+(?:et\s+al\.?|y\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+|and\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+))?)"
-    r"\s*\(((?:19|20)\d{2})\)(?!\s*\[VERIFICAR)"
+    rf"(?:(?P<autor1>{_NOMBRE_RE})\s*\((?P<anio1>(?:19|20)\d{{2}})\)"
+    rf"|\((?P<autor2>{_NOMBRE_RE})\s+(?P<anio2>(?:19|20)\d{{2}})\))"
+    r"(?!\s*\[VERIFICAR)"
 )
 
 
 def marcar_citas_sin_respaldo(texto: str, bib_text: str) -> str:
-    """Recorre el texto buscando menciones tipo 'Apellido et al. (Año)' y, para
-    cada una que no corresponda a un paper real del .bib (aportado de verdad
-    por el autor), la marca con [VERIFICAR: sin referencia bibliográfica].
-    Es la red de seguridad final para cuando un agente nombra un trabajo que
-    conoce de memoria en vez de limitarse a los papers que se le han dado:
-    aquí ya no depende de que el propio agente se acuerde de avisarlo."""
+    """Recorre el texto buscando menciones tipo 'Apellido et al. (Año)' o
+    '(Apellido et al. Año)' y, para cada una que no corresponda a un paper
+    real del .bib (aportado de verdad por el autor), la marca con
+    [VERIFICAR]. Es la red de seguridad final para cuando un agente nombra
+    un trabajo que conoce de memoria en vez de limitarse a los papers que
+    se le han dado: aquí ya no depende de que el propio agente se acuerde
+    de avisarlo."""
     pares_validos = {(apellido.lower(), year) for apellido, year, _ in _referencias_citables(bib_text)}
 
     def _marcar(m: re.Match) -> str:
-        primer_apellido = m.group(1).split()[0].lower().rstrip('.,')
-        year = m.group(2)
+        autor = m.group("autor1") or m.group("autor2")
+        year = m.group("anio1") or m.group("anio2")
+        primer_apellido = _apellido_de_autor(autor.split(" et al")[0].split(" y ")[0].split(" and ")[0]).lower().rstrip('.,')
         if (primer_apellido, year) in pares_validos:
             return m.group(0)
-        return f"{m.group(0)} [VERIFICAR: sin referencia bibliográfica]"
+        return f"{m.group(0)} [VERIFICAR]"
 
     return _CITA_PROSA_RE.sub(_marcar, texto)
+
+
+_CODE_FENCE_INICIO_RE = re.compile(r'^\s*```[a-zA-Z]*\s*\n?')
+_CODE_FENCE_FIN_RE = re.compile(r'\n?\s*```\s*$')
+_MD_NEGRITA_RE = re.compile(r'\*\*(.+?)\*\*')
+
+
+def limpiar_markdown(texto: str) -> str:
+    """Quita marcas de markdown (bloque de código ```...``` envolviendo todo el
+    texto, negrita **...**) que a veces se cuelan en la redacción aunque no se
+    hayan pedido y que romperían la plantilla LaTeX si se dejan tal cual."""
+    texto = texto.strip()
+    texto = _CODE_FENCE_INICIO_RE.sub('', texto)
+    texto = _CODE_FENCE_FIN_RE.sub('', texto)
+    texto = _MD_NEGRITA_RE.sub(r'\1', texto)
+    return texto.strip()
 
 
 def limpiar_marcadores_cita(texto: str) -> str:
