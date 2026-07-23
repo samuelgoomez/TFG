@@ -33,8 +33,10 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    else:
-        resultado = limpiar_marcadores_cita(resultado)
+    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
+    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
+    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    resultado = limpiar_marcadores_cita(resultado)
     contenido = _escapar_latex(resultado.strip())
 
     pendiente = "% [Pendiente de generacion]"
@@ -85,8 +87,10 @@ def actualizar_latex_existente(
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    else:
-        resultado = limpiar_marcadores_cita(resultado)
+    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
+    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
+    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    resultado = limpiar_marcadores_cita(resultado)
     texto_nuevo = _escapar_latex(resultado.strip())
 
     if tipo == "abstract":
