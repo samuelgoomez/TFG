@@ -107,9 +107,16 @@ def actualizar_latex_existente(
             )
         contenido = _INTRO_SECTION_RE.sub(lambda m: f"{m.group(1)}\n{texto_nuevo}\n\n\n", contenido, count=1)
 
-    if bib_text and not _BIBLIOGRAPHY_RE.search(contenido):
-        insercion = f"\\bibliographystyle{{IEEEtran}}\n\\bibliography{{{nombre_base}}}\n\n"
-        contenido = re.sub(r'\\end\{document\}', lambda m: insercion + "\\end{document}", contenido, count=1)
+    if bib_text:
+        if _BIBLIOGRAPHY_RE.search(contenido):
+            # Ya había un \bibliography{} en el documento, pero puede ser el
+            # nombre de un .bib de otra ejecucion anterior (otro paper): lo
+            # corregimos para que apunte siempre al .bib que se acaba de
+            # generar para este texto.
+            contenido = _BIBLIOGRAPHY_RE.sub(lambda m: f"\\bibliography{{{nombre_base}}}", contenido, count=1)
+        else:
+            insercion = f"\\bibliographystyle{{IEEEtran}}\n\\bibliography{{{nombre_base}}}\n\n"
+            contenido = re.sub(r'\\end\{document\}', lambda m: insercion + "\\end{document}", contenido, count=1)
 
     origen.write_text(contenido, encoding="utf-8")
     return origen

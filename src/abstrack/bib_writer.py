@@ -365,3 +365,57 @@ def limpiar_marcadores_cita(texto: str) -> str:
     """Elimina los marcadores '[[CITA: Apellido, Año]]' de un texto (para el .md
     guardado y la vista web, donde no deben ser visibles)."""
     return _CITA_MARKER_CLEANUP_RE.sub("", texto)
+
+
+_LIMITE_PALABRAS_RE = re.compile(r'\b(\d{2,4})\s*palabras\b', re.IGNORECASE)
+
+
+def _recortar_texto_via_agente(texto: str, limite: int) -> str | None:
+    """Delega en el 'Agente Recortador' (agents.yaml/tasks.yaml) la única
+    tarea de reducir el texto al límite de palabras indicado sin perder
+    ningún dato. Devuelve el texto recortado, o None si el agente falla."""
+    try:
+        agent_config = _cargar_config("agents.yaml", "agente_recortador")
+        task_config = _cargar_config("tasks.yaml", "tarea_recortar_texto")
+
+        agente = Agent(
+            config=agent_config,
+            llm=LLM(model=os.getenv("MODEL")),
+            verbose=False,
+        )
+        descripcion = (
+            task_config["description"]
+            .replace("{palabras_actuales}", str(len(texto.split())))
+            .replace("{limite}", str(limite))
+            .replace("{texto}", texto)
+        )
+        tarea = Task(
+            description=descripcion,
+            expected_output=task_config["expected_output"],
+            agent=agente,
+        )
+        salida = Crew(agents=[agente], tasks=[tarea], process=Process.sequential).kickoff()
+        return str(salida).strip()
+    except Exception:
+        return None
+
+
+def ajustar_limite_palabras(texto: str, informe_texto: str | None = None, limite_por_defecto: int = 250) -> str:
+    """Si el texto se pasa del límite de palabras (el que haya dado el autor
+    en el informe, si se detecta una cifra seguida de "palabras" en sus
+    restricciones, o si no, el máximo de 250 que marca la plantilla IEEE
+    IoT-J), delega en el Agente Recortador para que lo reduzca sin perder
+    contenido. Es la red de seguridad para cuando el control de calidad no
+    ha ajustado el texto pese a tener la instrucción de hacerlo. Si el
+    agente falla, devuelve el texto original sin tocar."""
+    limite = limite_por_defecto
+    if informe_texto:
+        coincidencia = _LIMITE_PALABRAS_RE.search(informe_texto)
+        if coincidencia:
+            limite = int(coincidencia.group(1))
+
+    if len(texto.split()) <= limite:
+        return texto
+
+    recortado = _recortar_texto_via_agente(texto, limite)
+    return recortado or texto

@@ -11,7 +11,14 @@ from abstrack.comparacion import (
     generar_excel_comparacion_introducciones,
 )
 from abstrack.latex_writer import generar_latex, actualizar_latex_existente
-from abstrack.bib_writer import generar_bib, limpiar_marcadores_cita, marcar_citas_sin_respaldo, limpiar_markdown
+from abstrack.bib_writer import (
+    generar_bib,
+    limpiar_marcadores_cita,
+    marcar_citas_sin_respaldo,
+    limpiar_markdown,
+    ajustar_limite_palabras,
+)
+from abstrack.tools.custom_tools import set_informe_path, clear_informe_path
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -27,6 +34,11 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None, tex_existen
         nombre = f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     resultado = limpiar_markdown(str(resultado))
+
+    informe_path = Path("papers/salida/informe_pdf.md" if pdf_path else "papers/salida/informe_entrevista.md")
+    informe_texto = informe_path.read_text(encoding="utf-8") if informe_path.exists() else None
+    resultado = ajustar_limite_palabras(resultado, informe_texto)
+
     destino = carpeta / f"{nombre}_generado.md"
     destino.write_text(resultado, encoding="utf-8-sig")
     print(f"\n Abstract guardado en: {destino}")
@@ -151,6 +163,13 @@ def run():
         "idioma": idioma,
     }
 
+    if not pdf_path:
+        ruta_informe = (
+            "introducciones/salida/informe_intro.md" if tipo == "introduccion"
+            else "papers/salida/informe_entrevista.md"
+        )
+        set_informe_path(ruta_informe)
+
     try:
         crew_instance = Abstrack()
         crew_instance.pdf_path = pdf_path
@@ -164,6 +183,8 @@ def run():
             _guardar_abstract_generado(resultado, pdf_path, tex_existente)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
+    finally:
+        clear_informe_path()
 
 
 def train():

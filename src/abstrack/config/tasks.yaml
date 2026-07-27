@@ -60,12 +60,12 @@ tarea_validacion:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
-    4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
+    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse.
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
     Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
     En ese caso, delega al 'Agente de Adquisición de Información' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
-    Al delegar, pásale el informe actual y los comentarios del agente de validación. Indícale que solo debe preguntar por los datos que faltan, sin repetir lo que ya está recogido.
+    Al delegar, pásale los comentarios del agente de validación e indícale la ruta del informe: papers/salida/informe_entrevista.md. Dile que use la herramienta 'leer_informe_actual' con esa ruta para ver qué puntos ya están cubiertos antes de preguntar nada.
     Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
     Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
   expected_output: >
@@ -77,7 +77,7 @@ tarea_validacion_pdf:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
-    4. Resultados (al menos una indicación de qué se obtuvo; no se requieren todas las métricas posibles).
+    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse.
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
     Basa la revisión únicamente en el texto del informe: no completes ni des por buena información que no esté ahí, aunque el tema te resulte familiar.
@@ -224,7 +224,8 @@ tarea_validacion_intro:
     Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos), idea, contribuciones, evaluación y estructura del documento.
     Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
     En ese caso, delega al agente de adquisición correspondiente para que vuelva a interactuar con el autor (modo entrevista) o revise el contenido del PDF (modo PDF) y obtenga exactamente la información que falta.
-    Al delegar, pásale el informe actual y los comentarios del agente de validación. Indícale que solo debe obtener los datos que faltan, sin repetir lo que ya está recogido en el informe.
+    Al delegar, pásale los comentarios del agente de validación e indícale que solo debe obtener los datos que faltan.
+    Si delegas en el Agente de Adquisición de Información (modo entrevista), indícale la ruta del informe: introducciones/salida/informe_intro.md. Dile que use 'leer_informe_actual' con esa ruta para ver qué puntos ya están cubiertos antes de preguntar nada.
     Si delegas en el Agente de Adquisición de Información desde PDF, recuérdale que debe usar 'leer_pdf' con ruta_pdf={pdf_path} y 'leer_pdfs_carpeta' con ruta_carpeta={citas_path}: son las únicas rutas válidas para esta sesión.
     Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
     Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
@@ -364,3 +365,14 @@ tarea_generar_bibtex:
   expected_output: >
     Un objeto JSON estricto con exactamente estas claves: {"title": "...", "author": "...", "year": "....", "venue": "..."}. Sin texto adicional antes o después del JSON.
   agent: agente_bibliografico
+
+tarea_recortar_texto:
+  description: >
+    Este texto se ha quedado en {palabras_actuales} palabras, por encima del límite de {limite} que tiene que respetar:
+
+    {texto}
+
+    Redúcelo hasta que quede en {limite} palabras o menos: es un límite estricto, no una orientación, así que tienes que llegar hasta ahí de verdad, no acercarte solamente. Empieza simplificando frases, quitando palabras de más y fundiendo ideas repetidas; si con eso no basta para bajar del límite, no dudes en eliminar directamente alguna frase secundaria entera. Lo único que no puedes tocar son las cifras, resultados o datos concretos, y la frase final si el autor pidió una en concreto: todo lo demás es prescindible con tal de cumplir el límite.
+  expected_output: >
+    El mismo texto, ajustado al límite de palabras indicado, sin perder ningún dato ni cifra, listo para usarse tal cual.
+  agent: agente_recortador

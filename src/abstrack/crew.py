@@ -1,4 +1,4 @@
-# Autor: Samuel Gómez
+# Autor: Samuel Gómez Grande
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -7,7 +7,12 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, crew, task
 
 from typing import List
-from abstrack.tools.custom_tools import ask_human_tool, read_pdf_tool, read_pdfs_folder_tool
+from abstrack.tools.custom_tools import (
+    ask_human_tool,
+    read_pdf_tool,
+    read_pdfs_folder_tool,
+    read_informe_tool,
+)
 
 @CrewBase
 class Abstrack():
@@ -53,7 +58,7 @@ class Abstrack():
         return Agent(
             config=self.agents_config['agente_de_adquisicion_de_informacion'],
             llm=self.llm,
-            tools=[ask_human_tool],
+            tools=[ask_human_tool, read_informe_tool],
             verbose=True
         )
 
@@ -170,6 +175,15 @@ class Abstrack():
     def agente_bibliografico(self) -> Agent:
         return Agent(
             config=self.agents_config['agente_bibliografico'],
+            llm=self.llm,
+            verbose=False
+        )
+
+    # ── Agente recortador (usado por bib_writer.py, fuera del pipeline) ──────
+    @agent
+    def agente_recortador(self) -> Agent:
+        return Agent(
+            config=self.agents_config['agente_recortador'],
             llm=self.llm,
             verbose=False
         )

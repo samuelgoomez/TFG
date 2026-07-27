@@ -6,6 +6,11 @@ from crewai.tools import tool
 _q_questions = None
 _q_answers = None
 
+# Ruta del informe de esta sesión, para ir dejando constancia de cada pregunta
+# y respuesta según se producen, sin depender de que ningún agente se acuerde
+# de guardarlo. Se fija antes de arrancar el pipeline interactivo (ver crew.py).
+_informe_path = None
+
 
 def set_web_queues(q_questions, q_answers):
     global _q_questions, _q_answers
@@ -19,6 +24,39 @@ def clear_web_queues():
     _q_answers = None
 
 
+def set_informe_path(ruta):
+    """Fija la ruta del informe de esta sesión y la deja vacía, para que el
+    registro en bruto de preguntas y respuestas empiece de cero (y no se
+    mezcle con el de una ejecución anterior sobre ese mismo fichero)."""
+    global _informe_path
+    _informe_path = ruta
+    from pathlib import Path
+
+    ruta_path = Path(ruta)
+    ruta_path.parent.mkdir(parents=True, exist_ok=True)
+    ruta_path.write_text("", encoding="utf-8")
+
+
+def clear_informe_path():
+    global _informe_path
+    _informe_path = None
+
+
+def _registrar_pregunta_respuesta(pregunta: str, respuesta: str) -> None:
+    """Añade la pregunta y la respuesta al informe de la sesión, si hay una
+    ruta configurada. Es un registro en bruto (no el informe final pulido
+    por 6 apartados), pero garantiza que quede constancia de cada respuesta
+    sin depender de que ningún agente tenga que guardarla explícitamente."""
+    if not _informe_path:
+        return
+    from pathlib import Path
+
+    ruta = Path(_informe_path)
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    with ruta.open("a", encoding="utf-8") as f:
+        f.write(f"P: {pregunta}\nR: {respuesta}\n\n")
+
+
 @tool("preguntar_al_autor")
 def ask_human_tool(pregunta: str) -> str:
     """
@@ -28,11 +66,14 @@ def ask_human_tool(pregunta: str) -> str:
     if _q_questions is not None:
         _q_questions.put(pregunta)
         try:
-            return _q_answers.get(timeout=600)
+            respuesta = _q_answers.get(timeout=600)
         except _queue_module.Empty:
-            return "Sin respuesta (tiempo agotado)."
-    print(f"\n[El Agente te pregunta]: {pregunta}")
-    return input("Tu respuesta: ")
+            respuesta = "Sin respuesta (tiempo agotado)."
+    else:
+        print(f"\n[El Agente te pregunta]: {pregunta}")
+        respuesta = input("Tu respuesta: ")
+    _registrar_pregunta_respuesta(pregunta, respuesta)
+    return respuesta
 
 
 @tool("leer_pdf")
@@ -82,3 +123,20 @@ def read_pdfs_folder_tool(ruta_carpeta: str) -> str:
         bloques.append(f"### Paper citado: {fichero.name}\n\n" + "\n\n".join(paginas))
 
     return "\n\n---\n\n".join(bloques)
+
+
+@tool("leer_informe_actual")
+def read_informe_tool(ruta_informe: str) -> str:
+    """
+    Lee el informe de la entrevista tal como está guardado ahora mismo en disco.
+    Recibe la ruta al fichero del informe y devuelve su contenido en texto plano.
+    Úsala antes de volver a preguntar nada al autor, para comprobar tú mismo qué
+    puntos ya están respondidos y cuáles faltan de verdad, en vez de fiarte de
+    lo que te haya resumido otro agente.
+    """
+    from pathlib import Path
+
+    ruta = Path(ruta_informe)
+    if not ruta.is_file():
+        return f"Todavía no existe ningún informe guardado en '{ruta_informe}'."
+    return ruta.read_text(encoding="utf-8")

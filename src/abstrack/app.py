@@ -298,10 +298,16 @@ hr { border-color: rgba(255,255,255,0.07) !important; margin: 1.25rem 0 !importa
 # ── Pipeline runner (hilo secundario) ─────────────────────────────────────────
 
 def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_result, q_status):
-    from abstrack.tools.custom_tools import set_web_queues, clear_web_queues
+    from abstrack.tools.custom_tools import set_web_queues, clear_web_queues, set_informe_path, clear_informe_path
     from abstrack.crew import Abstrack
 
     set_web_queues(q_questions, q_answers)
+    if not pdf_path:
+        ruta_informe = (
+            "introducciones/salida/informe_intro.md" if tipo == "introduccion"
+            else "papers/salida/informe_entrevista.md"
+        )
+        set_informe_path(ruta_informe)
 
     # En modo jerárquico task_output.agent es siempre el coordinador (manager).
     # Se pre-calcula la lista de agentes esperados por orden de ejecución para
@@ -386,6 +392,7 @@ def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_
     finally:
         q_questions.put(None)
         clear_web_queues()
+        clear_informe_path()
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -697,6 +704,14 @@ def main():
                                 else f"interactivo_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
                             )
                             payload = limpiar_markdown(payload)
+                            if st.session_state.tipo == "abstract":
+                                from abstrack.bib_writer import ajustar_limite_palabras
+                                informe_path = Path(
+                                    "papers/salida/informe_pdf.md" if st.session_state.pdf_path
+                                    else "papers/salida/informe_entrevista.md"
+                                )
+                                informe_texto = informe_path.read_text(encoding="utf-8") if informe_path.exists() else None
+                                payload = ajustar_limite_palabras(payload, informe_texto)
                             bib_text = None
                             if st.session_state.citas_path:
                                 try:
