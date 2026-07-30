@@ -16,9 +16,23 @@ _INTRO_SECTION_RE = re.compile(
 _BIBLIOGRAPHY_RE = re.compile(r'\\bibliography\{[^}]*\}')
 
 
+_ESCAPES_LATEX = {
+    "&": r"\&",
+    "%": r"\%",
+    "$": r"\$",
+    "#": r"\#",
+    "_": r"\_",
+}
+
+
 def _escapar_latex(texto: str) -> str:
-    """Escapa los caracteres problemáticos en texto plano insertado en LaTeX."""
-    return texto.replace("%", r"\%")
+    """Escapa los caracteres problemáticos en texto plano insertado en LaTeX
+    (&, %, $, #, _). Se aplica sobre el texto en bruto, antes de insertar
+    ningún \\cite{}, para no escapar por error algo dentro de un comando
+    LaTeX ya construido (p.ej. una clave de bibtex con guion bajo)."""
+    for original, escapado in _ESCAPES_LATEX.items():
+        texto = texto.replace(original, escapado)
+    return texto
 
 
 def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | None = None) -> Path:
@@ -30,14 +44,14 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     """
     template = _TEMPLATE.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
     # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
     # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
     # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
-    resultado = limpiar_marcadores_cita(resultado)
-    contenido = _escapar_latex(resultado.strip())
+    contenido = limpiar_marcadores_cita(resultado)
 
     pendiente = "% [Pendiente de generacion]"
 
@@ -84,14 +98,14 @@ def actualizar_latex_existente(
 
     contenido = origen.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
     # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
     # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
     # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
-    resultado = limpiar_marcadores_cita(resultado)
-    texto_nuevo = _escapar_latex(resultado.strip())
+    texto_nuevo = limpiar_marcadores_cita(resultado)
 
     if tipo == "abstract":
         if not _ABSTRACT_RE.search(contenido):
@@ -120,3 +134,22 @@ def actualizar_latex_existente(
 
     origen.write_text(contenido, encoding="utf-8")
     return origen
+
+
+def generar_o_actualizar_latex(
+    resultado: str, tipo: str, nombre_base: str, bib_text: str | None = None
+) -> Path:
+    """
+    Igual que generar_latex(), pero antes de partir de la plantilla en
+    blanco comprueba si ya existe un .tex con el mismo nombre generado
+    para el otro tipo de contenido (el abstract si se está generando la
+    introducción, o al revés). Si existe, lo actualiza con
+    actualizar_latex_existente() en vez de crear un fichero nuevo, para
+    que abstract e introducción del mismo paper acaben en un único
+    documento sin tener que indicarlo a mano con --tex-existente.
+    """
+    carpeta_contraria = Path("introducciones/latex") if tipo == "abstract" else Path("abstracts/latex")
+    candidato = carpeta_contraria / f"{nombre_base}.tex"
+    if candidato.is_file():
+        return actualizar_latex_existente(str(candidato), resultado, tipo, nombre_base, bib_text)
+    return generar_latex(resultado, tipo, nombre_base, bib_text)

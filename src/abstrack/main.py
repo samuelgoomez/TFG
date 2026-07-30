@@ -10,7 +10,7 @@ from abstrack.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )
-from abstrack.latex_writer import generar_latex, actualizar_latex_existente
+from abstrack.latex_writer import actualizar_latex_existente, generar_o_actualizar_latex
 from abstrack.bib_writer import (
     generar_bib,
     limpiar_marcadores_cita,
@@ -46,7 +46,7 @@ def _guardar_abstract_generado(resultado: str, pdf_path: str | None, tex_existen
     if tex_existente:
         latex = actualizar_latex_existente(tex_existente, resultado, "abstract", nombre)
     else:
-        latex = generar_latex(resultado, "abstract", nombre)
+        latex = generar_o_actualizar_latex(resultado, "abstract", nombre)
     print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_abstracts()
@@ -85,7 +85,7 @@ def _guardar_introduccion_generada(
     if tex_existente:
         latex = actualizar_latex_existente(tex_existente, resultado, "introduccion", nombre, bib_text)
     else:
-        latex = generar_latex(resultado, "introduccion", nombre, bib_text)
+        latex = generar_o_actualizar_latex(resultado, "introduccion", nombre, bib_text)
     print(f" LaTeX guardado en: {latex}")
 
     excel = generar_excel_comparacion_introducciones()

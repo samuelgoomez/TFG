@@ -741,8 +741,8 @@ def main():
                                         st.session_state.tex_existente, payload, st.session_state.tipo, nombre, bib_text
                                     )
                                 else:
-                                    from abstrack.latex_writer import generar_latex
-                                    latex_dest = generar_latex(payload, st.session_state.tipo, nombre, bib_text)
+                                    from abstrack.latex_writer import generar_o_actualizar_latex
+                                    latex_dest = generar_o_actualizar_latex(payload, st.session_state.tipo, nombre, bib_text)
                                 st.session_state.latex_path = str(latex_dest)
                             except Exception as exc:
                                 st.session_state.latex_error = str(exc)

@@ -5,3 +5,9 @@ __pycache__/
 report.md
 informe_entrevista.md
 abstract_final.md
+
+# Transcripciones de pruebas manuales del modo interactivo (no son ejemplos del proyecto)
+abstracts/generados/interactivo_*
+abstracts/latex/interactivo_*
+introducciones/generadas/interactivo_*
+introducciones/latex/interactivo_*
