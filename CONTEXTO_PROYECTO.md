@@ -6,15 +6,21 @@ Este fichero resume todo lo implementado en el proyecto para que puedas retomar 
 
 ## ¿Qué es el proyecto?
 
-Sistema multiagente jerárquico (MAS) construido con **CrewAI** que genera secciones de un artículo científico:
+Sistema multiagente jerárquico (MAS) construido con **CrewAI** que genera secciones de un artículo científico y las vuelca sobre una plantilla LaTeX real de IEEE, con bibliografía gestionada automáticamente:
 
-- **Apartados 1-2 (abstract)**: genera el **abstract** de un paper. Pipeline genérico de 7 agentes.
-- **Apartados 3-4 (introducción)**: genera la **introducción** siguiendo el modelo **CARS (Swales)** + los **3 ejes de Shaw** (tipo de pregunta de investigación, tipo de contribución, tipo de validación). Pipeline de 10 agentes especializados.
+- **Abstract**: pipeline genérico de 7 agentes.
+- **Introducción**: sigue el modelo **CARS (Swales)** + los **3 ejes de Shaw** (tipo de pregunta de investigación, tipo de contribución, tipo de validación). Pipeline de 10 agentes especializados.
 
-Cada uno tiene dos modos de funcionamiento:
+Cada uno tiene dos modos de entrada:
 
-- **Modo interactivo**: el sistema hace preguntas al autor y obtiene la información por consola.
+- **Modo interactivo**: el sistema entrevista al autor (por consola o por la web).
 - **Modo PDF**: el sistema lee un PDF de un paper (sin abstract / sin introducción) y, en el caso de la introducción, también los PDFs de los papers citados (carpeta `<paper>_citas/`), y extrae la información automáticamente.
+
+Además del texto, el sistema:
+- Vuelca el resultado sobre la plantilla oficial de IEEE (`IEEEtran.cls`), adaptada a las Author Guidelines de IEEE Internet of Things Journal.
+- Genera la bibliografía real (`.bib`) de los papers citados, con una cascada DOI → arXiv → CrossRef → agente que maqueta la entrada a mano → fallback determinista.
+- Enlaza las citas en el texto con `\cite{}` de forma determinista, y marca con `[VERIFICAR]` cualquier mención a un trabajo que no tenga respaldo real en el `.bib` (para que no se cuele una cita inventada sin avisar).
+- Puede insertar el resultado en un `.tex` que el autor ya tenga maquetado, en vez de partir siempre de la plantilla en blanco — y si generas primero el abstract y luego la introducción del mismo paper (o al revés), los fusiona automáticamente en un único documento sin que haga falta indicarlo a mano.
 
 ---
 
@@ -22,11 +28,13 @@ Cada uno tiene dos modos de funcionamiento:
 
 | Elemento | Detalle |
 |---|---|
-| Framework MAS | CrewAI 1.9.3 (`crewai[google-genai,tools]`) |
-| LLM | Configurable por `.env` (variable `MODEL`). Actualmente `openrouter/openai/gpt-4o-mini` |
+| Framework MAS | CrewAI (`Process.hierarchical`, `manager_agent=agente_coordinador`) |
+| LLM | Configurable por `.env` (variable `MODEL`). Actualmente `openai/gpt-4.1-mini` (directo contra OpenAI, sin OpenRouter) |
 | Gestión de paquetes | `uv` (entorno en `.venv/`) |
-| Lectura de PDFs | `pdfplumber` (dep. de crewai) |
-| Manipulación de PDFs | `PyMuPDF` (`fitz`) — para eliminar abstracts/introducciones (redacción con rectángulo blanco) |
+| Lectura de PDFs | `pdfplumber` |
+| Manipulación de PDFs | `PyMuPDF` (`fitz`) — para eliminar abstracts/introducciones (redacción con rectángulo blanco) al preparar papers de prueba |
+| Compilación LaTeX | MiKTeX instalado localmente (`pdflatex`, `bibtex`, `latexmk`) — verificado que compila sin errores con `IEEEtran.cls` |
+| Interfaz web | Streamlit (`abstrack-web`) |
 | Python | ≥ 3.10, < 3.14 |
 
 ---
@@ -34,54 +42,53 @@ Cada uno tiene dos modos de funcionamiento:
 ## Estructura de ficheros del proyecto
 
 ```
-TFG/TFG/
-├── pyproject.toml                        ← dependencias y entrypoints
+abstrack/
+├── pyproject.toml                        ← dependencias y entrypoints (abstrack, abstrack-web, train, replay, test)
 ├── CONTEXTO_PROYECTO.md                  ← este fichero
-├── .env                                  ← MODEL, API keys (gitignored)
+├── escenarios_de_prueba.md               ← respuestas listas para copiar/pegar en modo interactivo
+├── .env                                  ← MODEL, OPENAI_API_KEY (gitignored)
 │
 ├── src/abstrack/
-│   ├── crew.py                           ← definición del crew (abstract + introducción)
-│   ├── main.py                           ← entrypoint CLI
+│   ├── crew.py                           ← definición del crew (abstract + introducción, interactivo + PDF)
+│   ├── main.py                           ← entrypoint CLI (--pdf, --tipo, --idioma, --tex-existente)
+│   ├── app.py                            ← interfaz web Streamlit
+│   ├── latex_writer.py                   ← generar_latex / actualizar_latex_existente / generar_o_actualizar_latex
+│   ├── bib_writer.py                     ← generar_bib, insertar_citas, marcar_citas_sin_respaldo, ajustar_limite_palabras...
 │   ├── comparacion.py                    ← genera los Excel de comparación
 │   ├── config/
-│   │   ├── agents.yaml                   ← configuración de agentes
+│   │   ├── agents.yaml                   ← configuración de agentes (17 en total)
 │   │   └── tasks.yaml                    ← configuración de tareas
+│   ├── templates/
+│   │   └── ieee_template.tex             ← plantilla oficial IEEEtran (bare_jrnl.tex), con marcadores %%ABSTRACT%%/%%INTRODUCTION%%/%%BIBNAME%%
 │   └── tools/
-│       └── custom_tools.py               ← leer_pdf, leer_pdfs_carpeta, preguntar_al_autor
+│       └── custom_tools.py               ← preguntar_al_autor, leer_pdf, leer_pdfs_carpeta, leer_informe_actual
 │
 ├── papers/
 │   ├── original/                         ← PDFs intactos
-│   │   ├── attention_is_all_you_need.pdf (inglés, Vaswani 2017)
-│   │   └── redes_neuronales_parkinson.pdf (español, Rodriguez 2023)
-│   ├── sin_abstract/                     ← PDFs con abstract eliminado → ENTRADA apartados 1-2
-│   │   ├── attention_is_all_you_need.pdf
-│   │   └── redes_neuronales_parkinson.pdf
-│   └── sin_introduccion/                 ← PDFs con introducción eliminada → ENTRADA apartados 3-4 (modo PDF)
-│       ├── attention_is_all_you_need.pdf  (intro de la pág. 2 redactada con fitz)
-│       └── attention_is_all_you_need_citas/   ← papers citados reales descargados de arXiv
-│           ├── bahdanau_2014_neural_mt_align_translate.pdf  (arXiv:1409.0473)
-│           └── sutskever_2014_seq2seq.pdf      (arXiv:1409.3215)
+│   ├── sin_abstract/                     ← PDFs con abstract eliminado → entrada modo PDF (abstract)
+│   ├── sin_introduccion/                 ← PDFs con introducción eliminada → entrada modo PDF (introducción)
+│   │   └── <paper>_citas/                ← PDFs de los papers realmente citados por ese paper
+│   └── salida/informe_entrevista.md / informe_pdf.md  ← informe de la entrevista/extracción (abstract)
 │
 ├── abstracts/
-│   ├── originales/                       ← abstracts reales (referencia para comparar)
-│   ├── generados/<paper>_generado.md     ← abstracts producidos por el sistema
-│   └── comparacion_abstracts.xlsx        ← Excel de comparación (generado)
+│   ├── originales/, generados/<paper>_generado.md, latex/<paper>.tex(+.bib), comparacion_abstracts.xlsx
 │
-└── introducciones/
-    ├── originales/introduccion_<paper>.md ← introducción real + tabla "Puntos clave esperados (CARS + Shaw)"
-    ├── generadas/<paper>_generada.md      ← introducción producida por el sistema
-    ├── salida/informe_pdf_intro.md        ← informe validado (7 puntos CARS+Shaw) generado por la fase de adquisición
-    └── comparacion_introducciones.xlsx    ← Excel de comparación (generado)
+├── introducciones/
+│   ├── originales/, generadas/<paper>_generada.md, latex/<paper>.tex(+.bib)
+│   ├── salida/informe_intro.md / informe_pdf_intro.md
+│   └── comparacion_introducciones.xlsx
+│
+└── evidencias/                           ← PDF real compilado con MiKTeX, prueba de que el .tex generado compila y cita bien
 ```
 
 ---
 
-## APARTADOS 1-2 — Pipeline de Abstract (7 agentes, ESTADO: completo y probado)
+## Pipeline de Abstract (7 agentes) — completo y probado
 
 | # | Agente | Rol | Modo |
 |---|---|---|---|
 | 0 | `agente_coordinador` | Manager jerárquico | Ambos |
-| 1a | `agente_de_adquisicion_de_informacion` | Pregunta al autor por consola | Interactivo |
+| 1a | `agente_de_adquisicion_de_informacion` | Entrevista al autor | Interactivo |
 | 1b | `agente_de_adquisicion_pdf` | Lee el PDF y extrae 6 puntos clave | PDF |
 | 2 | `agente_de_validacion_de_completitud` | Valida (loop hasta VALIDADO) | Ambos |
 | 3 | `agente_de_estructuracion_de_contenido` | Esqueleto conceptual | Ambos |
@@ -89,129 +96,121 @@ TFG/TFG/
 | 5 | `agente_de_revision_de_estilo` | Pule forma | Ambos |
 | 6 | `agente_de_control_de_calidad` | Verificación final | Ambos |
 
-Flujo: Adquisición → Validación (loop) → Estructuración → Redacción → Revisión → Control de calidad → `abstracts/generados/<paper>_generado.md`.
-
-Probado con los 2 papers (inglés y español). `abstracts/comparacion_abstracts.xlsx` generado y revisado.
+Flujo: Adquisición → Validación (loop) → Estructuración → Redacción → Revisión → Control de calidad → `abstracts/generados/<paper>_generado.md` + `.tex`.
 
 ---
 
-## APARTADOS 3-4 — Pipeline de Introducción CARS + Shaw (10 agentes, ESTADO: implementado, probado parcialmente)
-
-Sustituye por completo el pipeline genérico para `tipo == "introduccion"` (interactivo y PDF). El modo abstract no se toca.
+## Pipeline de Introducción CARS + Shaw (10 agentes) — completo y probado
 
 | # | Agente | Rol | Modo |
 |---|---|---|---|
-| 0 | `agente_coordinador_intro` | Manager jerárquico (variante de `agente_coordinador`) | Ambos |
-| 1a | `agente_de_adquisicion_de_informacion` | Entrevista al autor (8 encabezados) | Interactivo |
+| 0 | `agente_coordinador_intro` | Manager jerárquico | Ambos |
+| 1a | `agente_de_adquisicion_de_informacion` | Entrevista al autor (7 puntos) | Interactivo |
 | 1b | `agente_de_adquisicion_pdf` | Lee `leer_pdf` (paper) + `leer_pdfs_carpeta` (citas) | PDF |
 | 2 | `agente_de_validacion_de_completitud` | Valida los 7 puntos CARS+Shaw (loop hasta VALIDADO) | Ambos |
 | 3 | `agente_especialista_territorio` | Bloque "Territorio" | Ambos |
-| 4 | `agente_especialista_hueco` | Bloque "Hueco" (citas reales, marca `[VERIFICAR]` si falta evidencia) | Ambos |
+| 4 | `agente_especialista_hueco` | Bloque "Hueco" (solo cita papers de la carpeta de citas; marca `[VERIFICAR]` si no hay evidencia) | Ambos |
 | 5 | `agente_especialista_idea` | Bloque "Idea/Enfoque" | Ambos |
 | 6 | `agente_especialista_contribuciones` | Bloque "Contribuciones" (lista en viñetas) | Ambos |
-| 7 | `agente_especialista_evaluacion` | Bloque "Evaluación" (avance, sin resultados numéricos) | Ambos |
+| 7 | `agente_especialista_evaluacion` | Bloque "Evaluación" | Ambos |
 | 8 | `agente_especialista_estructura_documento` | Bloque "Estructura del Documento" | Ambos |
 | 9 | `agente_editor_intro` | Fusiona los 6 bloques, comprueba ejes de Shaw | Ambos |
 | 10 | `agente_de_control_de_calidad` | Verificación global final | Ambos |
 
-### Flujo de tareas (`tareas_cars_intro` en `crew.py`)
+---
 
-```
-[Adquisición: tarea_adquisicion_intro / tarea_adquisicion_pdf_intro]
-       ↓
-tarea_validacion_intro  (loop VALIDADO/NO VALIDADO con agente_de_validacion_de_completitud)
-       ↓
-tarea_bloque_territorio
-       ↓
-tarea_bloque_hueco
-       ↓
-tarea_bloque_idea
-       ↓
-tarea_bloque_contribuciones
-       ↓
-tarea_bloque_evaluacion
-       ↓
-tarea_bloque_estructura_documento
-       ↓
-tarea_fusion_intro   (agente_editor_intro fusiona los 6 bloques)
-       ↓
-tarea_control_calidad_intro
-       ↓
-[introducciones/generadas/<paper>_generada.md]
-```
+## Agentes de soporte (fuera del pipeline principal, usados por bib_writer.py)
 
-### Fix de fidelidad con `context=` (aplicado en `crew.py`, NO verificado aún en producción)
+- `agente_bibliografico` — maqueta a mano una entrada BibTeX leyendo el PDF, cuando falla la búsqueda automática por DOI/arXiv/CrossRef.
+- `agente_recortador` — reduce un abstract al límite de palabras (el que dio el autor, o 250 por defecto de IEEE IoT-J) sin perder cifras ni la frase final obligatoria, cuando el control de calidad no lo ha ajustado bien.
 
-CrewAI 1.9.3 soporta `Task(context=[otras_tareas])`: inyecta el `output.raw` **verbatim** de las tareas referenciadas en el prompt de la tarea actual (vía `format_task_with_context`), independientemente del relay en lenguaje natural del manager jerárquico. Se añadió:
+CrewAI exige que todo agente referenciado en `tasks.yaml` tenga su método correspondiente en `crew.py` (decorado con `@agent`), aunque no forme parte de la lista de tareas del crew principal — si no, `Abstrack()` falla al instanciarse con un `KeyError`.
 
-- `tarea_bloque_territorio`: `context=[tarea_validacion_intro]`
-- `tarea_bloque_hueco`: `context=[tarea_validacion_intro, tarea_bloque_territorio]`
-- `tarea_bloque_idea`: `context=[tarea_validacion_intro, tarea_bloque_hueco]`
-- `tarea_bloque_contribuciones`: `context=[tarea_validacion_intro, tarea_bloque_idea]`
-- `tarea_bloque_evaluacion`: `context=[tarea_validacion_intro]`
-- `tarea_bloque_estructura_documento`: `context=[tarea_validacion_intro]`
-- `tarea_fusion_intro`: `context=[tarea_validacion_intro] + los 6 bloques`
-- `tarea_control_calidad_intro`: `context=[tarea_fusion_intro]`
+---
 
-**Limitación conocida**: en `Process.hierarchical`, el agente que ejecuta cada `tarea_bloque_*` es el **manager**, no el especialista. `context=` garantiza que el manager tenga el texto verbatim en su propio prompt, pero el manager aún tiene que retransmitirlo al especialista vía la tool "Delegate work to coworker" (argumento `context` generado por su propio LLM), donde puede seguir parafraseando. Es una mejora parcial, no una solución completa. Si tras la próxima prueba real persisten problemas (pérdida de nombres como "Transformer"/Bahdanau/Sutskever, viñetas, secciones inventadas), la solución de raíz sería dividir en dos crews: una jerárquica (adquisición + validación) y otra **secuencial** para los 6 bloques + fusión + control de calidad (con `agent:` fijo y `context=` encadenado, sin manager de por medio).
+## Escritura en plantilla LaTeX y gestión bibliográfica
+
+- **`generar_latex()`**: inserta el resultado en la plantilla en blanco (`templates/ieee_template.tex`).
+- **`actualizar_latex_existente()`**: en vez de partir de la plantilla en blanco, actualiza solo la sección de abstract o introducción de un `.tex` que el autor ya tenga maquetado (sección `\begin{abstract}` o `\section{Introduction}`), dejando el resto del documento intacto. Corrige también el nombre del `.bib` en `\bibliography{}` si apuntaba al de otra ejecución anterior. Se activa con `--tex-existente <ruta>` en CLI o subiendo el archivo en la web.
+- **`generar_o_actualizar_latex()`**: antes de generar desde la plantilla en blanco, comprueba si ya existe un `.tex` con el mismo nombre generado para el otro tipo de contenido (abstract vs introducción) — si existe, lo actualiza en vez de crear un fichero nuevo, así que generar primero el abstract y luego la introducción del mismo paper (o al revés) los deja fusionados en un único documento automáticamente, sin usar `--tex-existente` a mano. Es el comportamiento por defecto.
+- **`generar_bib()`** (en `bib_writer.py`): para cada PDF de la carpeta de citas, cascada DOI en el texto → ID de arXiv → búsqueda por título en CrossRef (score alto) → Agente de Maquetación Bibliográfica → fallback determinista con los campos marcados `[VERIFICAR]`.
+- **`insertar_citas()`**: convierte los marcadores `[[CITA: Apellido, Año]]` que insertan los agentes de redacción en `\cite{clave}` reales, cruzando contra el `.bib`.
+- **`marcar_citas_sin_respaldo()`**: red de seguridad final — cualquier mención "Apellido (Año)" en el texto final que no tenga una entrada real en el `.bib` se marca `[VERIFICAR]`, para que ninguna cita inventada por el LLM pase desapercibida.
+- **Escapado de LaTeX**: se escapan `&`, `%`, `$`, `#`, `_` en el texto en bruto, antes de insertar ninguna cita (para no escapar por error el guion bajo de una clave de bibtex como `Zeng_2017`).
+
+**Limitación conocida, aceptada**: cuando un paper se publicó primero en arXiv y después formalmente en una conferencia/revista con un año distinto, el texto puede citar el año de la publicación oficial mientras el `.bib` indexa el año del preprint — se marca `[VERIFICAR]` aunque la cita sea correcta (falso positivo). Es preferible a que se cuele una cita falsa sin avisar; se decidió no añadir tolerancia de año porque no aporta lo suficiente para el riesgo/complejidad que añade.
+
+---
+
+## Bucle de validación interactivo (adquisición ↔ validación)
+
+En modo interactivo, si el Agente de Validación de Completitud detecta que faltan datos, el coordinador delega de vuelta en el agente de adquisición para completar la entrevista. Este bucle tuvo un fallo real: el coordinador, al delegar, no siempre retransmitía bien "qué es lo que falta" ni "qué se guardó ya", así que el agente de adquisición a veces repreguntaba cosas ya respondidas.
+
+Solución aplicada:
+- **`preguntar_al_autor` registra automáticamente**, como efecto de código (no depende de que ningún agente lo decida), cada pregunta y respuesta en el informe de la sesión (`papers/salida/informe_entrevista.md` o `introducciones/salida/informe_intro.md`).
+- Nueva herramienta **`leer_informe_actual`**, disponible para el agente de adquisición: si le devuelven el control tras una validación fallida, lee ese informe para comprobar por sí mismo qué está cubierto antes de preguntar nada más (está en su propio `goal`, no solo en el prompt de la tarea de validación, para que no dependa de que el coordinador se lo repita bien). **Importante**: solo debe leer el informe al *retomar* tras un rechazo, nunca en el arranque de la entrevista (si lo hace en el arranque, con el informe vacío, el agente se descoloca y no llega a hacer la entrevista real).
+- El criterio de validación de Resultados se endureció: exige al menos un dato concreto y medible, no basta una valoración genérica ("funcionó bien") sin cifras detrás.
+
+Confirmado funcionando en ambos pipelines (abstract e introducción) con pruebas reales.
 
 ---
 
 ## Herramientas custom (`src/abstrack/tools/custom_tools.py`)
 
 ```python
-# Modo interactivo
 @tool("preguntar_al_autor")
-def ask_human_tool(pregunta: str) -> str: ...   # input() por consola
+def ask_human_tool(pregunta: str) -> str: ...
+# input() por consola, o cola de Streamlit en modo web.
+# Registra automáticamente cada P/R en el informe de la sesión (set_informe_path()).
 
-# Modo PDF
 @tool("leer_pdf")
 def read_pdf_tool(ruta_pdf: str) -> str: ...    # pdfplumber, un solo PDF
 
 @tool("leer_pdfs_carpeta")
-def read_pdfs_folder_tool(ruta_carpeta: str) -> str: ...  # concatena TODOS los PDFs de la carpeta en un solo string
+def read_pdfs_folder_tool(ruta_carpeta: str) -> str: ...  # concatena todos los PDFs de una carpeta
+
+@tool("leer_informe_actual")
+def read_informe_tool(ruta_informe: str) -> str: ...  # lee el informe ya guardado de esta sesión
 ```
 
 ---
 
 ## Cómo se lanza
 
-Desde la raíz del proyecto (`TFG/TFG/`):
+Desde la raíz del proyecto:
 
-```powershell
+```bash
 # Abstract — interactivo
-.venv/Scripts/abstrack.exe
+uv run abstrack
 
 # Abstract — modo PDF
-.venv/Scripts/abstrack.exe --pdf papers/sin_abstract/attention_is_all_you_need.pdf
+uv run abstrack --pdf papers/sin_abstract/attention_is_all_you_need.pdf
 
 # Introducción — interactivo
-.venv/Scripts/abstrack.exe --tipo introduccion
+uv run abstrack --tipo introduccion
 
-# Introducción — modo PDF (requiere papers/sin_introduccion/<paper>_citas/ con los PDFs citados)
-.venv/Scripts/abstrack.exe --tipo introduccion --pdf papers/sin_introduccion/attention_is_all_you_need.pdf
+# Introducción — modo PDF (requiere papers/sin_introduccion/<paper>_citas/)
+uv run abstrack --tipo introduccion --pdf papers/sin_introduccion/attention_is_all_you_need.pdf
+
+# Elegir idioma (por defecto Español)
+uv run abstrack --pdf papers/sin_abstract/paper.pdf --idioma Inglés
+
+# Insertar en un .tex que ya tienes maquetado, en vez de la plantilla en blanco
+uv run abstrack --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
+
+# Interfaz web
+uv run abstrack-web
 ```
 
 ---
 
-## Estado de las pruebas con "Attention Is All You Need"
+## Estado actual
 
-- **Apartados 1-2 (abstract)**: probado, `abstracts/comparacion_abstracts.xlsx` generado.
-- **Apartado 3-4 (introducción), modo PDF**:
-  - Test 1 (3 PDFs reales grandes): falló por overflow de contexto (128k tokens).
-  - Test 2 (PDFs sintéticos pequeños generados con LaTeX): éxito, introducción CARS coherente de 8 párrafos.
-  - Test 3 (paper real "Attention Is All You Need" + 2 citas reales de arXiv, Bahdanau 2014 + Sutskever 2014): **éxito técnico** (sin overflow, sin "Maximum iterations"), `comparacion_introducciones.xlsx` generado. Pero **regresión de calidad**: la introducción final (`introducciones/generadas/attention_is_all_you_need_generada.md`) pierde menciones a "Transformer", Bahdanau/Sutskever, el formato de viñetas en Contribuciones, e inventa números de sección falsos ("sección 2"–"sección 8"), pese a que `informe_pdf_intro.md` (informe validado) sí tenía todo correcto.
-  - Test 4 (tras aplicar el fix de `context=`): **no completado** — la clave de OpenRouter alcanzó su límite mensual ($4/mes, agotado) y el run falló con error 402 a mitad de ejecución. `informe_pdf_intro.md` se regeneró correctamente (sigue citando bien a Bahdanau/Sutskever), pero `_generada.md` y el Excel siguen siendo del Test 3 (sin verificar el fix).
+Ambos pipelines (abstract e introducción), en sus cuatro combinaciones (interactivo/PDF × abstract/introducción), están implementados, probados y funcionando de forma fiable con `gpt-4.1-mini`. La escritura sobre la plantilla IEEE y la generación de bibliografía están verificadas con una compilación real (MiKTeX, `evidencias/attention_is_all_you_need.pdf`), con las citas numeradas correctamente en el texto y en la sección de referencias.
 
----
+Papers de prueba disponibles: *Attention Is All You Need* (inglés), *Aplicación de RNA para Parkinson* (español), *SimulateIoT* (inglés, IEEE Access — paper largo con citación numérica en el original, usado para probar los límites de contexto y las citas).
 
-## Pendiente / próximos pasos
+## Pendiente
 
-1. **Migración a AWS Bedrock en curso** (para evitar el límite de OpenRouter y aprovechar 200k de contexto):
-   - Falta: credenciales AWS (Access Key ID + Secret Access Key de un usuario IAM con `AmazonBedrockFullAccess`), región con Bedrock+Claude habilitado (Estocolmo `eu-north-1` no vale; usar Frankfurt `eu-central-1` o N. Virginia `us-east-1`), habilitar "Model access" para Anthropic Claude, y confirmar si los $100 de crédito promocional cubren Bedrock.
-   - Modelo recomendado: Claude 3.5 Sonnet (mejor fidelidad a instrucciones + 200k contexto, ~$3-4/ejecución completa → ~25 ejecuciones con 100€).
-   - Una vez con credenciales: instalar `boto3`, poner `MODEL=bedrock/<model-id>` + variables `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_REGION_NAME` en `.env`.
-   - Alternativa más simple: subir el límite mensual de la clave OpenRouter (€10-15) y seguir con `gpt-4o-mini` sin tocar nada.
-2. **Re-ejecutar Test 4** (con OpenRouter con más límite, o con Bedrock) y comparar `_generada.md` contra `informe_pdf_intro.md` y `introduccion_attention_is_all_you_need.md` para verificar si el fix de `context=` corrige la regresión de fidelidad.
-3. Si la regresión persiste: implementar la solución de raíz (split en crew jerárquica + crew secuencial) descrita arriba — requiere confirmación del usuario antes de implementar (cambio de arquitectura).
-4. Limpiar `introducciones/salida/informe_intro.md` (artefacto de una prueba interactiva antigua, formato pre-CARS) si ya no es necesario.
+1. **COMFIT y CupCarbon** (dos de los trabajos relacionados que cita SimulateIoT) están detrás de muro de pago (Elsevier y EAI/EUDL respectivamente) y no se han podido conseguir para completar la bibliografía de ese caso de prueba.
+2. Ningún cambio de arquitectura pendiente ni bug conocido sin resolver — el resto de limitaciones conocidas (falso positivo de año en citas, precisión no garantizada al 100% del Agente Recortador) se han evaluado y se han dejado así a propósito, no por falta de tiempo.
