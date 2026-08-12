@@ -2,7 +2,7 @@
 import re
 from pathlib import Path
 
-from abstrack.bib_writer import insertar_citas, limpiar_marcadores_cita, marcar_citas_sin_respaldo, limpiar_markdown
+from papercrew.bib_writer import insertar_citas, limpiar_marcadores_cita, marcar_citas_sin_respaldo, limpiar_markdown
 
 _TEMPLATE = Path(__file__).parent / "templates" / "ieee_template.tex"
 

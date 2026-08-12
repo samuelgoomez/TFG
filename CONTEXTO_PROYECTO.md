@@ -1,4 +1,4 @@
-# Contexto del Proyecto — ABSTRACK (TFG Samuel Gómez)
+# Contexto del Proyecto — PaperCrew (TFG Samuel Gómez)
 
 Este fichero resume todo lo implementado en el proyecto para que puedas retomar el trabajo en otro PC pasándoselo a Claude como contexto.
 
@@ -34,7 +34,7 @@ Además del texto, el sistema:
 | Lectura de PDFs | `pdfplumber` |
 | Manipulación de PDFs | `PyMuPDF` (`fitz`) — para eliminar abstracts/introducciones (redacción con rectángulo blanco) al preparar papers de prueba |
 | Compilación LaTeX | MiKTeX instalado localmente (`pdflatex`, `bibtex`, `latexmk`) — verificado que compila sin errores con `IEEEtran.cls` |
-| Interfaz web | Streamlit (`abstrack-web`) |
+| Interfaz web | Streamlit (`papercrew-web`) |
 | Python | ≥ 3.10, < 3.14 |
 
 ---
@@ -42,13 +42,13 @@ Además del texto, el sistema:
 ## Estructura de ficheros del proyecto
 
 ```
-abstrack/
-├── pyproject.toml                        ← dependencias y entrypoints (abstrack, abstrack-web, train, replay, test)
+papercrew/
+├── pyproject.toml                        ← dependencias y entrypoints (papercrew, papercrew-web, train, replay, test)
 ├── CONTEXTO_PROYECTO.md                  ← este fichero
 ├── escenarios_de_prueba.md               ← respuestas listas para copiar/pegar en modo interactivo
 ├── .env                                  ← MODEL, OPENAI_API_KEY (gitignored)
 │
-├── src/abstrack/
+├── src/papercrew/
 │   ├── crew.py                           ← definición del crew (abstract + introducción, interactivo + PDF)
 │   ├── main.py                           ← entrypoint CLI (--pdf, --tipo, --idioma, --tex-existente)
 │   ├── app.py                            ← interfaz web Streamlit
@@ -124,7 +124,7 @@ Flujo: Adquisición → Validación (loop) → Estructuración → Redacción �
 - `agente_bibliografico` — maqueta a mano una entrada BibTeX leyendo el PDF, cuando falla la búsqueda automática por DOI/arXiv/CrossRef.
 - `agente_recortador` — reduce un abstract al límite de palabras (el que dio el autor, o 250 por defecto de IEEE IoT-J) sin perder cifras ni la frase final obligatoria, cuando el control de calidad no lo ha ajustado bien.
 
-CrewAI exige que todo agente referenciado en `tasks.yaml` tenga su método correspondiente en `crew.py` (decorado con `@agent`), aunque no forme parte de la lista de tareas del crew principal — si no, `Abstrack()` falla al instanciarse con un `KeyError`.
+CrewAI exige que todo agente referenciado en `tasks.yaml` tenga su método correspondiente en `crew.py` (decorado con `@agent`), aunque no forme parte de la lista de tareas del crew principal — si no, `PaperCrew()` falla al instanciarse con un `KeyError`.
 
 ---
 
@@ -155,7 +155,7 @@ Confirmado funcionando en ambos pipelines (abstract e introducción) con pruebas
 
 ---
 
-## Herramientas custom (`src/abstrack/tools/custom_tools.py`)
+## Herramientas custom (`src/papercrew/tools/custom_tools.py`)
 
 ```python
 @tool("preguntar_al_autor")
@@ -181,25 +181,25 @@ Desde la raíz del proyecto:
 
 ```bash
 # Abstract — interactivo
-uv run abstrack
+uv run papercrew
 
 # Abstract — modo PDF
-uv run abstrack --pdf papers/sin_abstract/attention_is_all_you_need.pdf
+uv run papercrew --pdf papers/sin_abstract/attention_is_all_you_need.pdf
 
 # Introducción — interactivo
-uv run abstrack --tipo introduccion
+uv run papercrew --tipo introduccion
 
 # Introducción — modo PDF (requiere papers/sin_introduccion/<paper>_citas/)
-uv run abstrack --tipo introduccion --pdf papers/sin_introduccion/attention_is_all_you_need.pdf
+uv run papercrew --tipo introduccion --pdf papers/sin_introduccion/attention_is_all_you_need.pdf
 
 # Elegir idioma (por defecto Español)
-uv run abstrack --pdf papers/sin_abstract/paper.pdf --idioma Inglés
+uv run papercrew --pdf papers/sin_abstract/paper.pdf --idioma Inglés
 
 # Insertar en un .tex que ya tienes maquetado, en vez de la plantilla en blanco
-uv run abstrack --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
+uv run papercrew --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
 
 # Interfaz web
-uv run abstrack-web
+uv run papercrew-web
 ```
 
 ---

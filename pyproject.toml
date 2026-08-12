@@ -1,7 +1,7 @@
 [project]
-name = "abstrack"
+name = "papercrew"
 version = "0.1.0"
-description = "ABSTRACK using crewAI"
+description = "PaperCrew using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
@@ -17,13 +17,13 @@ dependencies = [
 ]
 
 [project.scripts]
-abstrack = "abstrack.main:run"
-abstrack-web = "abstrack.app:launch"
-run_crew = "abstrack.main:run"
-train = "abstrack.main:train"
-replay = "abstrack.main:replay"
-test = "abstrack.main:test"
-run_with_trigger = "abstrack.main:run_with_trigger"
+papercrew = "papercrew.main:run"
+papercrew-web = "papercrew.app:launch"
+run_crew = "papercrew.main:run"
+train = "papercrew.main:train"
+replay = "papercrew.main:replay"
+test = "papercrew.main:test"
+run_with_trigger = "papercrew.main:run_with_trigger"
 
 [build-system]
 requires = ["hatchling"]

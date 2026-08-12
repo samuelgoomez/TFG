@@ -12,35 +12,6 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "abstrack"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "apscheduler" },
-    { name = "crewai", extra = ["google-genai", "tools"] },
-    { name = "email-validator" },
-    { name = "fastapi" },
-    { name = "fastapi-sso" },
-    { name = "litellm" },
-    { name = "pdfplumber" },
-    { name = "python-dotenv" },
-    { name = "streamlit" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "apscheduler", specifier = ">=3.11.2" },
-    { name = "crewai", extras = ["google-genai", "tools"], specifier = "==1.9.3" },
-    { name = "email-validator", specifier = ">=2.3.0" },
-    { name = "fastapi", specifier = ">=0.136.0" },
-    { name = "fastapi-sso", specifier = ">=0.21.0" },
-    { name = "litellm", specifier = ">=1.75.3" },
-    { name = "pdfplumber", specifier = ">=0.11" },
-    { name = "python-dotenv", specifier = ">=1.1.1" },
-    { name = "streamlit", specifier = ">=1.35" },
-]
-
-[[package]]
 name = "aiohappyeyeballs"
 version = "2.6.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2399,6 +2370,35 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e9/21/ea191195e587b18cf682e97f433f81b2d0fbe341380e80a3e0d6e4403c8e/pandas-3.0.3-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:d26cbe1fcfc12e8fd900e2454163e466b2d3af84f7c75481df7683ffc073d870", size = 11350796, upload-time = "2026-05-11T18:53:32.056Z" },
     { url = "https://files.pythonhosted.org/packages/64/69/f0eaaf54939f0e8c6768fd06be9af2cef9b36048b96dfb9e1b2c685a807e/pandas-3.0.3-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:3e91cec1879ada0624fc3dc9953c5cbd60208e59c0db28f540c5d6d47502422f", size = 11799741, upload-time = "2026-05-11T18:53:34.985Z" },
     { url = "https://files.pythonhosted.org/packages/45/a4/865e0e510cae5fc2194de4db28be638952de942571ba9125934fd9c01d47/pandas-3.0.3-cp313-cp313t-win_amd64.whl", hash = "sha256:08d789b41f87e0905880e293cedf6197ce71fe67cc081358b1e148a491b9bd13", size = 10499958, upload-time = "2026-05-11T18:53:37.857Z" },
+]
+
+[[package]]
+name = "papercrew"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "apscheduler" },
+    { name = "crewai", extra = ["google-genai", "tools"] },
+    { name = "email-validator" },
+    { name = "fastapi" },
+    { name = "fastapi-sso" },
+    { name = "litellm" },
+    { name = "pdfplumber" },
+    { name = "python-dotenv" },
+    { name = "streamlit" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "apscheduler", specifier = ">=3.11.2" },
+    { name = "crewai", extras = ["google-genai", "tools"], specifier = "==1.9.3" },
+    { name = "email-validator", specifier = ">=2.3.0" },
+    { name = "fastapi", specifier = ">=0.136.0" },
+    { name = "fastapi-sso", specifier = ">=0.21.0" },
+    { name = "litellm", specifier = ">=1.75.3" },
+    { name = "pdfplumber", specifier = ">=0.11" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "streamlit", specifier = ">=1.35" },
 ]
 
 [[package]]

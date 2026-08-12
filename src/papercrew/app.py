@@ -1,4 +1,4 @@
-"""Interfaz web Streamlit para el sistema multiagente Abstrack."""
+"""Interfaz web Streamlit para el sistema multiagente PaperCrew."""
 import os
 import queue
 import shutil
@@ -298,8 +298,8 @@ hr { border-color: rgba(255,255,255,0.07) !important; margin: 1.25rem 0 !importa
 # ── Pipeline runner (hilo secundario) ─────────────────────────────────────────
 
 def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_result, q_status):
-    from abstrack.tools.custom_tools import set_web_queues, clear_web_queues, set_informe_path, clear_informe_path
-    from abstrack.crew import Abstrack
+    from papercrew.tools.custom_tools import set_web_queues, clear_web_queues, set_informe_path, clear_informe_path
+    from papercrew.crew import PaperCrew
 
     set_web_queues(q_questions, q_answers)
     if not pdf_path:
@@ -379,7 +379,7 @@ def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_
             "citas_path": citas_path or "",
             "idioma": idioma,
         }
-        crew = Abstrack()
+        crew = PaperCrew()
         crew.pdf_path = pdf_path
         crew.citas_path = citas_path or ""
         crew.tipo = tipo
@@ -427,7 +427,7 @@ def _init_session():
 
 
 def _save_result(resultado: str, tipo: str, pdf_path: str | None):
-    from abstrack.comparacion import (
+    from papercrew.comparacion import (
         generar_excel_comparacion_abstracts,
         generar_excel_comparacion_introducciones,
     )
@@ -525,7 +525,7 @@ def _start_pipeline(tipo, modo_pdf, pdf_file, citas_files, idioma, tex_file=None
 
 def main():
     st.set_page_config(
-        page_title="Abstrack — Generador de Textos Científicos",
+        page_title="PaperCrew — Generador de Textos Científicos",
         page_icon="🎓",
         layout="wide",
         initial_sidebar_state="expanded",
@@ -598,7 +598,7 @@ def main():
     # ── Hero header ───────────────────────────────────────────────────────────
     st.markdown("""
     <div class="hero">
-        <h1>🎓 Generador de Textos Científicos</h1>
+        <h1>🎓 PAPERCREW — Generador de Textos Científicos</h1>
         <p>Sistema multiagente para la redacción automatizada de abstracts e introducciones académicas</p>
         <div class="hero-badges">
             <span class="badge">Modelo CARS · Swales</span>
@@ -697,7 +697,7 @@ def main():
                                     break
                         status, payload = st.session_state.q_result.get()
                         if status == "ok":
-                            from abstrack.bib_writer import limpiar_marcadores_cita, marcar_citas_sin_respaldo, generar_bib, limpiar_markdown
+                            from papercrew.bib_writer import limpiar_marcadores_cita, marcar_citas_sin_respaldo, generar_bib, limpiar_markdown
                             nombre = (
                                 Path(st.session_state.pdf_path).stem
                                 if st.session_state.pdf_path
@@ -705,7 +705,7 @@ def main():
                             )
                             payload = limpiar_markdown(payload)
                             if st.session_state.tipo == "abstract":
-                                from abstrack.bib_writer import ajustar_limite_palabras
+                                from papercrew.bib_writer import ajustar_limite_palabras
                                 informe_path = Path(
                                     "papers/salida/informe_pdf.md" if st.session_state.pdf_path
                                     else "papers/salida/informe_entrevista.md"
@@ -736,12 +736,12 @@ def main():
                                 # necesitan los marcadores [[CITA: ...]] intactos para poder enlazar
                                 # las citas con \cite{}.
                                 if st.session_state.tex_existente:
-                                    from abstrack.latex_writer import actualizar_latex_existente
+                                    from papercrew.latex_writer import actualizar_latex_existente
                                     latex_dest = actualizar_latex_existente(
                                         st.session_state.tex_existente, payload, st.session_state.tipo, nombre, bib_text
                                     )
                                 else:
-                                    from abstrack.latex_writer import generar_o_actualizar_latex
+                                    from papercrew.latex_writer import generar_o_actualizar_latex
                                     latex_dest = generar_o_actualizar_latex(payload, st.session_state.tipo, nombre, bib_text)
                                 st.session_state.latex_path = str(latex_dest)
                             except Exception as exc:

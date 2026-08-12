@@ -7,7 +7,7 @@ from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, crew, task
 
 from typing import List
-from abstrack.tools.custom_tools import (
+from papercrew.tools.custom_tools import (
     ask_human_tool,
     read_pdf_tool,
     read_pdfs_folder_tool,
@@ -15,8 +15,8 @@ from abstrack.tools.custom_tools import (
 )
 
 @CrewBase
-class Abstrack():
-    """Abstrack crew"""
+class PaperCrew():
+    """PaperCrew crew"""
 
     agents: List[BaseAgent]
     tasks: List[Task]
@@ -334,7 +334,7 @@ class Abstrack():
     # ── Crew ──────────────────────────────────────────────────────────────────
     @crew
     def crew(self) -> Crew:
-        """Creates the Abstrack crew"""
+        """Creates the PaperCrew crew"""
 
         agentes_interactivo = [
             self.agente_de_adquisicion_de_informacion(),

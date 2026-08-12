@@ -4,7 +4,7 @@
 Uso:
     uv run python generar_comparacion.py
 """
-from abstrack.comparacion import (
+from papercrew.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )

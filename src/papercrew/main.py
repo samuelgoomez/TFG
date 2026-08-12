@@ -5,20 +5,20 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 
-from abstrack.crew import Abstrack
-from abstrack.comparacion import (
+from papercrew.crew import PaperCrew
+from papercrew.comparacion import (
     generar_excel_comparacion_abstracts,
     generar_excel_comparacion_introducciones,
 )
-from abstrack.latex_writer import actualizar_latex_existente, generar_o_actualizar_latex
-from abstrack.bib_writer import (
+from papercrew.latex_writer import actualizar_latex_existente, generar_o_actualizar_latex
+from papercrew.bib_writer import (
     generar_bib,
     limpiar_marcadores_cita,
     marcar_citas_sin_respaldo,
     limpiar_markdown,
     ajustar_limite_palabras,
 )
-from abstrack.tools.custom_tools import set_informe_path, clear_informe_path
+from papercrew.tools.custom_tools import set_informe_path, clear_informe_path
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -98,22 +98,22 @@ def run():
     Ejecuta el sistema multiagente.
 
     Modo interactivo, abstract (por defecto):
-        abstrack
+        papercrew
 
     Modo interactivo, introducción:
-        abstrack --tipo introduccion
+        papercrew --tipo introduccion
 
     Modo PDF, abstract:
-        abstrack --pdf papers/sin_abstract/paper.pdf
+        papercrew --pdf papers/sin_abstract/paper.pdf
 
     Modo PDF, introducción (requiere los papers citados en papers/sin_introduccion/<paper>_citas/):
-        abstrack --tipo introduccion --pdf papers/sin_introduccion/paper.pdf
+        papercrew --tipo introduccion --pdf papers/sin_introduccion/paper.pdf
 
     Elegir el idioma de redacción (por defecto Español):
-        abstrack --pdf papers/sin_abstract/paper.pdf --idioma Inglés
+        papercrew --pdf papers/sin_abstract/paper.pdf --idioma Inglés
 
     Insertar el resultado en un .tex que ya tienes maquetado, en vez de partir de la plantilla en blanco:
-        abstrack --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
+        papercrew --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
     """
     pdf_path = None
     tipo = "abstract"
@@ -171,7 +171,7 @@ def run():
         set_informe_path(ruta_informe)
 
     try:
-        crew_instance = Abstrack()
+        crew_instance = PaperCrew()
         crew_instance.pdf_path = pdf_path
         crew_instance.citas_path = citas_path
         crew_instance.tipo = tipo
@@ -195,7 +195,7 @@ def train():
         "idioma": "Español",
     }
     try:
-        Abstrack().crew().train(
+        PaperCrew().crew().train(
             n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs
         )
     except Exception as e:
@@ -204,7 +204,7 @@ def train():
 
 def replay():
     try:
-        Abstrack().crew().replay(task_id=sys.argv[1])
+        PaperCrew().crew().replay(task_id=sys.argv[1])
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
 
@@ -217,7 +217,7 @@ def test():
         "idioma": "Español",
     }
     try:
-        Abstrack().crew().test(
+        PaperCrew().crew().test(
             n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs
         )
     except Exception as e:
@@ -244,7 +244,7 @@ def run_with_trigger():
     }
 
     try:
-        result = Abstrack().crew().kickoff(inputs=inputs)
+        result = PaperCrew().crew().kickoff(inputs=inputs)
         return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew with trigger: {e}")

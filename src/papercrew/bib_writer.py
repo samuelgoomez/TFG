@@ -53,7 +53,7 @@ def _bibtex_por_doi(doi: str) -> str | None:
         url = f"https://doi.org/{urllib.parse.quote(doi, safe='/')}"
         req = urllib.request.Request(
             url,
-            headers={"Accept": "application/x-bibtex", "User-Agent": "Abstrack/1.0"},
+            headers={"Accept": "application/x-bibtex", "User-Agent": "PaperCrew/1.0"},
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
             return resp.read().decode("utf-8")
@@ -68,7 +68,7 @@ def _doi_por_titulo(titulo: str) -> str | None:
         url = f"https://api.crossref.org/works?query.title={q}&rows=1"
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": "Abstrack/1.0 (mailto:abstrack@tfg.local)"},
+            headers={"User-Agent": "PaperCrew/1.0 (mailto:papercrew@tfg.local)"},
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read())
