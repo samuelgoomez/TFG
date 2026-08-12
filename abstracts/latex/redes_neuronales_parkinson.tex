@@ -1,0 +1,132 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by PaperCrew (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+La Enfermedad de Parkinson (EP) presenta un desafío en el monitoreo efectivo debido a la dependencia de evaluaciones subjetivas. Este estudio propone un método basado en Redes Neuronales Artificiales, específicamente un Multilayer Perceptron (MLP), para clasificar seis actividades diarias relevantes en pacientes con EP utilizando señales obtenidas de sensores inerciales. Se procesaron 179,755 observaciones de tres sujetos, aplicando un filtro Butterworth y extrayendo métricas estadísticas mediante ventana móvil. Posteriormente, se empleó Análisis de Componentes Principales (PCA) para reducir la dimensionalidad conservando el 95\% de la varianza, resultando en 22 componentes. El MLP, con dos capas ocultas de 16 y 10 neuronas y funciones de activación ReLU y Sigmoid, fue entrenado con el optimizador Adam durante 1000 épocas. El modelo alcanzó un F1-score del 93\% en la clasificación al utilizar el conjunto completo de datos, evidenciando alta precisión. No obstante, la precisión disminuyó al 51\% al entrenar con datos del 80\% de los sujetos y probar con el 20\% restante, mostrando limitaciones en la generalización entre individuos. La reducción dimensional facilitó la implementación en dispositivos con recursos computacionales limitados. Estos resultados respaldan la viabilidad del enfoque MLP-PCA para desarrollar sistemas objetivos de monitoreo y rehabilitación en EP, con potencial para mejorar el seguimiento clínico y la calidad de vida de los pacientes.
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+% [Pendiente de generacion]
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+% Sin bibliografia: no se proporcionaron citas.
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}

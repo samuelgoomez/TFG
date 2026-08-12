@@ -1,0 +1,378 @@
+# 1. Tarea del coordinador
+# coordinate_task:
+#   description: ""
+#   expected_output: ""
+#   agent: coordinator
+
+# 2. Tarea de adquisición de información
+tarea_adquisicion:
+  description: >
+    El Agente de Adquisición de Información debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
+    Su objetivo es recabar información clara y detallada sobre los siguientes 6 aspectos del artículo:
+    1. El tema o problema abordado.
+    2. El objetivo principal del trabajo.
+    3. La metodología seguida.
+    4. Los resultados obtenidos.
+    5. La principal conclusión o aportación.
+    6. Restricciones (como el límite de palabras o el contexto del documento).
+
+    INSTRUCCIONES CLAVE:
+    - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
+    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
+    - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
+  agent: agente_de_adquisicion_de_informacion
+  output_file: "papers/salida/informe_entrevista.md"
+
+  # 2b. Tarea de adquisición desde PDF
+tarea_adquisicion_pdf:
+  description: >
+    Ruta del PDF para esta sesión: {pdf_path}
+    Usa la herramienta 'leer_pdf' con ruta_pdf='{pdf_path}'. Esa es la única ruta válida para esta sesión; no utilices ninguna otra.
+
+    A partir del texto extraído, identifica y documenta con precisión los siguientes 6 puntos clave:
+    1. El tema o problema abordado.
+    2. El objetivo principal del trabajo.
+    3. La metodología seguida.
+    4. Los resultados obtenidos del modelo o enfoque principal (incluye métricas, porcentajes o valores numéricos exactos que aparezcan).
+    5. La principal conclusión o aportación del trabajo.
+    6. Restricciones de formato (límite de palabras, contexto del documento) si se mencionan.
+
+    Instrucciones:
+    - Extrae únicamente información que esté presente en el texto del PDF. No inventes ni inferas datos, ni siquiera tecnologías o herramientas que "suelen" usarse en este tipo de proyectos (por ejemplo, dar por hecho un framework o lenguaje concreto solo porque encaja con el resto del stack). Si el texto no lo dice, no lo pongas.
+    - Mantén todos los detalles técnicos: nombres de modelos, datasets, métricas y números concretos.
+    - Muchos artículos comparan varios modelos o configuraciones experimentales. Identifica cuál es el modelo o enfoque principal propuesto por los autores y reporta en "Resultados" únicamente sus métricas, sin mezclarlas con las de otros modelos o experimentos secundarios mencionados como comparación.
+    - Casi todos los artículos tienen también una sección de trabajo relacionado, donde se repasan herramientas y propuestas de otros autores para situar el contexto. Eso no son resultados del propio trabajo, aunque aparezcan descritas con detalle: si una herramienta o técnica se menciona para explicar qué hacían otros antes o para compararse con ellos, no la pongas en "Resultados" como si fuera algo que aporta o construye este trabajo.
+    - Si algún punto no puede determinarse desde el texto, indícalo como "No especificado en el documento".
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 6 puntos clave extraídos del PDF,
+    manteniendo TODOS LOS DETALLES TÉCNICOS (nombres de datasets, modelos, métricas, números).
+    Clasifícalo bajo 6 encabezados: Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones.
+  agent: agente_de_adquisicion_pdf
+  output_file: "papers/salida/informe_pdf.md"
+
+# 3. Tarea de validación de completitud
+tarea_validacion:
+  description: >
+    Tu objetivo es obtener la validación definitiva del informe por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe estos 6 puntos:
+    1. Tema o problema abordado.
+    2. Objetivo principal.
+    3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
+    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse.
+    5. Conclusión o aportación principal.
+    6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
+    Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
+    En ese caso, delega al 'Agente de Adquisición de Información' para que vuelva a interactuar con el autor y obtenga exactamente la información que falta.
+    Al delegar, pásale los comentarios del agente de validación e indícale la ruta del informe: papers/salida/informe_entrevista.md. Dile que use la herramienta 'leer_informe_actual' con esa ruta para ver qué puntos ya están cubiertos antes de preguntar nada.
+    Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
+    Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
+  expected_output: >
+    El informe final con los 6 puntos cubiertos, seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
+# 3b. Tarea de validación de completitud en modo PDF (sin bucle de re-lectura)
+tarea_validacion_pdf:
+  description: >
+    Revisa el informe que ha extraído del PDF el agente de adquisición y comprueba que cubre estos 6 puntos:
+    1. Tema o problema abordado.
+    2. Objetivo principal.
+    3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
+    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse.
+    5. Conclusión o aportación principal.
+    6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
+    Basa la revisión únicamente en el texto del informe: no completes ni des por buena información que no esté ahí, aunque el tema te resulte familiar.
+    Consideración importante para el modo PDF: la información procede de un documento fijo y releer el mismo PDF no aportará datos nuevos. Por ello:
+    - Si algún punto indica "No especificado en el documento", acéptalo como válido.
+    - Da la validación por buena en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No hace falta pedir más información a nadie: no es posible obtener nada adicional del mismo documento.
+  expected_output: >
+    El informe extraído del PDF con los 6 puntos identificados, seguido de la frase "ESTADO: VALIDADO".
+    Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+  agent: agente_de_validacion_de_completitud
+
+# 4. Tarea de estructuración del contenido
+tarea_estructuracion:
+  description: >
+    Toma el informe de adquisición y organiza la información antes de ser redactada.
+    Debes transformar las respuestas del informe en una estructura lógica y coherente, separando claramente las piezas fundamentales.
+    Reorganiza la información estrictamente en estos bloques:
+    * Contexto o problema
+    * Objetivo
+    * Método
+    * Resultados
+    * Conclusión
+    No escribas el abstract todavía. Tu misión es únicamente preparar el "esqueleto conceptual" mediante un índice o esquema detallado para evitar que el redactor trabaje sobre información caótica.
+  expected_output: >
+    Un esquema lógico, limpio y muy bien ordenado en forma de viñetas o bloques (Contexto, Objetivo, Método, Resultados, Conclusión) que sirva como mapa conceptual para el redactor.
+  agent: agente_de_estructuracion_de_contenido
+
+# 5. Tarea de redacción
+tarea_redaccion:
+  description: >
+    Toma el informe final de la entrevista generado por el agente recopilador y redacta una primera versión completa del abstract a partir de esa información.
+    Tu tarea es encargarte de producir una primera versión completa del abstract a partir de esa información.
+    Instrucciones obligatorias:
+    1. Redacta exclusivamente a partir de la información validada. No inventes contenido ni rellenes huecos por tu cuenta bajo ninguna circunstancia, ni siquiera con lo que se suele decir sobre estos temas en general (retos típicos del sector, cifras habituales, fases estándar de una metodología...): si no está en el informe, no va en el abstract.
+    2. Mantén la brevedad exigible en un abstract, respetando el límite de palabras que haya indicado el autor en Restricciones; si no ha indicado ninguno, usa el rango que exige la plantilla IEEE IoT-J: entre 150 y 250 palabras. Si te vas a quedar corto, no lo arregles con frases de cierre vacías: repasa el informe y añade el detalle concreto que te hayas dejado fuera (nombres, siglas, componentes del sistema, lo que sea que ya esté ahí), no algo nuevo.
+    3. Asegura la autosuficiencia del texto (que se entienda por sí solo sin leer el resto del artículo).
+    4. Pon el foco en la aportación real del trabajo.
+    5. Evita a toda costa los detalles secundarios o un excesivo contexto general.
+    6. Escribe en lenguaje natural, en prosa continua (está prohibido usar viñetas o listas), con tono académico, buena cohesión y claridad expositiva.
+    7. Redacta en este idioma: {idioma}.
+    8. Tu respuesta final debe contener únicamente el texto del abstract, sin etiquetas, sin explicaciones del proceso ni ningún texto adicional.
+  expected_output: >
+    Un abstract científico cohesionado, breve y autosuficiente, redactado en lenguaje natural sin inventar datos y sin usar formatos de lista, enfocándose en la aportación principal.
+  agent: agente_redactor
+
+# 6. Tarea de revisión de estilo
+tarea_revision:
+  description: >
+    Toma el borrador del abstract generado por la tarea de redacción (tarea_redaccion).
+    Tu tarea no es cambiar el contenido de fondo, sino revisar la forma en la que está escrito para mejorar la calidad del texto.
+    Debes ocuparte estrictamente de lo siguiente:
+    1. Eliminar redundancias.
+    2. Mejorar la fluidez entre frases.
+    3. Simplificar expresiones innecesariamente largas.
+    4. Ajustar el tono académico.
+    5. Asegurar que el texto sea claro, preciso y conciso.
+    6. Comprobar que el abstract respeta el límite de palabras del autor si lo indicó, o si no, que se mueve entre 150 y 250 palabras (el rango de la plantilla IEEE IoT-J).
+    7. No traduzcas el abstract ni cambies el idioma en el que te lo han entregado: pule la forma, no el idioma.
+    8. Tu respuesta final debe contener únicamente el abstract pulido y mejorado, sin introducciones, comentarios ni etiquetas.
+  expected_output: >
+    Un abstract definitivo que cumple con todas las mejoras de forma (claro, preciso, conciso, fluido y con tono académico ajustado), respetando estrictamente el límite de palabras.
+  agent: agente_de_revision_de_estilo
+
+# 7. Tarea de control de calidad
+tarea_control_calidad:
+  description: >
+    Toma el abstract pulido generado por la tarea de revisión (tarea_revision).
+    Realiza una verificación global del resultado final para asegurar que cumple todos los requisitos.
+    Comprueba los siguientes puntos:
+    1. Que el abstract puede entenderse por sí solo (autosuficiencia).
+    2. Que resume adecuadamente el trabajo y contiene sus elementos esenciales.
+    3. Que mantiene coherencia interna.
+    4. Repasa el abstract frase por frase y comprueba que cada una tiene respaldo en alguno de los seis apartados del informe (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones). Si encuentras una cifra, una fase, un reto o un beneficio que no viene de ahí, no lo dejes pasar aunque suene razonable o sea de las cosas que se suelen decir sobre este tipo de trabajos: corrígelo o quítalo, aunque el abstract quede más corto.
+    5. Que respeta el límite de palabras del autor si lo indicó, o si no, que se mueve entre 150 y 250 palabras (el rango de la plantilla IEEE IoT-J). Si se sale de ese rango, ajústalo tú mismo antes de devolverlo.
+    6. Que está redactado en este idioma: {idioma}. Si está en un idioma distinto, tradúcelo tú mismo antes de devolverlo; no dejes pasar un idioma equivocado.
+    Si todo está correcto, devuelve únicamente el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional.
+  expected_output: >
+    El abstract final y definitivo en texto plano, sin introducciones, sin checklists de validación, sin etiquetas ni comentarios. Solo el abstract.
+  agent: agente_de_control_de_calidad
+
+# TAREAS NECESARIAS PARA LA INTRODUCCIÓN (MODELO CARS + EJES DE SHAW)
+
+# 8. Tarea de adquisición de información para la introducción (entrevista)
+tarea_adquisicion_intro:
+  description: >
+    Delega esta tarea completa al Agente de Adquisición de Información, sin entrevistar tú mismo al autor.
+    El Agente de Adquisición de Información debe iniciar una entrevista con el autor utilizando la herramienta proporcionada para hacerle preguntas.
+    Sigue este orden, una pregunta por turno:
+
+    1. Tipo de artículo y ejes de Shaw: pregunta qué tipo de artículo es (técnica, herramienta, sistema, modelo, resultado empírico, etc.), qué tipo de pregunta de investigación responde (por ejemplo, de método/medios -cómo hacer X mejor-, de viabilidad, de caracterización o de evaluación), qué tipo de contribución aporta y con qué tipo de validación se respalda (análisis, experimento controlado, caso de estudio, ejemplo, experiencia de uso...). Pregunta también a qué venue se dirige el artículo.
+    2. Territorio: el contexto o panorama general del tema y por qué es relevante.
+    3. Hueco: qué falta en el trabajo previo, qué limitación o problema sin resolver justifica la investigación. Pide referencias o enfoques concretos (autores, técnicas o trabajos previos), nunca una idea general.
+    4. Idea o enfoque: la propuesta central del trabajo, como respuesta directa al hueco anterior.
+    5. Contribuciones: la lista de aportaciones concretas frente a los trabajos previos, indicando si cada una se desarrolla en alguna sección concreta del documento.
+    6. Evaluación: cómo se valida o evalúa el trabajo, y qué respalda las contribuciones.
+    7. Estructura del documento: cómo se organizan las siguientes secciones del artículo.
+
+    Pautas para la entrevista:
+    - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
+    - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formularla pidiendo amablemente más detalle.
+    - En el punto del hueco, no aceptes una idea general: pide referencias o enfoques concretos (autores, técnicas o trabajos previos).
+    - Continúa el diálogo hasta que tengas la certeza de que los 7 puntos están completos y bien definidos.
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 7 puntos clave, manteniendo todos los detalles aportados por el usuario (referencias, enfoques, datos concretos). Clasifícalo bajo 7 encabezados: Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento.
+  agent: agente_de_adquisicion_de_informacion
+  output_file: "introducciones/salida/informe_intro.md"
+
+# 9. Tarea de adquisición desde PDF (introducción)
+tarea_adquisicion_pdf_intro:
+  description: >
+    Delega esta tarea completa al Agente de Adquisición de Información desde PDF, sin leer tú mismo los documentos.
+    Usa la herramienta 'leer_pdf' para leer el contenido del artículo científico. La ruta exacta que debes pasar como argumento 'ruta_pdf' es: {pdf_path}
+    A continuación, usa la herramienta 'leer_pdfs_carpeta' para leer los papers citados en la introducción de ese artículo. La ruta exacta que debes pasar como argumento 'ruta_carpeta' es: {citas_path}
+
+    Usa esas dos rutas tal cual aparecen arriba, de forma literal, como argumento de cada herramienta. No utilices rutas de ejemplo, inventadas o genéricas (como "ruta/del/articulo.pdf"): si la ruta indicada no funciona, esa es la única ruta válida y debes informarlo en el resultado en lugar de probar otras.
+
+    A partir de ambos textos, identifica y documenta con precisión los siguientes 7 puntos clave para redactar la introducción:
+    1. Tipo de artículo y ejes de Shaw: el tipo de artículo (técnica, herramienta, sistema, modelo, resultado empírico, etc.), el tipo de pregunta de investigación que responde, el tipo de contribución que aporta y el tipo de validación con el que se respalda. Indica también el venue (si se menciona o se puede deducir del formato) y el idioma del artículo (dedúcelo del propio texto).
+    2. Territorio: el contexto o panorama general del tema y por qué es relevante, apoyándote en el resumen o la motivación del artículo principal.
+    3. Hueco: la limitación, el problema sin resolver o la carencia que justifica la investigación. Repasa uno a uno, por separado, los papers de la carpeta de citas (los que has leído tú mismo con 'leer_pdfs_carpeta'): para cada uno escribe su propia frase con qué propone y qué limitación tiene frente al trabajo del artículo principal, nombrándolo siempre con el formato "Apellido del primer autor et al. (Año)" (p.ej. "Bahdanau et al. (2014)"), tal como aparece en su propio texto. No los mezcles a todos en una única frase genérica ni te limites a enumerar sus nombres: cada paper de la carpeta de citas necesita su propia crítica, con su autor y año puestos, aunque solo haya uno. Dentro de esos papers encontrarás a su vez menciones a otros trabajos (en su propia introducción o bibliografía): esos no cuentan como "paper citado" a efectos de este punto, porque tú no los has leído directamente; no los nombres con "Apellido et al. (Año)" como si los hubieras evaluado. Lo mismo vale si es el propio artículo principal el que describe con detalle otros trabajos previos en su apartado de estado del arte o trabajo relacionado: por muy bien explicados que estén ahí, tampoco los has leído tú directamente, así que no los nombres con "Apellido et al. (Año)" en el Hueco; esa descripción solo te sirve como apoyo para el Territorio.
+    4. Idea o enfoque: la propuesta central del trabajo, como respuesta al hueco anterior.
+    5. Contribuciones: la lista de aportaciones del trabajo, indicando la sección del documento donde se desarrolla cada una si se menciona.
+    6. Evaluación: cómo se valida o evalúa el trabajo en el artículo (qué experimentos, casos de estudio o análisis se realizan).
+    7. Estructura del documento: cómo se organizan las siguientes secciones, si se menciona en alguna parte del texto del artículo principal.
+
+    Instrucciones:
+    - Extrae únicamente información presente en los textos leídos. No inventes ni infieras datos que no aparezcan en ellos.
+    - Lo que leas con 'leer_pdfs_carpeta' son los papers citados, no el artículo que estás resumiendo: solo te sirven para contrastar en el punto del Hueco. El resto de puntos (Territorio, Idea, Contribuciones, Evaluación, Estructura del Documento) tienen que salir únicamente de lo que leas con 'leer_pdf', el artículo principal, por mucho que el tema de algún paper citado se parezca.
+    - En el Hueco puede aparecer el nombre de un trabajo previo solo si viene de un paper de la carpeta de citas. Si el artículo principal menciona otros trabajos en su propio estado del arte, puedes usar esa idea para el Territorio, pero no le pongas "Apellido et al. (Año)" en el Hueco: no lo has leído tú mismo, así que no puedes evaluarlo como si lo hubieras hecho.
+    - Mantén los detalles técnicos relevantes: nombres de modelos, técnicas, datasets y referencias concretas.
+    - Para el hueco, identifica cada paper de la carpeta de citas con "Apellido et al. (Año)" y describe su aportación de forma crítica, en su propia frase, no como una simple lista de nombres metidos en una frase compartida con otros trabajos. Esto vale igual si en la carpeta de citas solo hay un paper: dale su frase propia con su "Apellido et al. (Año)", no lo diluyas junto a otros nombres que solo hayas visto mencionados de pasada. No apliques ese mismo formato a otros nombres que solo veas mencionados dentro de esos papers.
+    - Si algún punto no puede determinarse a partir de los textos, indícalo como "No especificado en el documento".
+  expected_output: >
+    Un informe estructurado (texto limpio) que contenga los 7 puntos clave para la introducción, manteniendo los detalles técnicos y las referencias a los trabajos relacionados.
+    Clasifícalo bajo 7 encabezados: Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento.
+  agent: agente_de_adquisicion_pdf
+  output_file: "introducciones/salida/informe_pdf_intro.md"
+
+# 10. Tarea de validación de completitud (introducción)
+tarea_validacion_intro:
+  description: >
+    Tu objetivo es obtener la validación definitiva del informe por parte del 'Agente de Validación de Completitud'.
+    Para ello, delega la revisión del informe a dicho agente, pidiéndole que compruebe los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos), idea, contribuciones, evaluación y estructura del documento.
+    Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.
+    En ese caso, delega al agente de adquisición correspondiente para que vuelva a interactuar con el autor (modo entrevista) o revise el contenido del PDF (modo PDF) y obtenga exactamente la información que falta.
+    Al delegar, pásale los comentarios del agente de validación e indícale que solo debe obtener los datos que faltan.
+    Si delegas en el Agente de Adquisición de Información (modo entrevista), indícale la ruta del informe: introducciones/salida/informe_intro.md. Dile que use 'leer_informe_actual' con esa ruta para ver qué puntos ya están cubiertos antes de preguntar nada.
+    Si delegas en el Agente de Adquisición de Información desde PDF, recuérdale que debe usar 'leer_pdf' con ruta_pdf={pdf_path} y 'leer_pdfs_carpeta' con ruta_carpeta={citas_path}: son las únicas rutas válidas para esta sesión.
+    Una vez obtenidos los datos nuevos, vuelve a delegar al Agente de Validación de Completitud para una nueva revisión.
+    Repite este proceso hasta que el agente de validación responda explícitamente con "VALIDADO".
+  expected_output: >
+    El informe final completo, corregido y enriquecido con todos los detalles, organizado bajo los 7 encabezados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO". No termines la tarea devolviendo "NO VALIDADO", debes arreglarlo iterando con tus compañeros de equipo.
+
+# 10b. Tarea de validación de completitud en modo PDF (introducción, sin bucle de re-lectura)
+tarea_validacion_pdf_intro:
+  description: >
+    Revisa el informe que ha extraído del PDF el agente de adquisición y comprueba que cubre los siguientes 7 puntos: tipo de artículo y ejes de Shaw (incluyendo venue e idioma), territorio, hueco (con referencias o enfoques concretos a trabajos previos, nombrados como "Apellido et al. (Año)"), idea, contribuciones, evaluación y estructura del documento.
+    Basa la revisión únicamente en el texto del informe: no completes ni des por buena información que no esté ahí, aunque el tema te resulte familiar.
+    Consideración importante para el modo PDF: la información procede de documentos fijos (el artículo principal y los papers citados en su carpeta) y releerlos no aportará datos nuevos. Por ello:
+    - Si algún punto indica "No especificado en el documento", acéptalo como válido.
+    - Da la validación por buena en cuanto todos los puntos estén cubiertos, aunque algunos indiquen "No especificado en el documento".
+    - No hace falta pedir más información a nadie, ya que no es posible obtener nada adicional a partir de los mismos documentos.
+  expected_output: >
+    El informe extraído del PDF con los 7 puntos identificados (Tipo de Artículo y Ejes de Shaw, Territorio, Hueco, Idea, Contribuciones, Evaluación, Estructura del Documento), seguido de la frase "ESTADO: VALIDADO".
+    Los campos marcados como "No especificado en el documento" son aceptables y no impiden la validación.
+  agent: agente_de_validacion_de_completitud
+
+# 11. Tarea del bloque "Territorio"
+tarea_bloque_territorio:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Territorio" de la introducción, a partir de su sección "Territorio".
+    Sitúa el área de trabajo y muestra por qué es relevante, con un esbozo de alto nivel del estado del arte. No menciones todavía el problema o hueco concreto: eso lo cubre otro especialista a continuación.
+    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
+  expected_output: >
+    Uno o dos párrafos en prosa que sitúan el tema, explican su relevancia y esbozan el estado del arte, sin abordar todavía el hueco o problema.
+  agent: agente_especialista_territorio
+
+# 12. Tarea del bloque "Hueco"
+tarea_bloque_hueco:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Territorio" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Hueco" de la introducción, a partir de la sección "Hueco" del informe validado.
+    Explica qué falta en el trabajo previo descrito en el territorio: la limitación, el problema sin resolver o la carencia que justifica la investigación, de forma que el hueco se entienda como contraste directo con lo que ya existe.
+    - Usa únicamente los trabajos relacionados, autores, técnicas o referencias que aparezcan en la sección "Hueco" del informe validado. No inventes ni añadas ninguna referencia que no esté ahí, ni siquiera si te suena porque se menciona de pasada en algún otro punto del informe, ni siquiera si conoces otros trabajos del mismo tema que encajarían bien: solo cuentan los papers que el informe identifica como leídos de la carpeta de citas, ni uno más.
+    - Cada trabajo relacionado debe nombrarse siempre con el formato "Apellido et al. (Año)" tal como aparece en el informe validado. No lo sustituyas por descripciones genéricas ("un trabajo previo", "otros enfoques"): si el informe da el nombre y el año, consérvalos literalmente.
+    - Inmediatamente después de cada mención "Apellido et al. (Año)", añade pegado el marcador técnico "[[CITA: Apellido, Año]]", reutilizando exactamente el mismo apellido y año que acabas de escribir (p.ej. "Bahdanau et al. (2014) [[CITA: Bahdanau, 2014]]"). Este marcador lo usa el sistema para enlazar la cita bibliográfica; no lo omitas, no lo traduzcas ni lo expliques.
+    - Si para algún trabajo relacionado la información del informe es insuficiente para describir su limitación con precisión, marca ese punto con [VERIFICAR] en lugar de completarlo por tu cuenta.
+    - Redacta en lenguaje natural, en uno o dos párrafos, con tono académico, en este idioma: {idioma}.
+  expected_output: >
+    Uno o dos párrafos en prosa que, en contraste con el territorio descrito, explican qué falta en el trabajo previo, nombrando cada referencia con el formato "Apellido et al. (Año)" seguido de su marcador "[[CITA: Apellido, Año]]", y marcando con [VERIFICAR] los puntos con evidencia insuficiente.
+  agent: agente_especialista_hueco
+
+# 13. Tarea del bloque "Idea"
+tarea_bloque_idea:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Hueco" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Idea o Enfoque" de la introducción, a partir de la sección "Idea" del informe validado.
+    Presenta la propuesta central del trabajo como respuesta directa al hueco descrito: qué se hace para cubrirlo y por qué ese enfoque tiene sentido frente a la carencia identificada.
+    Redacta en lenguaje natural, en uno o dos párrafos, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
+    No nombres ningún trabajo relacionado con el formato "Apellido et al. (Año)" salvo que ya aparezca exactamente así en el bloque de "Hueco" que te han pasado como contexto: no añadas ninguna referencia nueva, aunque la hayas visto de pasada en algún texto leído. Si necesitas referirte otra vez a lo dicho en el hueco, hazlo retomando la idea, no repitiendo ni sumando nombres y años.
+  expected_output: >
+    Uno o dos párrafos en prosa que presentan la idea o enfoque propuesto como respuesta directa al hueco descrito previamente, sin introducir referencias a trabajos relacionados que no vinieran ya citadas en el hueco.
+  agent: agente_especialista_idea
+
+# 14. Tarea del bloque "Contribuciones"
+tarea_bloque_contribuciones:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y el bloque de "Idea" redactado por el especialista anterior (te lo proporcionará el coordinador como contexto), y redacta únicamente el bloque de "Contribuciones" de la introducción, a partir de la sección "Contribuciones" del informe validado.
+    Enumera las aportaciones concretas que concretan la idea propuesta. Si el informe validado indica en qué sección del documento se desarrolla cada contribución, inclúyelo entre paréntesis al final de la viñeta correspondiente; si no se indica, omite esa referencia sin inventarla.
+    Redacta como una lista en viñetas, una por contribución, con tono académico. No inventes contribuciones que no estén en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
+  expected_output: >
+    Una lista en viñetas con las contribuciones del trabajo, remitiendo a la sección del documento correspondiente cuando esa información esté disponible en el informe validado.
+  agent: agente_especialista_contribuciones
+
+# 15. Tarea del bloque "Evaluación"
+tarea_bloque_evaluacion:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Evaluación" de la introducción, a partir de su sección "Evaluación".
+    Adelanta cómo se valida el trabajo y qué respalda las contribuciones presentadas (qué experimentos, casos de estudio, análisis o ejemplos se utilizan), sin entrar en resultados numéricos detallados: es un avance, no la sección de resultados.
+    Redacta en lenguaje natural, en un párrafo, con tono académico. No inventes información que no esté en el informe validado, ni siquiera cosas típicas de este tipo de trabajos que te puedan sonar razonables. Escribe en este idioma: {idioma}.
+  expected_output: >
+    Un párrafo en prosa que adelanta cómo se valida el trabajo y qué respalda las contribuciones, sin detallar resultados numéricos.
+  agent: agente_especialista_evaluacion
+
+# 16. Tarea del bloque "Estructura del Documento"
+tarea_bloque_estructura_documento:
+  description: >
+    Toma el informe validado por la tarea de validación (tarea_validacion_intro) y redacta únicamente el bloque de "Estructura del Documento" de la introducción, a partir de su sección "Estructura del Documento".
+    Describe cómo se organiza el resto del artículo en secciones. Si el informe validado indica "No especificado en el documento" para este punto, redacta el bloque con una frase genérica que indique que el resto del artículo se organiza en las siguientes secciones, sin inventar nombres o números de sección concretos.
+    Redacta en lenguaje natural, en un párrafo breve, con tono académico, en este idioma: {idioma}.
+  expected_output: >
+    Un párrafo breve que describe la organización del resto del documento en secciones, sin inventar nombres o números de sección que no estén en el informe validado.
+  agent: agente_especialista_estructura_documento
+
+# 17. Tarea de fusión (editor)
+tarea_fusion_intro:
+  description: >
+    Toma los seis bloques redactados por los especialistas (Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento) y fusiónalos en un único texto de introducción, fluido y coherente.
+    1. Ordena los bloques siguiendo el flujo: Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento.
+    2. Suaviza las transiciones entre bloques, unifica la terminología y elimina las repeticiones que hayan podido surgir al redactarse cada bloque por separado.
+    3. Comprueba, usando el informe validado (tarea_validacion_intro) como referencia de los ejes de Shaw, que el texto deja claro: qué pregunta de investigación se responde, qué se aporta (las contribuciones) y cómo se valida el trabajo. Si alguno de estos tres puntos no queda claro en el texto fusionado, ajusta la redacción para que lo esté, sin inventar información nueva.
+    4. No elimines ni resumas en exceso el contenido de los bloques: tu trabajo es de fusión y pulido, no de recorte.
+    5. No añadas referencias a números o nombres de secciones del documento (p. ej. "Sección 2", "Sección 3") en el bloque de Contribuciones ni en ningún otro, salvo que esa referencia aparezca ya explícita y asociada a esa contribución concreta en el informe validado. No infieras ni cruces la numeración de "Estructura del Documento" con las Contribuciones para inventar esas referencias.
+    6. El bloque de Contribuciones te llega ya redactado en viñetas, una por aportación: déjalo tal cual. En los artículos de este campo es la forma habitual de dejar claro qué es nuevo, así que no lo diluyas en un párrafo de prosa ni lo mezcles con el texto de alrededor, aunque el resto de la introducción sí vaya en prosa continua.
+    7. Conserva literalmente cualquier mención a trabajos relacionados con el formato "Apellido et al. (Año)" que venga en el bloque de "Hueco", junto con el marcador "[[CITA: Apellido, Año]]" que la acompaña pegado justo detrás: no sustituyas la mención por una descripción genérica, no la elimines al suavizar las transiciones, y no borres ni muevas el marcador a otro sitio. Son las citas bibliográficas del artículo y deben llegar intactas al texto final.
+    8. El resto de bloques sí escríbelos en lenguaje natural, en varios párrafos, con tono académico, buena cohesión y claridad expositiva.
+    9. Todo el texto fusionado debe quedar en este idioma: {idioma}. Si algún bloque te ha llegado en un idioma distinto, tradúcelo tú al fusionar para que el resultado final sea homogéneo.
+    10. Tu respuesta final debe contener únicamente el texto de la introducción, sin etiquetas, sin explicaciones del proceso y sin envolverlo entre comillas triples ni marcarlo como bloque de código.
+  expected_output: >
+    Una introducción científica única y cohesionada que combina los seis bloques en el orden Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento, dejando claros los tres ejes de Shaw (pregunta de investigación, contribución y validación). Todo en prosa continua salvo el bloque de Contribuciones, que se mantiene como lista en viñetas.
+  agent: agente_editor_intro
+
+# 18. Tarea de control de calidad (introducción)
+tarea_control_calidad_intro:
+  description: >
+    Toma la introducción fusionada generada por la tarea de fusión (tarea_fusion_intro).
+    Realiza una verificación global del resultado final para asegurar que cumple todos los requisitos.
+    Comprueba los siguientes puntos:
+    1. Que la introducción puede entenderse por sí sola (autosuficiencia).
+    2. Que cubre los seis bloques: Territorio, Hueco, Idea, Contribuciones, Evaluación y Estructura del Documento.
+    3. Que deja claros los tres ejes de Shaw: qué pregunta de investigación se responde, qué se aporta y cómo se valida.
+    4. Que mantiene coherencia interna y un flujo de lo general a lo específico.
+    5. Repasa la introducción frase por frase y comprueba que cada una tiene respaldo en el informe validado (tarea_validacion_intro). Si encuentras un dato, una cifra, un reto o una herramienta que no viene de ahí, no lo dejes pasar aunque suene razonable o sea de lo que se suele decir sobre este tipo de trabajos: corrígelo o quítalo, aunque el texto quede más corto. Los puntos marcados con [VERIFICAR] se mantienen como tales.
+    6. Que su extensión y enfoque son adecuados para una introducción científica.
+    7. Que el texto no está envuelto entre comillas triples ni marcado como bloque de código; si lo está, elimina esas marcas antes de devolverlo.
+    8. Que el bloque de "Hueco" nombra cada trabajo relacionado con el formato "Apellido et al. (Año)" (consulta el informe validado de tarea_validacion_intro si necesitas comprobar el nombre y año exactos). Si alguna mención se ha quedado genérica sin autor ni año pudiendo tenerlo, corrígela para incluirlo antes de devolver el texto.
+    9. Que cada mención "Apellido et al. (Año)" del bloque de "Hueco" lleva pegado justo detrás su marcador técnico "[[CITA: Apellido, Año]]". Si el marcador falta pero la mención sí tiene autor y año, añádelo tú mismo con ese mismo apellido y año (p.ej. "Bahdanau et al. (2014) [[CITA: Bahdanau, 2014]]"); no lo inventes para menciones que no tengan autor y año concretos.
+    10. Cuenta cuántos trabajos relacionados trae la sección "Hueco" del informe validado (tarea_validacion_intro) y compáralos uno a uno con los que aparecen citados en el bloque de Hueco del texto final. Si hay algún nombre y año de más que no esté en esa sección del informe, por muy real o conocido que te resulte, quítalo junto con su marcador: no puede quedar ninguna referencia que no venga del informe.
+    11. Que el bloque de Contribuciones sigue en viñetas, una por aportación, como manda la convención de este campo para dejar claro qué es nuevo. Si el editor lo ha convertido en un párrafo de prosa, deshazlo y devuélvelo como lista, sin perder ni una sola contribución ni las referencias a sección que llevara cada una.
+    12. Que ninguna mención con formato "Apellido et al. (Año)" aparece fuera del bloque de Hueco si no estaba ya citada así en ese mismo bloque (consulta el informe validado de tarea_validacion_intro si necesitas comprobarlo). Si el bloque de Idea, Contribuciones, Evaluación o Estructura del Documento ha añadido un nombre y año que no vinieran ya del hueco, quita el nombre y el año concretos y déjalo como una alusión genérica ("otros enfoques previos", "trabajos anteriores"), sin inventar ni completar el dato por tu cuenta.
+    13. Que todo el texto está en este idioma: {idioma}. Si hay frases o bloques en un idioma distinto, tradúcelos tú mismo antes de devolver el resultado.
+    Si todo está correcto, devuelve el texto final. Esta es la última capa de control antes de entregar el resultado al usuario.
+  expected_output: >
+    La introducción final y definitiva, validada globalmente, garantizando que cumple con todos los requisitos académicos y de calidad, incluyendo los tres ejes de Shaw.
+  agent: agente_de_control_de_calidad
+
+# 19. Tarea de maquetación de una cita BibTeX (fallback cuando no hay DOI/CrossRef)
+tarea_generar_bibtex:
+  description: >
+    Este es el texto extraído de las primeras páginas de un paper (fichero original: {nombre_fichero}):
+
+    {texto_pdf}
+
+    Identifica el título, los autores (todos, separados por " and "), el año de publicación y el venue (revista o conferencia) del paper.
+    Si algún dato no puede determinarse desde el texto, usa "[VERIFICAR]" para ese campo en concreto.
+  expected_output: >
+    Un objeto JSON estricto con exactamente estas claves: {"title": "...", "author": "...", "year": "....", "venue": "..."}. Sin texto adicional antes o después del JSON.
+  agent: agente_bibliografico
+
+tarea_recortar_texto:
+  description: >
+    Este texto se ha quedado en {palabras_actuales} palabras, por encima del límite de {limite} que tiene que respetar:
+
+    {texto}
+
+    Redúcelo hasta que quede en {limite} palabras o menos: es un límite estricto, no una orientación, así que tienes que llegar hasta ahí de verdad, no acercarte solamente. Empieza simplificando frases, quitando palabras de más y fundiendo ideas repetidas; si con eso no basta para bajar del límite, no dudes en eliminar directamente alguna frase secundaria entera. Lo único que no puedes tocar son las cifras, resultados o datos concretos, y la frase final si el autor pidió una en concreto: todo lo demás es prescindible con tal de cumplir el límite.
+  expected_output: >
+    El mismo texto, ajustado al límite de palabras indicado, sin perder ningún dato ni cifra, listo para usarse tal cual.
+  agent: agente_recortador

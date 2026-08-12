@@ -1,0 +1,154 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by PaperCrew (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+El presente trabajo aborda la complejidad inherente al diseño y ejecución de simulaciones para sistemas IoT caracterizados por su heterogeneidad tecnológica y arquitecturas distribuidas en capas Edge, Fog y Cloud. Ante la carencia de herramientas que permitan modelar, generar código automáticamente y desplegar simulaciones con alto nivel de abstracción en entornos distribuidos, se propone SimulateIoT, una metodología y conjunto de herramientas basadas en desarrollo dirigido por modelos (Model-Driven Development). Se define un metamodelo específico validado mediante reglas OCL y un editor gráfico para la construcción de modelos IoT, que se transforman en código Java, configuraciones para brokers MQTT, bases NoSQL y motores de procesamiento complejo de eventos (CEP). Cada nodo, incluidos sensores, actuadores y nodos fog o cloud, se implementa como microservicio en contenedores Docker orquestados con Docker Swarm, soportando comunicación publish-subscribe y generación de datos sintéticos o mediante archivos CSV. SimulateIoT se valida con dos casos de estudio: un sistema en un entorno escolar con múltiples sensores y actuadores gestionados por reglas CEP, y un ambiente agrícola que simula la monitorización y control de riego con sensores y notificaciones. Ambos despliegues utilizan tecnologías como MQTT, MongoDB, Esper y WSO2, demostrando capacidad para modelar, generar y ejecutar simulaciones IoT heterogéneas con independencia tecnológica y reutilización de modelos. Esta propuesta reduce errores y facilita la definición detallada de entornos IoT distribuidos, siendo útil para profesionales y fines educativos.
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+
+La simulación de sistemas del Internet de las Cosas (IoT) constituye el área de trabajo principal, dada la alta inversión en desarrollo, despliegue y pruebas que requieren estos proyectos antes de su implementación física. La simulación permite modelar y razonar sobre los sistemas IoT, facilitando la optimización y reducción de costos asociados. En la literatura existen dos grandes enfoques: simuladores a nivel bajo que se centran en aspectos de hardware, redes y capacidades de los nodos; y simuladores a nivel alto que abordan el modelado de entornos, dispositivos y servicios mediante lenguajes específicos de dominio (DSL) o desarrollo guiado por modelos (MDD).
+
+A pesar de estos avances, muchas herramientas disponibles demandan elevadas competencias técnicas, carecen de interfaces gráficas amigables, no ofrecen generación automática de código o no cuentan con mecanismos para validar previamente el entorno simulado. Asimismo, varios simuladores no contemplan adecuadamente conceptos clave emergentes en el ámbito IoT, como las arquitecturas de fog computing y cloud computing, el procesamiento de eventos complejos y los protocolos de comunicación publish-subscribe, todos ellos fundamentales para la correcta representación y simulación de sistemas IoT modernos y heterogéneos.
+
+Aunque existen diversas propuestas para la simulación de sistemas IoT, varios trabajos muestran limitaciones que evidencian la necesidad de nuevos enfoques. Alwasel et al. (2020) [VERIFICAR] con BigDataSDNSim se centran en la simulación de datos masivos en entornos cloud SDN, pero no ofrecen un modelado integral de simulación IoT que abarque un alto nivel de abstracción a través de múltiples capas arquitectónicas. Clemente et al. (2018) [VERIFICAR] desarrollaron un lenguaje específico de dominio para domótica, pero su enfoque no contempla la simulación ni aspectos relacionados con almacenamiento o procesamiento basados en eventos. Por su parte, Mehdi et al. (2014) [VERIFICAR] con CupCarbon proporcionan un simulador gráfico para redes de sensores WSN, sin embargo, no modelan almacenamiento avanzado, procesamiento complejo ni la comunicación mediante protocolos publish-subscribe con brokers. Finalmente, Zeng et al. (2017) con IOTSim abordan la simulación de aplicaciones IoT en cloud con un enfoque en big data, pero su herramienta exige configuraciones técnicas complejas y carece de diseño gráfico y validación previa de los modelos~\cite{Zeng_2017}.
+
+En conjunto, estos trabajos presentan carencias importantes como la ausencia de abstracción visual adecuada para la representación de simulaciones IoT que integren las capas Edge, Fog y Cloud; una dependencia significativa en configuraciones técnicas de bajo nivel; la falta de generación automática de código integral y despliegue mediante arquitecturas basadas en microservicios; y la inexistencia de mecanismos para validar modelos antes de la simulación, aspectos clave para la viabilidad y usabilidad de entornos de simulación IoT modernos y representativos.
+
+La propuesta central de este trabajo consiste en el desarrollo de SimulateIoT, un enfoque basado en desarrollo guiado por modelos que permite definir, generar código y desplegar entornos de simulación IoT complejos sin necesidad de programación manual. Este enfoque incluye un metamodelo de dominio que representa de forma integral los conceptos clave del IoT, una sintaxis gráfica para facilitar el modelado visual del sistema y una transformación modelo-texto que genera automáticamente el código asociado, que incluye microservicios, contenedores Docker, brokers MQTT, bases de datos NoSQL y motores para el procesamiento de eventos y flujos de datos. La comunicación entre los distintos nodos IoT, como sensores, actuadores y nodos fog y cloud, se gestiona mediante un protocolo de publicación-suscripción, lo que permite una simulación fiel a arquitecturas reales y heterogéneas. Además, se incorporan mecanismos para la validación del modelo y para la monitorización durante la simulación, lo que garantiza la calidad y el control del entorno simulado.
+
+Este enfoque se adapta a las carencias detectadas en trabajos previos, al ofrecer una abstracción visual adecuada y una completa integración de las capas Edge, Fog y Cloud, facilitando la generación automática de código y el despliegue en arquitecturas modernas basadas en microservicios. De esta forma, SimulateIoT responde a la necesidad de contar con herramientas que simplifiquen el diseño y la ejecución de simulaciones IoT complejas, manteniendo una alta fidelidad con respecto a las arquitecturas actuales y reduciendo drásticamente la necesidad de configuraciones técnicas complejas o conocimiento especializado para su uso.
+
+- Definición de un metamodelo que captura conceptos IoT a alto nivel, abarcando capas Edge, Fog, Cloud, sensores, actuadores, bases de datos, procesamiento de eventos y comunicación (Sección III.A).
+- Desarrollo de una sintaxis gráfica para modelar estos sistemas (Sección III.B).
+- Implementación de reglas OCL para la validación del modelo en base a restricciones estructurales y semánticas (Sección III.B).
+- Creación de transformaciones modelo-texto en Acceleo para generar código completo que materializa los modelos en microservicios desplegables (Sección III.C).
+- Implementación del sistema de despliegue y ejecución sobre Docker Swarm y monitorización integrada (Sección III.D).
+- Presentación de dos estudios de caso reales (edificio inteligente y agricultura) mostrando la capacidad descriptiva, generación y despliegue (Sección V).
+- Discusión sobre las limitaciones y futuras extensiones para movilidad y dinámicas de la simulación (Sección VI).
+
+La validación del trabajo se lleva a cabo mediante la aplicación de dos estudios de caso prácticos que ejemplifican y respaldan las contribuciones propuestas. El primer estudio simula un edificio inteligente compuesto por múltiples nodos fog distribuidos por diferentes edificios, integrando sensores de temperatura, presencia y humo, junto con reglas para el control automatizado de sistemas como la calefacción, monitorizados mediante bases de datos y motores de procesamiento de eventos complejos. El segundo estudio de caso se centra en un entorno agrícola, donde se simulan sensores para medir variables como temperatura, humedad, pH y presión de agua, junto con actuadores de riego, utilizando arquitecturas basadas en nodos fog y cloud, almacenamiento en bases de datos MongoDB y reglas para notificaciones y control. Ambos casos de estudio permiten la generación automática de código, su despliegue en contenedores Docker y la ejecución completa de la simulación, demostrando así la expresividad, aplicabilidad y viabilidad del enfoque presentado.
+
+El resto del documento se organiza en varias secciones que incluyen una revisión del estado del arte, la presentación de la metodología SimulateIoT, una descripción detallada del metamodelo y las herramientas desarrolladas, la implementación del sistema de despliegue y ejecución, la exposición de casos de estudio aplicados, así como una discusión sobre las limitaciones detectadas y las conclusiones derivadas del trabajo.
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{simulateiot}
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}
