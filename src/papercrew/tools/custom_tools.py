@@ -63,15 +63,24 @@ def ask_human_tool(pregunta: str) -> str:
     Usa esta herramienta cuando necesites hacerle una pregunta directa al autor del artículo.
     Recibe como parámetro la pregunta que quieres hacer, y devuelve la respuesta del autor.
     """
+    fallo_no_inventar = (
+        "[FALLO DE HERRAMIENTA: no se ha podido obtener una respuesta real del autor. "
+        "Esto NO es una respuesta del autor: no la interpretes como tal ni inventes o "
+        "supongas ningún dato para rellenar este punto. Informa explícitamente de que "
+        "la entrevista se ha interrumpido en esta pregunta y detente aquí.]"
+    )
     if _q_questions is not None:
         _q_questions.put(pregunta)
         try:
             respuesta = _q_answers.get(timeout=600)
         except _queue_module.Empty:
-            respuesta = "Sin respuesta (tiempo agotado)."
+            respuesta = fallo_no_inventar
     else:
         print(f"\n[El Agente te pregunta]: {pregunta}")
-        respuesta = input("Tu respuesta: ")
+        try:
+            respuesta = input("Tu respuesta: ")
+        except EOFError:
+            respuesta = fallo_no_inventar
     _registrar_pregunta_respuesta(pregunta, respuesta)
     return respuesta
 
