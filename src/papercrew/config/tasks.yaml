@@ -19,6 +19,7 @@ tarea_adquisicion:
     INSTRUCCIONES CLAVE:
     - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
     - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
+    - Esto es una entrevista corta, no una ficha bibliográfica: pide cifras y hechos concretos, pero no reclames metadatos que el usuario no ha mencionado (DOI, licencia, versión exacta de un dataset...). Si ya hay un dato medible en Resultados, no sigas insistiendo por más.
     - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
     Esta tarea termina al entregar el informe de la entrevista. Validación, estructuración, redacción, revisión y control de calidad son tareas aparte: no las hagas aquí ni añadas un veredicto de validación al informe.
   expected_output: >
