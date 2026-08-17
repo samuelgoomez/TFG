@@ -300,6 +300,14 @@ hr { border-color: rgba(255,255,255,0.07) !important; margin: 1.25rem 0 !importa
 def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_result, q_status):
     from papercrew.tools.custom_tools import set_web_queues, clear_web_queues, set_informe_path, clear_informe_path
     from papercrew.crew import PaperCrew
+    from crewai.project.utils import cache as _crewai_memoize_cache
+
+    # El decorador @agent/@task/@crew de CrewAI memoiza resultados en un cache
+    # global del proceso, indexado por id(self). Como la web crea una instancia
+    # de PaperCrew nueva por ejecución y Python puede reutilizar la misma
+    # dirección de memoria al liberar la anterior, sin este reset una ejecución
+    # nueva puede recibir resultados cacheados de una ejecución previa distinta.
+    _crewai_memoize_cache._cache.clear()
 
     set_web_queues(q_questions, q_answers)
     if not pdf_path:
