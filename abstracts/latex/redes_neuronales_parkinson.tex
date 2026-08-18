@@ -82,9 +82,23 @@ La Enfermedad de Parkinson (EP) presenta un desafío en el monitoreo efectivo de
 
 
 \section{Introduction}
-\label{sec:intro}
 
-% [Pendiente de generacion]
+El presente estudio se enmarca en la aplicación de inteligencia artificial y aprendizaje profundo para el monitoreo y evaluación de pacientes con enfermedad de Parkinson, centrándose específicamente en la clasificación de actividades de la vida diaria a partir de datos obtenidos mediante sensores inerciales. Esta área cobra relevancia debido a la amplia heterogeneidad y variabilidad de los síntomas motores en estos pacientes, lo que dificulta su seguimiento efectivo mediante métodos convencionales. En el campo, se observa un interés creciente en técnicas como el Análisis de Componentes Principales (PCA) para la reducción de dimensionalidad de datos y en el uso de modelos de Redes Neuronales Artificiales tipo Perceptrón Multicapa (MLP) para clasificar patrones motores, consolidando así la aplicación del aprendizaje profundo en la rehabilitación y monitoreo clínico.
+
+A pesar de los avances, los trabajos previos presentan limitaciones importantes, como la escasa capacidad de generalización de los modelos debido al bajo número de sujetos y a la falta de heterogeneidad en las muestras. También se destaca la posible influencia de la colocación de sensores sobre la calidad y consistencia de las señales capturadas, así como el desequilibrio en las bases de datos utilizadas, lo cual dificulta alcanzar resultados precisos y robustos en contextos reales. Estas deficiencias evidencian la necesidad de desarrollar métodos capaces de lograr alta precisión en escenarios variados y con datos desbalanceados, lo que fundamenta la investigación propuesta.
+
+En respuesta a estas limitaciones, este trabajo presenta el diseño y desarrollo de un modelo de Red Neuronal Artificial tipo Perceptrón Multicapa, combinado con la técnica de Análisis de Componentes Principales para reducir la dimensionalidad de la base de datos. Esta estrategia busca mejorar el desempeño del clasificador en la identificación automática de las actividades de la vida diaria en pacientes con enfermedad de Parkinson, gestionando eficazmente la complejidad y volumen de la información proveniente de los sensores. El modelo se entrena con datos de sensores inerciales, aplicando técnicas de preprocesamiento, normalización y codificación que permiten optimizar tanto la precisión como la eficiencia computacional. Esta solución resulta adecuada para su implementación en dispositivos con recursos limitados, ofreciendo un sistema robusto y generalizable para condiciones reales.
+
+Las contribuciones específicas de este trabajo son las siguientes:
+- Desarrollo de un modelo MLP entrenado con datos de PCA que clasifica con alta precisión seis actividades de la vida diaria (sección metodología y resultados).
+- Demostración de la efectividad de PCA para reducir dimensionalidad sin pérdida significativa de información, optimizando el entrenamiento de la RNA (sección materiales y métodos).
+- Evaluación detallada del desempeño de los modelos con diferentes divisiones de sujetos en entrenamiento y prueba, evidenciando la importancia de la representatividad de los datos para la generalización (sección resultados y discusión).
+- Análisis comparativo de parámetros y arquitecturas de red, mostrando la viabilidad de modelos con menos parámetros para dispositivos de bajo recurso (sección resultados).
+- Propuesta de aplicación futura para un sistema de apoyo al monitoreo clínico de pacientes con Parkinson basado en inteligencia artificial (conclusiones).
+
+Para validar este trabajo se realizaron experimentos con una amplia base de datos que incluye observaciones obtenidas mediante sensores inerciales en sujetos con Parkinson realizando seis actividades cotidianas. Se aplicó una división rigurosa entre datos de entrenamiento y prueba para evaluar el modelo a través de métricas como precisión, recall y F1-score. Asimismo, se analizaron diferentes configuraciones de la red y la capacidad de generalización del modelo empleando subconjuntos diversos de sujetos. Los resultados obtenidos fueron comparados con modelos reportados en la literatura, teniendo en cuenta limitaciones como el tamaño reducido de la muestra y la posible influencia de la ubicación de los sensores.
+
+El resto del artículo se estructura siguiendo el formato típico de trabajos de investigación, contemplando secciones de materiales y métodos, resultados y discusión, conclusiones, además de incluir las contribuciones de los autores y las referencias bibliográficas consultadas.
 
 
 \section{[SECTION 2 TITLE]}
