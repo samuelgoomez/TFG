@@ -50,31 +50,8 @@ Este documento contiene respuestas listas para copiar y pegar cuando el sistema 
 
 ---
 
-## ESCENARIO C — Abstract interactivo: CodeBERT (revisión de código)
-*Artículo ficticio sobre revisión de código automatizada con CodeBERT. Datos completos.*
-
-**1. Tema o problema:**
-> El tema principal es la automatización de la revisión de código en proyectos de software. El problema que abordamos es que la revisión manual consume mucho tiempo y es propensa a inconsistencias: dos revisores distintos pueden dar feedback contradictorio sobre el mismo fragmento. Proponemos un sistema basado en CodeBERT capaz de detectar automáticamente problemas de calidad, seguridad y estilo en pull requests.
-
-**2. Objetivo:**
-> Desarrollar y evaluar un sistema de recomendación automática de revisión de código que, dado un pull request, identifique y clasifique los problemas más relevantes en tres categorías: calidad del código, vulnerabilidades de seguridad y violaciones de estilo. El sistema debe generar comentarios en lenguaje natural, reduciendo el tiempo medio de revisión en al menos un 30% respecto al proceso manual.
-
-**3. Metodología:**
-> Seguimos un enfoque en tres fases. Primero, construimos un dataset a partir de 50.000 pull requests reales de GitHub en proyectos Python y Java, etiquetando manualmente una muestra de 5.000 con las tres categorías. Segundo, fine-tuneamos CodeBERT con una arquitectura de clasificación multi-etiqueta, con un split 80/10/10. Tercero, evaluamos el modelo midiendo precisión, recall y F1 por categoría, y realizamos un estudio de usuario con 12 desarrolladores que compararon el feedback del sistema frente a revisores humanos en 100 pull requests reales.
-
-**4. Resultados:**
-> El modelo alcanzó un F1 de 0.87 en calidad, 0.79 en seguridad y 0.91 en estilo. En el estudio de usuario, los 12 desarrolladores valoraron el feedback como equivalente o superior al de un revisor junior en el 73% de los casos. El tiempo medio de revisión se redujo un 34%, superando el objetivo del 30%. El sistema mostró mayor dificultad con vulnerabilidades de seguridad complejas que requerían contexto semántico amplio.
-
-**5. Conclusión:**
-> La principal aportación es demostrar que CodeBERT, con un fine-tuning adecuado sobre datos reales, puede actuar como asistente de revisión fiable en proyectos de escala real, reduciendo la carga cognitiva sin sacrificar calidad. El dataset etiquetado de 5.000 pull requests publicado como recurso abierto es en sí mismo una contribución, ya que no existía un benchmark público de estas características para revisión automatizada en Python y Java simultáneamente.
-
-**6. Restricciones:**
-> El abstract debe estar en inglés y tener un máximo de 250 palabras. Texto continuo en prosa, sin estructura por secciones.
-
----
-
-## ESCENARIO D — Introducción interactiva: CodeBERT (revisión de código)
-*Mismo artículo que el Escenario C, adaptado a las 7 preguntas del modo introducción CARS.*
+## ESCENARIO C — Introducción interactiva: caso de éxito (validada a la primera)
+*Artículo ficticio sobre revisión de código automatizada con CodeBERT. Datos completos, con referencias concretas en formato "Apellido et al. (Año)" y venue/idioma definidos; diseñado para pasar la validación sin bucle.*
 
 **1. Tipo de artículo y ejes de Shaw:**
 > Es un artículo de tipo técnica/sistema: presentamos una herramienta concreta con una arquitectura definida.
@@ -106,3 +83,54 @@ Este documento contiene respuestas listas para copiar y pegar cuando el sistema 
 
 **7. Estructura del documento:**
 > El documento se organiza en seis secciones. La Sección 1 es la introducción. La Sección 2 describe el dataset. La Sección 3 detalla la arquitectura del sistema. La Sección 4 presenta la evaluación. La Sección 5 analiza las limitaciones y casos de fallo. La Sección 6 revisa el trabajo relacionado (Tufano et al., Li et al., CodeReviewer). El documento cierra con conclusiones y trabajo futuro.
+
+---
+
+## ESCENARIO D — Introducción interactiva: caso de rechazo (fuerza el rechazo del validador)
+*Artículo ficticio sobre un chatbot de atención al cliente. Primera ronda de respuestas vacías de contenido en todos los puntos (fuerza que el validador rechace el informe explícitamente). El agente de adquisición vuelve a preguntar; en esa segunda ronda se aportan datos reales para que el bucle se resuelva y el informe acabe validándose, en vez de que el sistema se rinda por completo. Nota: por diseño (`tarea_validacion_intro` en `tasks.yaml`), la tarea en sí no debe terminar devolviendo "NO VALIDADO" como resultado final — pero el agente de validación sí puede emitir ese veredicto como resultado intermedio de una delegación, que es lo que fuerza este escenario.*
+
+**Primera ronda (respuestas vagas, fuerzan el rechazo):**
+
+**1. Tipo de artículo y ejes de Shaw:**
+> No sé, la verdad, no lo tengo claro. Es un trabajo sobre un chatbot, ya está. No sabría decirte qué tipo de pregunta de investigación es ni qué se aporta exactamente. Tampoco sé la revista ni el idioma, ponlo como quieras.
+
+**2. Territorio:**
+> Pues de chatbots, que se usan cada vez más. No sabría explicar mucho más sobre el tema en general.
+
+**3. Hueco:**
+> No sé qué limitaciones tienen los que ya existen, la verdad no lo he mirado. No me acuerdo de ningún nombre ni estudio.
+
+**4. Idea:**
+> Un chatbot mejor que los que hay. No sabría decir en qué consiste exactamente ni qué lo hace diferente.
+
+**5. Contribuciones:**
+> No sé, supongo que el chatbot en sí. No tengo claro qué más se podría destacar.
+
+**6. Evaluación:**
+> No lo hemos probado todavía, o si se probó no me han pasado los resultados. No tengo datos.
+
+**7. Estructura del documento:**
+> No lo sé, no he mirado cómo está organizado el documento.
+
+**Segunda ronda (si el agente repregunta, ahora sí con datos concretos para que el informe se pueda validar):**
+
+**1b. Tipo de artículo y ejes de Shaw:**
+> Es un artículo técnico que presenta un sistema nuevo (herramienta). Pregunta de investigación de tipo método: ¿cómo mejorar la comprensión del lenguaje natural en chatbots de atención al cliente? Contribución: un chatbot con un modelo de lenguaje ajustado (fine-tuned) para este dominio. Validación mediante pruebas de usuario controladas. Iría dirigido a una conferencia de interacción persona-ordenador (CHI), en inglés.
+
+**2b. Territorio:**
+> Los chatbots basados en modelos de lenguaje se usan cada vez más en atención al cliente porque reducen costes y ofrecen respuesta inmediata las 24 horas. La adopción de grandes modelos de lenguaje preentrenados ha mejorado su fluidez, pero la adaptación a dominios de negocio concretos sigue siendo un reto abierto.
+
+**3b. Hueco:**
+> Trabajos como el de Adiwardana et al. (2020) con Meena muestran chatbots de conversación abierta muy fluidos, pero sin especialización en un dominio concreto, lo que provoca respuestas genéricas o incorrectas en consultas reales de atención al cliente.
+
+**4b. Idea:**
+> Proponemos afinar (fine-tuning) un modelo de lenguaje preentrenado sobre conversaciones reales de atención al cliente de una empresa de telecomunicaciones, incorporando una base de conocimiento específica del dominio para reducir las respuestas genéricas.
+
+**5b. Contribuciones:**
+> 1) Un chatbot especializado en atención al cliente mediante fine-tuning de dominio. 2) Un conjunto de datos etiquetado de conversaciones reales de soporte técnico. 3) Una comparación empírica frente a un chatbot genérico no especializado.
+
+**6b. Evaluación:**
+> Evaluamos el sistema con 200 conversaciones reales no vistas, midiendo la tasa de resolución en el primer contacto y la satisfacción del usuario mediante encuesta, comparando frente al chatbot genérico de base.
+
+**7b. Estructura del documento:**
+> El documento tiene una introducción, una sección de trabajo relacionado, la descripción del sistema y el proceso de fine-tuning, la evaluación experimental, y termina con conclusiones y trabajo futuro.
