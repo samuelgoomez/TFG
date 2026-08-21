@@ -1,29 +1,31 @@
 Tipo de Artículo y Ejes de Shaw:
-El artículo principal es un artículo de técnica que presenta un nuevo modelo de preentrenamiento de representaciones de lenguaje basado en Transformers bidireccionales profundos denominado BERT. Responde a preguntas de investigación sobre cómo mejorar el aprendizaje con modelos de lenguaje preentrenados para tareas de comprensión de lenguaje natural. La contribución es un modelo novedoso de preentrenamiento bidireccional, y se valida empíricamente con evaluaciones en once tareas de NLP que muestran mejoras sustanciales. El venue específico no se menciona, pero por la apariencia del documento y referencias, parece de un congreso de computación y procesamiento del lenguaje moderno y en inglés.
+El artículo principal es un estudio técnico que propone una técnica basada en Redes Neuronales Artificiales (RNA) para la clasificación de actividades de la vida diaria (AVDs) en pacientes con Enfermedad de Parkinson (EP). La pregunta de investigación responde a cómo mejorar el seguimiento y apoyo en pacientes con EP mediante clasificación automática de actividades. La contribución es una propuesta de modelo clásico de aprendizaje supervisado con validación empírica alcanzando un 99% de precisión en clasificación con un perceptrón multicapa (MLP). La validación se basa en experimentos sobre una base de datos con señales de sensores inerciales. El artículo está en español y su venue es una revista científica mexicana (Revista Mexicana de Ingeniería Biomédica). 
 
 Territorio:
-El contexto general es la mejora de modelos de lenguaje preentrenados para tareas de NLP. Se aborda la limitación de los modelos unidireccionales actuales y la necesidad de modelos que incorporen contexto a la izquierda y derecha para mejorar representaciones y desempeño en tareas como inferencia textual, respuesta a preguntas y reconocimiento de entidades nombradas. Se refiere al uso de modelos tipo Transformer y los enfoques previos basados en LSTM como ELMo o GPT.
+El artículo sitúa la problemática en el contexto del monitoreo de pacientes con EP para mejorar la evaluación clínica, usando sensores inerciales y técnicas de inteligencia artificial, especialmente RNA. Destaca la complejidad de los síntomas motores y la necesidad de sistemas automáticos para seguimiento continuo. Se fundamenta en trabajos previos de sensores wearables, técnicas de análisis de señales (PCA) y modelos MLP aplicados en pacientes con EP y otras patologías.
 
 Hueco:
-- Peters et al. (2018) proponen ELMo, un modelo basado en LSTM bidireccional que mejora tareas de NLP pero con limitaciones por arquitectura de LSTM y combinación de capas.
-- Radford et al. (2018) presentan GPT, un modelo Transformer unidireccional preentrenado que aunque mejora resultados, está limitado por su unidireccionalidad.
-Cada uno propone modelos preentrenados con ciertas limitaciones frente a BERT: ELMo no es profundamente bidireccional y GPT es unidireccional, limitando su contexto.
+- Jung et al. (2020): Revisión de sensores inerciales en entornos de vida libre, indica desafíos para aplicar algoritmos desarrollados en entornos controlados a datos obtenidos en condiciones naturales, sugiere necesidad de adaptación para poblaciones con patologías.
+- Nguyen et al. (2018): Indica la dificultad y la falta de métodos robustos para la detección y segmentación automática de actividades no estructuradas de la vida diaria en pacientes con Parkinson en entornos simulados o libres.
+- Pérez Sanpablo et al. (2021): Muestra limitaciones en la precisión de métodos de análisis discriminante para clasificación de actividades en EP, con exactitudes solo en torno al 60%.
+- Rast y Labruyère (2020): Review sistemática que resalta la heterogeneidad de métodos, la falta de estándares y la escasa evaluación de usabilidad, además de la necesidad de algoritmos precisos adaptados a pacientes con movilidad reducida.
+- Rodríguez Montero et al. (2023): Trabajos previos con técnica de redes neuronales para clasificación de AVDs con resultados aceptables pero menor que el artículo principal, con posibilidad de mejorar mediante selección de características y redes profundas.
 
 Idea:
-BERT propone un modelo basado en Transformer encoder bidireccional profundo preentrenado con dos tareas: lenguaje enmascarado (Masked LM) y predicción de la siguiente oración (Next Sentence Prediction) que permite aprender representaciones de contexto completo que pueden ser finamente ajustadas para diversas tareas de NLP sin necesidad de arquitectura específica para cada tarea.
+El artículo propone usar Redes Neuronales Artificiales multicapa diseñadas y entrenadas con señales inerciales preprocesadas y reducidas dimensionalmente mediante PCA, para clasificar seis actividades específicas de la vida diaria en pacientes con EP. Esta combinación permite una clasificación automática avanzada, con alta precisión, superando técnicas clásicas de clasificación y adaptándose a bases de datos con desequilibrios.
 
 Contribuciones:
-- Introducción del preentrenamiento bi-direccional profundo basado en Transformers.
-- Uso combinado de Masked LM y Next Sentence Prediction para capturar contexto en ambas direcciones.
-- Demostración de mejoras del estado del arte en once tareas de NLP como GLUE, SQuAD v1.1 y v2.0, SWAG, entre otras.
-- Provisión de modelos preentrenados y código abierto para la comunidad (https://github.com/google-research/bert).
-- Análisis exhaustivo de ablatión del modelo y efectos de tamaño, contribución de capas, etc.
+1. Desarrollo de un sistema basado en MLP para clasificación precisa de 6 AVDs en pacientes con EP (Sección de metodología y resultados).
+2. Aplicación de técnicas de reducción dimensional (PCA) para mejorar la eficiencia y mantener precisión (detalles en modelos D y D-13).
+3. Evaluación exhaustiva del modelo con validación cruzada y comparación con otros clasificadores (LDA, Naïve Bayes, etc.).
+4. Propuesta de configuraciones y recomendaciones para futuras aplicaciones y reducción de sensores para facilitar implementación práctica.
+5. Codificación y diseño implementado en Python con uso de librerías especializadas para facilitar la reproducibilidad y extensión.
 
 Evaluación:
-Se valida con experimentos de fine-tuning en 11 tareas diferentes, incluyendo tareas de clasificación de texto, inferencia natural de lenguaje, respuesta a preguntas (SQuAD v1.1 y v2.0), GLUE benchmark, y otras pruebas de inferencia común (SWAG). Se obtienen mejoras sustanciales en métricas relevantes (exactitud, F1, puntuación GLUE) por encima del estado del arte previo.
+La evaluación se realizó con una base de datos que contiene 179,755 observaciones de sensores inerciales colocados en pie, muslo, pelvis y muñeca de pacientes con EP. Se expresó un 99% de precisión con la arquitectura óptima para el modelo completo y 80% para el modelo reducido mediante PCA. Se aplicó validación cruzada (10-fold) para confirmar robustez. Se compararon seis clasificadores con superior desempeño de la red neuronal. Se mostró matriz de confusión y análisis de errores para actividades. 
 
 Estructura del Documento:
-La introducción indica que el documento cubre primeramente las tareas de preentrenamiento con descripción del modelo y sus componentes, seguido de una sección detallada de experimentos y resultados, análisis ablatión, y discusión final. Se estructura en secciones técnicas para explicar modelo, datos, fine-tuning, experimentos y análisis.
+No se menciona explícitamente la organización del documento en el texto del artículo principal accesible.
 
 Resumen:
-Se ha cubierto con los textos principales y los papers de citas relevantes el tipo de artículo, territorio, hueco claramente con autores citados, idea innovadora, contribuciones explícitas, evaluaciones y estructura del documento necesaria para la redacción de la introducción.
+Este estudio aporta un modelo avanzado de RNA para la clasificación automática de actividades de vida diaria en pacientes con Parkinson, validado con amplias muestras y técnicas modernas de aprendizaje supervisado y reducción de dimensionalidad, mejorando resultados previos y proponiendo un sistema escalable para uso clínico y rehabilitación. Los trabajos citados muestran los retos de la estimación en entornos naturales, la necesidad de segmentación robusta y la complejidad en clasificación, justificando la propuesta presentada.
