@@ -138,7 +138,11 @@ CrewAI exige que todo agente referenciado en `tasks.yaml` tenga su método corre
 - **`marcar_citas_sin_respaldo()`**: red de seguridad final — cualquier mención "Apellido (Año)" en el texto final que no tenga una entrada real en el `.bib` se marca `[VERIFICAR]`, para que ninguna cita inventada por el LLM pase desapercibida.
 - **Escapado de LaTeX**: se escapan `&`, `%`, `$`, `#`, `_` en el texto en bruto, antes de insertar ninguna cita (para no escapar por error el guion bajo de una clave de bibtex como `Zeng_2017`).
 
-**Limitación conocida, aceptada**: cuando un paper se publicó primero en arXiv y después formalmente en una conferencia/revista con un año distinto, el texto puede citar el año de la publicación oficial mientras el `.bib` indexa el año del preprint — se marca `[VERIFICAR]` aunque la cita sea correcta (falso positivo). Es preferible a que se cuele una cita falsa sin avisar; se decidió no añadir tolerancia de año porque no aporta lo suficiente para el riesgo/complejidad que añade.
+**Limitación conocida, aceptada**: cuando un paper se publicó primero en arXiv y después formalmente en una conferencia/revista con un año distinto, el texto puede citar el año de la publicación oficial mientras el `.bib` indexa el año del preprint — se marca `[VERIFICAR]` aunque la cita sea correcta (falso positivo). Es preferible a que se cuele una cita falsa sin avisar; se decidió no añadir tolerancia de año porque no aporta lo suficiente para el riesgo/complejidad que añade. Actualización: se probó priorizar la búsqueda por título en CrossRef sobre el ID de arXiv, pero sin más comprobación coló una cita falsa en otro paper de prueba (tomó por buena una entrada de un diccionario sin relación, porque el título extraído de ese PDF concreto es una línea de plantilla sin rellenar, no el título real). Se dejó la búsqueda por título con una comprobación extra de que el título encontrado se parezca de verdad al buscado (_titulos_se_parecen en bib_writer.py), que evita la cita falsa pero no arregla el caso de Alwasel en si.
+
+**Otra limitación conocida**: al generar un abstract desde un PDF completo (sin acceso al abstract real, quitado a propósito para la prueba), el sistema a veces cita una cifra real pero de una sección distinta a la que destaca el abstract original (test vs. dev set, promedio interno vs. leaderboard oficial). No es un dato inventado -- se verificó contra el PDF en BERT (GLUE: 82.1% generado vs 80.5% real) y Attention (BLEU EN-FR: 41.0 generado vs 41.8 real) -- pero conviene explicarlo en la memoria si se compara cifra a cifra.
+
+**Y una tercera**: qué trabajos concretos se citan en el bloque "Hueco" de una introducción no es determinista -- cambia entre ejecuciones aunque la carpeta de citas sea la misma (comprobado relanzando SimulateIoT tres veces seguidas: citó conjuntos distintos de 4-6 referencias cada vez, resolviendo entre 1 y 3 con DOI real). Tener más PDFs en la carpeta de citas sube la probabilidad de que la referencia elegida se resuelva bien, pero no garantiza cuál se va a citar.
 
 ---
 
@@ -212,5 +216,5 @@ Papers de prueba disponibles: *Attention Is All You Need* (inglés), *Aplicació
 
 ## Pendiente
 
-1. **COMFIT y CupCarbon** (dos de los trabajos relacionados que cita SimulateIoT) están detrás de muro de pago (Elsevier y EAI/EUDL respectivamente) y no se han podido conseguir para completar la bibliografía de ese caso de prueba.
+1. **COMFIT** (uno de los trabajos relacionados que cita SimulateIoT) sigue detrás de muro de pago (Elsevier) y no se ha podido conseguir. CupCarbon sí se consiguió (acceso UEX vía EAI/EUDL).
 2. Ningún cambio de arquitectura pendiente ni bug conocido sin resolver — el resto de limitaciones conocidas (falso positivo de año en citas, precisión no garantizada al 100% del Agente Recortador) se han evaluado y se han dejado así a propósito, no por falta de tiempo.
