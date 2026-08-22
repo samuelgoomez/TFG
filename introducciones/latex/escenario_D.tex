@@ -1,0 +1,146 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by PaperCrew (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+% [Pendiente de generacion]
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+Los chatbots basados en modelos de lenguaje se están consolidando como una herramienta cada vez más utilizada en el ámbito de la atención al cliente debido a su capacidad para reducir costos operativos y ofrecer respuestas inmediatas y disponibles las 24 horas del día. La incorporación de grandes modelos de lenguaje preentrenados ha supuesto un avance significativo en la fluidez y naturalidad de las interacciones, lo que ha incrementado su aceptación y uso en diversos sectores.
+
+Sin embargo, a pesar de estas mejoras en la capacidad conversacional general, la adaptación de estos modelos a dominios específicos de negocio continúa siendo un desafío importante. Esta necesidad de especialización es una cuestión central en el desarrollo actual de sistemas conversacionales, dado que la correcta comprensión y respuesta en contextos concretos es fundamental para garantizar la efectividad y utilidad práctica de los chatbots en entornos de atención al cliente.
+
+Trabajos previos como el de Adiwardana et al. (2020) con Meena presentan chatbots que logran una conversación muy fluida en contextos abiertos, pero carecen de especialización en dominios concretos. Esta falta de especialización provoca que las respuestas generadas sean en ocasiones genéricas o incorrectas cuando se enfrentan a consultas reales de atención al cliente, lo cual limita su eficacia y satisfacción del usuario. Esta limitación en la adaptación detallada a dominios específicos es el problema que el presente trabajo busca abordar.
+
+Para abordar la limitación señalada, esta investigación propone afinar un modelo de lenguaje preentrenado mediante fine-tuning utilizando conversaciones reales de atención al cliente provenientes de una empresa de telecomunicaciones. Esta estrategia permite adaptar el modelo a las particularidades del dominio específico, incorporando además una base de conocimiento especializada que contribuye a reducir las respuestas genéricas y aumentar la precisión y relevancia de las interacciones. De este modo, el enfoque se orienta a mejorar la especialización del chatbot, respondiendo directamente a la carencia de modelos generalistas que no satisfacen adecuadamente las necesidades de atención en contextos concretos.
+
+- Desarrollo de un chatbot especializado en atención al cliente mediante fine-tuning de dominio.  
+- Creación de un conjunto de datos etiquetado de conversaciones reales de soporte técnico.  
+- Comparación empírica frente a un chatbot genérico no especializado.
+
+La validación del trabajo se realiza a través de una evaluación experimental en la que se utiliza un conjunto de 200 conversaciones reales no vistas previamente, con el fin de medir la tasa de resolución en el primer contacto y la satisfacción del usuario mediante encuestas. Esta evaluación compara el desempeño del chatbot especializado desarrollado con el de un chatbot genérico no especializado, proporcionando así evidencia empírica que respalda las contribuciones presentadas y la efectividad del enfoque propuesto.
+
+El resto del documento se organiza en las siguientes secciones: introducción; trabajo relacionado; descripción del sistema y proceso de fine-tuning; evaluación experimental; conclusiones y trabajo futuro.
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+% Sin bibliografia: no se proporcionaron citas.
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}

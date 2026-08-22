@@ -1,0 +1,145 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by PaperCrew (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+% [Pendiente de generacion]
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+La revisión de código es una práctica esencial en el desarrollo de software, utilizada para detectar defectos, mejorar la mantenibilidad del código y facilitar la transferencia de conocimiento entre desarrolladores. En los últimos años, el aumento masivo de pull requests en plataformas colaborativas como GitHub y GitLab ha generado un cuello de botella, dificultando que los equipos mantengan la calidad y eficiencia en sus procesos de revisión. En este contexto, los avances en modelos preentrenados como CodeBERT y GraphCodeBERT han permitido un entendimiento más profundo, tanto semántico como estructural, del código fuente. Estas tecnologías emergentes representan un área en crecimiento que combina la ingeniería de software empírica con técnicas de procesamiento de lenguaje natural aplicadas específicamente al código, abriendo nuevas posibilidades para automatizar y mejorar la revisión de software.
+
+A pesar de los avances en el uso de modelos de lenguaje para la revisión de código, aún existen limitaciones importantes en los trabajos previos que motivan esta investigación. Tufano et al. (2021) utilizan el modelo T5 para sugerir cambios en el código, pero no generan comentarios en lenguaje natural que faciliten la comprensión y acción por parte de los desarrolladores. Li et al. (2022) evalúan GPT-2 únicamente en proyectos Java de pequeña escala y no incluyen estudios de usuario que validen la utilidad práctica de sus resultados. Por otro lado, CodeReviewer (Lu et al., 2022) plantea una clasificación binaria para la revisión, pero sin categorías detalladas ni generación de feedback accionable para los desarrolladores. Además, ninguno de estos trabajos ha publicado un dataset multilingüe etiquetado públicamente, lo que dificulta la reproducibilidad y comparación sistemática en este campo.
+
+Como respuesta a las deficiencias identificadas en trabajos previos, se propone un sistema que no solo identifica y categoriza los problemas del código en tres dimensiones clave —calidad, seguridad y estilo—, sino que además genera comentarios en lenguaje natural para cada tipo de problema. Este enfoque combina la capacidad de clasificación multi-etiqueta mediante un fine-tuning de CodeBERT con una cabeza especializada, entrenado en un dataset manualmente etiquetado con 5,000 pull requests en Python y Java. La generación de feedback accionable y comprensible para los desarrolladores tiene sentido como solución directa a la carencia de comentarios naturales útiles y categorizados, facilitando así la revisión automatizada de código en entornos reales.
+
+- Un sistema de revisión con clasificación multi-etiqueta y generación de comentarios accionables (Sección específica no indicada).  
+- Un dataset público de 5,000 pull requests reales etiquetados manualmente (Sección específica no indicada).  
+- Una evaluación empírica que combina métricas automáticas (F1 por categoría) y un estudio de usuario con 12 profesionales sobre 100 pull requests (Sección específica no indicada).  
+- Un análisis de los límites del sistema, destacando la detección de vulnerabilidades de seguridad complejas como un reto abierto (Sección específica no indicada).
+
+La validación del trabajo se realiza mediante un experimento controlado que utiliza métricas precisas, como el F1 por categoría, para evaluar la capacidad del sistema de clasificación y generación de comentarios. Además, se lleva a cabo un estudio de usuario ciego con 12 desarrolladores profesionales que valoran la utilidad, claridad y accionabilidad del feedback proporcionado por el sistema, comparándolo con revisores humanos junior. Esta combinación de evaluaciones cuantitativas y cualitativas respalda de manera sólida las contribuciones presentadas.
+
+El resto del artículo se organiza en varias secciones que abordan de manera estructurada diferentes aspectos del trabajo: en primer lugar, se presenta el dataset utilizado; a continuación, se detalla la arquitectura del sistema propuesto; luego se expone la evaluación realizada; posteriormente, se discuten las limitaciones y los casos de fallo; y finalmente, se revisa el trabajo relacionado, seguido por las conclusiones y las líneas futuras de investigación.
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+% Sin bibliografia: no se proporcionaron citas.
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}
