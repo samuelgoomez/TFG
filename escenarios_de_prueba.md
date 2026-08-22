@@ -23,7 +23,7 @@ Este documento contiene respuestas listas para copiar y pegar cuando el sistema 
 > El análisis demuestra que Grad-CAM supera significativamente a LIME tanto en precisión espacial anatómica como en eficiencia computacional. Nuestro estudio aporta un marco cuantitativo robusto que facilita la adopción segura y confiable de la IA en entornos de diagnóstico radiológico.
 
 **6. Restricciones:**
-> El abstract debe estar redactado estrictamente en inglés. No debe superar las 150 palabras. La última frase debe ser obligatoriamente: "Future clinical validations are necessary."
+> No debe superar las 150 palabras. La última frase debe ser obligatoriamente: "Future clinical validations are necessary."
 
 ---
 
