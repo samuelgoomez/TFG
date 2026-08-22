@@ -251,24 +251,28 @@ class PaperCrew():
     def tarea_estructuracion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_estructuracion'],
+            context=[self.tarea_validacion()],
         )
 
     @task
     def tarea_redaccion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_redaccion'],
+            context=[self.tarea_validacion(), self.tarea_estructuracion()],
         )
 
     @task
     def tarea_revision(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_revision'],
+            context=[self.tarea_redaccion()],
         )
 
     @task
     def tarea_control_calidad(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_control_calidad'],
+            context=[self.tarea_validacion(), self.tarea_revision()],
         )
 
     # ── Tareas modo introducción ──────────────────────────────────────────────

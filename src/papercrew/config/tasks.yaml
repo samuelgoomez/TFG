@@ -105,6 +105,7 @@ tarea_estructuracion:
     No escribas el abstract todavía. Tu misión es únicamente preparar el "esqueleto conceptual" mediante un índice o esquema detallado para evitar que el redactor trabaje sobre información caótica.
   expected_output: >
     Un esquema lógico, limpio y muy bien ordenado en forma de viñetas o bloques (Contexto, Objetivo, Método, Resultados, Conclusión) que sirva como mapa conceptual para el redactor.
+  agent: agente_de_estructuracion_de_contenido
 
 # 5. Tarea de redacción
 tarea_redaccion:
@@ -122,6 +123,7 @@ tarea_redaccion:
     8. Tu respuesta final debe contener únicamente el texto del abstract, sin etiquetas, sin explicaciones del proceso ni ningún texto adicional.
   expected_output: >
     Un abstract científico cohesionado, breve y autosuficiente, redactado en lenguaje natural sin inventar datos y sin usar formatos de lista, enfocándose en la aportación principal.
+  agent: agente_redactor
 
 # 6. Tarea de revisión de estilo
 tarea_revision:
@@ -139,6 +141,7 @@ tarea_revision:
     8. Tu respuesta final debe contener únicamente el abstract pulido y mejorado, sin introducciones, comentarios ni etiquetas.
   expected_output: >
     Un abstract definitivo que cumple con todas las mejoras de forma (claro, preciso, conciso, fluido y con tono académico ajustado), respetando estrictamente el límite de palabras.
+  agent: agente_de_revision_de_estilo
 
 # 7. Tarea de control de calidad
 tarea_control_calidad:
@@ -155,6 +158,7 @@ tarea_control_calidad:
     Si todo está correcto, devuelve únicamente el texto del abstract, sin añadir comentarios, checklists, secciones de validación ni ningún otro texto adicional.
   expected_output: >
     El abstract final y definitivo en texto plano, sin introducciones, sin checklists de validación, sin etiquetas ni comentarios. Solo el abstract.
+  agent: agente_de_control_de_calidad
 
 # TAREAS NECESARIAS PARA LA INTRODUCCIÓN (MODELO CARS + EJES DE SHAW)
 
