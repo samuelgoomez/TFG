@@ -1,32 +1,31 @@
 Tipo de Artículo y Ejes de Shaw:
-El artículo principal "Attention Is All You Need" presenta una técnica innovadora, un nuevo modelo de red neuronal denominado Transformer basado únicamente en mecanismos de atención, sin recurrencia ni convoluciones. Responde a la pregunta de investigación sobre cómo mejorar modelos de traducción automática mediante una arquitectura diferente y eficiente. La contribución principal es el desarrollo de este modelo Transformer, validado con experimentos en tareas de traducción automática y análisis de parsing de constituyentes. El venue es la conferencia NeurIPS 2017 y el idioma del artículo es inglés.
+El artículo presenta un trabajo del tipo sistema y técnica, que desarrolla un Lenguaje Específico del Dominio (DSL) para el diseño, generación de código y ejecución de entornos de simulación en Internet de las Cosas (IoT). La pregunta de investigación está centrada en cómo facilitar la modelación y simulación de sistemas IoT complejos usando un enfoque basado en desarrollo dirigido por modelos (MDD). La contribución principal es el diseño de un metamodelo de dominio, una sintaxis concreta gráfica y transformaciones modelo a texto que permiten definir y desplegar simulaciones IoT sin escribir código manual. La validación se realiza mediante dos estudios de caso en entornos IoT de smart building (edificio inteligente) y agricultura, demostrando la expresividad del método. El artículo está publicado en la revista IEEE Access, en inglés, en 2021.
 
 Territorio:
-El contexto es el campo de la transducción de secuencias en tareas de traducción automática. Los modelos tradicionales emplean redes recurrentes o convolucionales con mecanismos de atención para mejorar el rendimiento, pero enfrentan desafíos en paralelización y manejo de dependencias largas. Se justifica la relevancia por la necesidad de mejorar la calidad y eficiencia del entrenamiento en sistemas de traducción automática, apoyado en resultados previos y motivaciones del propio resumen.
+El contexto es la creciente aplicación de IoT en ámbitos como smart cities, hogares inteligentes, agricultura e industria, donde desarrollar, desplegar y probar proyectos IoT implica altos costes en hardware y software. Para reducir estos costes es necesario simular los sistemas IoT antes de su desarrollo real. Se han desarrollado entornos de simulación IoT que se centran más en aspectos de bajo nivel (redes, hardware) y requieren altos conocimientos técnicos y de programación. Por ello, se propone un enfoque de alto nivel basado en desarrollo dirigido por modelos para diseñar, generar y desplegar simulaciones IoT complejas con abstracciones propias del dominio (sensores, actuadores, nodos Edge, Fog y Cloud, comunicación publish-subscribe, microservicios, contenedores Docker).
 
 Hueco:
-- Bahdanau et al. (2014) proponen un modelo basado en encoder-decoder con mecanismo de atención suave que supera limitaciones de codificación fija, pero aún usa redes recurrentes. Su limitación frente al Transformer radica en la dependencia de arquitecturas recurrentes que limitan la paralelización y eficiencia.
-- Sutskever et al. (2014) presentan un modelo de secuencia a secuencia con LSTM profundo para traducción, que mejora el rendimiento mediante reversión de secuencias de entrada. Sin embargo, su enfoque aún depende de redes recurrentes que dificultan la paralelización y desempeño en secuencias muy largas.
-Estos trabajos previos tienen en común la dependencia de modelos recurrentes para el procesamiento de secuencias, limitación que el Transformer pretende superar mediante el uso exclusivo de la atención.
+Respecto a los papers citados en la carpeta de citas se han identificado las siguientes limitaciones específicas:
+- Alwasel et al. (2020): Simulan Big Data y redes definidas en software en nube, pero no cuentan con interfaz gráfica ni validación de configuración previa de entornos IoT.
+- Levis et al. (2003): Tossim simula nodos TinyOS a bajo nivel sin definir patrones de comunicación IoT ni modelar procesos de alto nivel.
+- Mehdi et al. (2014): CupCarbon permite simulación con interfaz gráfica para contextos IoT, pero no modela almacenamiento ni protocolos complejos como publish/subscribe.
+- Patel y Cassou (2015): IoTSuite facilita desarrollo de aplicaciones IoT, pero no incluye simulación ni modelado de almacenamiento ni procesamiento complejo.
+- Zeng et al. (2017): IOTSim es un simulador para aplicaciones IoT en nube, focalizado en procesamiento big data pero sin herramientas para modelar arquitecturas IoT de alto nivel gráficamente.
+Estos trabajos presentan, en líneas generales, ausencia de un lenguaje específico de alto nivel con validación, soporte para modelar toda la arquitectura IoT (Edge, Fog, Cloud), comunicación publish-subscribe y despliegue integrado en contenedores con microservicios.
 
 Idea:
-La propuesta central es el Transformer, una arquitectura de modelo de secuencia a secuencia que emplea únicamente mecanismos de atención multi-cabeza para codificar y decodificar las secuencias, eliminando la recurrencia y convoluciones. Esta arquitectura permite mejorar la paralelización durante el entrenamiento y maneja mejor las dependencias a largo plazo.
+El enfoque central es un enfoque de desarrollo dirigido por modelos para definir, generar código y desplegar simulaciones IoT. Consta de un dominio metamodelo (SimulateIoT), una sintaxis gráfica para modelado visual, validación mediante reglas OCL, y transformaciones modelo a texto que generan el código necesario (microservicios, brokers MQTT, bases de datos NoSQL, motores CEP, contenedores Docker). La simulación integra sensores, actuadores y nodos heterogéneos (Edge, Fog, Cloud) desplegados en un entorno realista basado en una arquitectura orientada a servicios.
 
 Contribuciones:
-- Desarrollo completo del Transformer basado solo en atención, con arquitectura detallada (sección 3).
-- Presentación y justificación de mecanismos de atención escalada y multi-cabeza.
-- Demostración de eficiencia computacional y paralelización con análisis comparativo (Tablas 1 y 2).
-- Resultados de estado del arte para tareas de traducción inglés-alemán e inglés-francés (Sección 6).
-- Evaluación en tareas de parsing de constituyentes para demostrar generalización (Sección 6.3).
-- Código abierto para replicabilidad.
-Cada contribución está desarrollada en secciones específicas del artículo.
+1. Desarrollo de un metamodelo completo para simulación IoT que incluye dispositivos, nodos, comunicación, almacenamiento y procesamiento (Sección III y IV).
+2. Creación de una sintaxis gráfica para diseñar modelos de simulación conformes al metamodelo con validación OCL (Sección IV-B).
+3. Implementación de una transformación modelo a texto para generación automática del código y despliegue (Sección IV-C).
+4. Integración con tecnologías industriales (Docker, MQTT, motores CEP como Esper y WSO2) para simulación y despliegue real (Sección IV-D).
+5. Presentación de dos estudios de caso completos, en ecosistemas de smart building y agricultura, que ilustran la potencia y aplicabilidad del enfoque (Sección V).
+6. Generación e implementación de un entorno completo con monitorización y capacidades de análisis en tiempo real (Sección V y VI).
 
 Evaluación:
-El trabajo se valida con extensos experimentos en traducción automática WMT 2014 (inglés-alemán e inglés-francés), mostrando mejoras significativas en puntuaciones BLEU y reducción de tiempos de entrenamiento. También se evalúa en análisis sintáctico (parsing de constituyentes) mostrando buena generalización. Se incluyen comparaciones con modelos recurrentes y convolucionales previos y análisis de variaciones de modelo.
+La validación se realiza a través de dos estudios de caso detallados: 1) Escuela de Tecnología con varios edificios, sensores de temperatura, presencia y humo, actuadores y nodos Fog/Cloud. Se muestra el modelado, la generación de código, el despliegue con Docker y la simulación realista con gestión de eventos. 2) Ambiente agrícola con sensores de humedad, pH, temperatura y actuadores para riego distribuidos en diez hectáreas, con similar despliegue. En ambos casos, el sistema permite análisis en tiempo real, monitorización integrada, y generación de eventos y acciones basadas en reglas CEP. Se discuten además limitaciones y ampliaciones futuras.
 
 Estructura del Documento:
-El documento se estructura en: introducción (no incluida en el PDF leído), arquitectura del modelo (Sección 3), justificación y comparación de mecanismos de atención (Sección 4), detalles de entrenamiento (Sección 5), resultados y análisis (Sección 6), conclusiones (Sección 7) y referencias. No se menciona explícitamente la estructura de secciones, pero esta secuencia es evidente en el desarrollo.
-
----
-
-Este informe reúne la información principal extraída del artículo principal y de los papers citados leídos, siguiendo las indicaciones dadas para cada punto clave.
+El documento está estructurado en: Introducción; Trabajo relacionado; Metodología SimulateIoT; Herramientas SimulateIoT (Diseño, Validación, Transformación y Ejecución); Casos de Estudio (smart building y agricultura); discusión sobre limitaciones, usuarios objetivo y tecnologías; conclusiones y trabajos futuros. Las secciones principales son claramente diferenciadas para guiar al lector desde la motivación hasta la aplicación práctica.

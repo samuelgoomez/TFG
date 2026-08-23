@@ -1,5 +1,6 @@
 # Autor: Samuel Gómez Grande
 import os
+import re
 from dotenv import load_dotenv
 load_dotenv()
 from crewai import Agent, Crew, Process, Task, LLM
@@ -13,6 +14,35 @@ from papercrew.tools.custom_tools import (
     read_pdfs_folder_tool,
     read_informe_tool,
 )
+
+
+# El agente de validación a veces da por buena una frase como "alta tasa de aciertos"
+# como si fuera un dato numérico, aunque la propia tarea le pide explícitamente rechazar
+# ese tipo de vaguedad. En vez de confiar solo en su criterio, este guardrail comprueba
+# por código que el bloque de Resultados tenga al menos una cifra antes de dejar pasar
+# la tarea; si no la tiene, CrewAI reintenta la tarea automáticamente con este mensaje.
+def _verificar_resultados_con_dato_numerico(salida):
+    texto = salida.raw if hasattr(salida, "raw") else str(salida)
+    match = re.search(
+        r"(?:\d\.\s*)?Resultados\s*:?\s*\n?(.*?)(?=\n\s*(?:\d\.\s*)?(?:Conclusi[oó]n|Restricciones)\b|\Z)",
+        texto,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not match:
+        # No se encontró la sección con el formato esperado: no forzamos el rechazo
+        # para no romper el pipeline por un simple cambio de formato del informe.
+        return (True, salida)
+    seccion = match.group(1)
+    if re.search(r"\d", seccion) or "[SIN DATO NUMÉRICO]" in seccion.upper():
+        return (True, salida)
+    return (
+        False,
+        "El punto de Resultados no tiene ningún dato concreto y medible (cifra, porcentaje, "
+        "comparación numérica). Delega de nuevo en el Agente de Adquisición de Información para "
+        "conseguir un dato numérico real. Si el autor insiste en que no dispone de ninguna cifra, "
+        "no te la inventes ni cambies de tema o de estudio: usa el marcador \"[SIN DATO NUMÉRICO]\" "
+        "tal como indica la descripción de esta tarea.",
+    )
 
 @CrewBase
 class PaperCrew():
@@ -206,6 +236,7 @@ class PaperCrew():
     def tarea_validacion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_validacion'],
+            guardrail=_verificar_resultados_con_dato_numerico,
         )
 
     # Variante sin bucle para modo PDF: acepta "No especificado" como válido.
@@ -220,24 +251,28 @@ class PaperCrew():
     def tarea_estructuracion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_estructuracion'],
+            context=[self.tarea_validacion()],
         )
 
     @task
     def tarea_redaccion(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_redaccion'],
+            context=[self.tarea_validacion(), self.tarea_estructuracion()],
         )
 
     @task
     def tarea_revision(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_revision'],
+            context=[self.tarea_redaccion()],
         )
 
     @task
     def tarea_control_calidad(self) -> Task:
         return Task(
             config=self.tasks_config['tarea_control_calidad'],
+            context=[self.tarea_validacion(), self.tarea_revision()],
         )
 
     # ── Tareas modo introducción ──────────────────────────────────────────────

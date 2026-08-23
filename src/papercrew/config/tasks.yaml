@@ -19,10 +19,11 @@ tarea_adquisicion:
     INSTRUCCIONES CLAVE:
     - No pidas todos los puntos a la vez. Haz preguntas concisas y secuenciales.
     - Analiza cada respuesta del usuario. Si es demasiado vaga, incompleta o desordenada, no pases a la siguiente pregunta. Vuelve a formular la pregunta exigiendo amablemente más detalles (ej. "¿Podrías darme números específicos de los resultados?").
+    - Esto es una entrevista corta, no una ficha bibliográfica: pide cifras y hechos concretos, pero no reclames metadatos que el usuario no ha mencionado (DOI, licencia, versión exacta de un dataset...). Si ya hay un dato medible en Resultados, no sigas insistiendo por más.
     - Continúa el diálogo hasta que tengas la certeza de que los 6 puntos están completos y bien definidos.
+    Esta tarea termina al entregar el informe de la entrevista. Validación, estructuración, redacción, revisión y control de calidad son tareas aparte: no las hagas aquí ni añadas un veredicto de validación al informe.
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
-  agent: agente_de_adquisicion_de_informacion
   output_file: "papers/salida/informe_entrevista.md"
 
   # 2b. Tarea de adquisición desde PDF
@@ -60,7 +61,7 @@ tarea_validacion:
     1. Tema o problema abordado.
     2. Objetivo principal.
     3. Metodología (al menos una descripción general del enfoque; no se exigen parámetros exhaustivos).
-    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse.
+    4. Resultados: tiene que haber al menos un dato concreto y medible (una cifra, un porcentaje, una comparación numérica...); no hacen falta todas las métricas posibles, pero una valoración general del tipo "funcionó bien" o "los resultados fueron buenos" sin ningún dato detrás no es suficiente y debe rechazarse. Si tras volver a preguntar el autor insiste en que no tiene ninguna cifra, no te la inventes ni cambies de tema o de estudio: deja el punto de Resultados tal como lo cuenta el autor y añade al principio el marcador "[SIN DATO NUMÉRICO]".
     5. Conclusión o aportación principal.
     6. Restricciones de formato (puede ser "sin restricciones" si el autor no indicó ninguna).
     Si el Agente de Validación de Completitud detecta carencias y responde que el informe no está validado, esta tarea no puede darse por terminada.

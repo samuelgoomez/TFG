@@ -1,0 +1,147 @@
+%% bare_jrnl.tex
+%% V1.4b
+%% 2015/08/26
+%% by Michael Shell
+%% see http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
+%% journal paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/pkg/ieeetran
+%% and
+%% http://www.ieee.org/
+%%
+%% ---------------------------------------------------------------
+%% Modified by PaperCrew (TFG).
+%% Plantilla de referencia: IEEE Journal LaTeX Template oficial
+%% (IEEEtran.cls, distribuido vía template-selector.ieee.org),
+%% con el front-matter ajustado a las Author Guidelines de
+%% IEEE Internet of Things Journal (ieee-iotj.org/guidelines-for-authors).
+%% Abstract e introducción se insertan automáticamente.
+%% ---------------------------------------------------------------
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
+
+
+\documentclass[journal]{IEEEtran}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{[ARTICLE TITLE]}
+
+\author{[FIRST AUTHOR],~\IEEEmembership{Member,~IEEE,}
+        and~[CO-AUTHOR]%
+\thanks{[AFFILIATION DATA].}%
+\thanks{Manuscript received [DATE].}}
+
+\markboth{IEEE INTERNET OF THINGS JOURNAL,~Vol.~[VOL], No.~[NUM], [MONTH]~[YEAR]}%
+{[AUTHORS]: [SHORT TITLE]}
+
+\maketitle
+
+% IEEE IoT-J: el abstract debe tener entre 150 y 250 palabras y no debe
+% incluir citas bibliográficas ni ecuaciones.
+\begin{abstract}
+This work addresses the limitations of unidirectional language models in NLP, particularly their inadequate use of bidirectional context, which hampers performance on token-level tasks like question answering. We propose BERT, a novel pretraining approach based on a deeply bidirectional Transformer that employs two unsupervised tasks: masked language modeling (MLM), masking 15\% of input tokens for prediction, and next sentence prediction (NSP), a binary classification capturing inter-sentence relationships. The model is pretrained on BooksCorpus and Wikipedia, with two configurations: BERT\_BASE (12 layers, 768 hidden units, 12 attention heads, 110 million parameters) and BERT\_LARGE (24 layers, 1024 hidden units, 16 attention heads, 340 million parameters). Fine-tuning adds task-specific output layers and trains for 2 to 4 epochs, with a maximum input length of 512 tokens. Evaluation on GLUE, SQuAD v1.1 and v2.0, SWAG, and CoNLL-2003 shows BERT outperforms previous state-of-the-art models, achieving up to 82.1\% average accuracy on GLUE, F1 scores of 90.9 and 91.8 (ensemble) on SQuAD v1.1, a +5.1 point increase on SQuAD v2.0 F1, 92.2\% accuracy on SWAG, and 92.8 F1 on CoNLL-2003. Ablations confirm the essential role of bidirectional pretraining and NSP, while larger models improve performance. Compared to unidirectional models like OpenAI GPT and feature-based methods such as ELMo, BERT establishes a new paradigm for deep contextualized representation learning integrating context from both directions simultaneously, enabling a single, versatile pretrained model adaptable through simple fine-tuning across diverse NLP tasks. Training leveraged TPU resources to meet computational demands.
+\end{abstract}
+
+\begin{IEEEkeywords}
+[KEYWORD 1], [KEYWORD 2], [KEYWORD 3]
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+Recent advances in natural language processing (NLP) have demonstrated the importance of pre-trained language models for improving performance across a diverse set of tasks. Traditional approaches often rely on unidirectional models that condition on either the left or right context, limiting the richness of learned representations. Modern architectures, such as Transformers and bidirectional LSTM-based models, have expanded the ability to capture comprehensive contextual information. Techniques like ELMo utilize bidirectional LSTMs to generate deep contextualized word embeddings, while models such as OpenAI GPT employ Transformer architectures with a unidirectional left-to-right focus. These models form the foundation of many state-of-the-art NLP systems, addressing challenges in tasks like textual entailment, question answering, and named entity recognition. Enhancing these pre-trained models to incorporate richer bidirectional context remains a central theme in advancing the field.
+
+Previous approaches have made significant strides in improving language representations, yet they retain notable limitations. Peters et al. (2018)~\cite{peters2018elmo} propose ELMo, a bidirectional LSTM-based model that enhances NLP tasks by generating contextualized embeddings. However, its architecture relies on independently trained left-to-right and right-to-left LSTMs combined at a shallow level, which restricts the depth of bidirectionality and the representation’s completeness. Similarly, Radford et al. (2018) [VERIFICAR] introduce GPT, a Transformer-based model pre-trained in a unidirectional left-to-right manner. While GPT achieves strong performance, its unidirectional nature limits its ability to fully leverage context from both preceding and succeeding tokens. Together, these models fall short of capturing deep, truly bidirectional context, highlighting a gap that motivates the development of more fully bidirectional pre-training methods.
+
+The approach presented addresses these limitations by introducing a deeply bidirectional Transformer encoder that is pre-trained using two novel tasks: the Masked Language Model (Masked LM) and Next Sentence Prediction. This design enables the model to learn comprehensive context representations by conditioning on both left and right contexts simultaneously, overcoming the unidirectional constraints observed in prior models. By pre-training with these objectives, the model generates rich, fully bidirectional representations that can be fine-tuned for a wide array of natural language processing tasks without requiring task-specific architectural changes. This approach directly tackles the gap left by earlier models that either lacked deep bidirectionality or were limited by their unidirectional training, establishing a more versatile and effective framework for language understanding.
+
+- Introduction of deep bidirectional pre-training based on Transformers.
+- Combined use of Masked Language Model and Next Sentence Prediction tasks to capture context from both directions.
+- Demonstration of state-of-the-art improvements on eleven natural language processing tasks including GLUE, SQuAD v1.1 and v2.0, SWAG, among others.
+- Provision of pre-trained models and open-source code to the community (https://github.com/google-research/bert).
+- Comprehensive analysis of model ablations, including effects of model size and contribution of individual layers.
+
+The validation of the proposed work is conducted through fine-tuning experiments across eleven diverse natural language processing tasks, encompassing text classification, natural language inference, question answering, and benchmarks such as GLUE and SWAG. These experiments provide empirical evidence supporting the effectiveness and generality of the approach, demonstrating improvements in key evaluation metrics such as accuracy and F1 scores compared to prior state-of-the-art methods.
+
+The remainder of the article is organized into sections that first cover the pre-training tasks and detailed descriptions of the model components. This is followed by comprehensive experimental sections presenting the results and analyses, including ablation studies and discussions. The document is structured in a technical manner to thoroughly explain the model architecture, datasets, fine-tuning procedures, experiments, and corresponding analyses.
+
+
+\section{[SECTION 2 TITLE]}
+\label{sec:section2}
+
+[Section 2 content.]
+
+
+\section{[SECTION 3 TITLE]}
+\label{sec:section3}
+
+[Section 3 content.]
+
+
+\section{[SECTION 4 TITLE]}
+\label{sec:section4}
+
+[Section 4 content.]
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+[Conclusions.]
+
+
+\appendices
+\section{Appendix}
+[Appendix content.]
+
+
+\section*{Acknowledgment}
+
+[Acknowledgments.]
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{bert}
+
+
+\begin{IEEEbiographynophoto}{[FIRST AUTHOR]}
+[Brief author biography.]
+\end{IEEEbiographynophoto}
+
+
+\end{document}

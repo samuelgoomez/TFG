@@ -82,9 +82,29 @@ La Enfermedad de Parkinson (EP) presenta un desafío en el monitoreo efectivo de
 
 
 \section{Introduction}
-\label{sec:intro}
 
-% [Pendiente de generacion]
+
+El monitoreo de pacientes con Enfermedad de Parkinson (EP) representa un área de gran relevancia clínica debido a la complejidad y heterogeneidad de los síntomas motores característicos de esta patología. Los avances en sensores inerciales portátiles y técnicas de inteligencia artificial, particularmente las redes neuronales artificiales, han permitido desarrollar sistemas automáticos que facilitan la evaluación continua y objetiva de la función motora en estos pacientes. En este contexto, la combinación de sensores wearables con metodologías como el Análisis de Componentes Principales (PCA) y modelos de perceptrón multicapa (MLP) ha mostrado ser una estrategia efectiva para capturar y clasificar actividades de la vida diaria, contribuyendo así a un mejor seguimiento clínico y a la mejora en la calidad de la rehabilitación. Estos desarrollos se apoyan en un cuerpo de trabajo previo que ha explorado la aplicación de tecnologías similares en pacientes con EP y otros trastornos motores, consolidando un estado del arte que enfatiza la necesidad de soluciones precisas, adaptables y no invasivas para el monitoreo funcional en entornos reales.
+
+A pesar de los avances descritos en el territorio, persisten limitaciones importantes en el trabajo previo que motivan la presente investigación. Jung et al. (2020)~\cite{Jung_2020} destacan que los algoritmos desarrollados en entornos controlados enfrentan desafíos significativos para aplicarse eficazmente a datos obtenidos en condiciones naturales y no estructuradas, especialmente en poblaciones con patologías como la Enfermedad de Parkinson. Asimismo, Nguyen et al. (2018)~\cite{Nguyen_2018} señalan la ausencia de métodos robustos para la detección y segmentación automática de actividades complejas y no estructuradas de la vida diaria en pacientes con Parkinson, lo que limita la evaluación precisa y continua de su movilidad en entornos libres o simulados.
+
+Por otra parte, Pérez Sanpablo et al. (2021)~\cite{Sanpablo_2021} evidencian las bajas precisiones, en torno al 60\%, alcanzadas por técnicas clásicas de análisis discriminante para la clasificación de actividades en esta población, indicando la necesidad de enfoques más precisos y adaptados. Rast y Labruyère (2020)~\cite{Rast_2020} agregan que la heterogeneidad metodológica, la falta de estándares y la escasa evaluación de la usabilidad de los sistemas actuales dificultan la adopción clínica y el seguimiento efectivo. Finalmente, Rodríguez Montero et al. (2023)~\cite{Montero_2023} muestran que, aunque se han empleado redes neuronales para la clasificación de actividades de vida diaria en pacientes con EP, los resultados no alcanzan la precisión óptima y se podrían mejorar mediante técnicas avanzadas de selección de características y modelos profundos.
+
+Estos vacíos y limitaciones en el estado del arte justifican la necesidad de desarrollar y validar nuevas metodologías que permitan una clasificación más precisa, robusta y eficiente de las actividades en pacientes con EP, considerando bases de datos reales y desequilibradas, y sistemas que faciliten su aplicación clínica práctica.
+
+Como respuesta directa a estas limitaciones, el presente trabajo propone el uso de Redes Neuronales Artificiales multicapa diseñadas y entrenadas con señales inerciales que han sido previamente preprocesadas y reducidas dimensionalmente mediante Análisis de Componentes Principales (PCA). Esta combinación metodológica tiene sentido frente a las carencias identificadas porque permite una clasificación automática avanzada, alcanzando altas precisiones y superando los métodos clásicos de clasificación, como los análisis discriminantes, que mostraron resultados inferiores. Además, el enfoque se adapta eficazmente a bases de datos desbalanceadas y heterogéneas, como las que se encuentran en estudios con pacientes con Enfermedad de Parkinson, garantizando así un desempeño robusto y una mejor generalización para la identificación de actividades específicas de la vida diaria.
+
+Este enfoque aprovecha la versatilidad y capacidad de aprendizaje profundo de las redes neuronales para modelar patrones complejos en los datos recogidos en entornos naturales y no estructurados, abordando directamente los retos señalados en la detección y segmentación de actividades múltiples y variadas. Además, la reducción dimensional mediante PCA contribuye a la eficiencia y practicidad del sistema, facilitando su potencial implementación clínica para el seguimiento continuo y objetivo de pacientes con patologías motoras.
+
+- Desarrollo de un sistema basado en una red neuronal artificial de perceptrón multicapa (MLP) para la clasificación precisa de seis actividades de la vida diaria en pacientes con Enfermedad de Parkinson.  
+- Uso de técnicas de reducción dimensional mediante Análisis de Componentes Principales (PCA) para mejorar la eficiencia del modelo sin perder precisión.  
+- Evaluación exhaustiva del modelo mediante validación cruzada y comparación con otros clasificadores como análisis discriminante lineal y Naïve Bayes.  
+- Propuesta de configuraciones y recomendaciones para facilitar la aplicación práctica futura, incluyendo la reducción del número de sensores para mayor comodidad y menor costo.  
+- Implementación y codificación del sistema en Python, utilizando librerías especializadas que permiten la reproducibilidad y la extensión del desarrollo.
+
+La validación del trabajo se llevó a cabo mediante la utilización de una extensa base de datos que incluye 179,755 observaciones registradas por sensores inerciales ubicados en diferentes partes del cuerpo de pacientes con Enfermedad de Parkinson. Para respaldar las contribuciones propuestas, se aplicó una validación cruzada con particionamiento en 10 subconjuntos (10-fold), lo que permitió evaluar la robustez y capacidad generalizadora del modelo. Además, se comparó el desempeño de la red neuronal con seis clasificadores alternativos, analizando detalladamente la matriz de confusión y los patrones de error asociados a las diferentes actividades, lo que fortaleció la confianza en la efectividad y precisión de la propuesta para la clasificación automática de actividades de la vida diaria en esta población.
+
+El resto del documento se organiza en las siguientes secciones, donde se desarrollan de manera detallada la metodología empleada, los resultados obtenidos, la discusión de los hallazgos y las conclusiones del estudio.
 
 
 \section{[SECTION 2 TITLE]}
@@ -128,5 +148,8 @@ La Enfermedad de Parkinson (EP) presenta un desafío en el monitoreo efectivo de
 [Brief author biography.]
 \end{IEEEbiographynophoto}
 
+
+\bibliographystyle{IEEEtran}
+\bibliography{redes_neuronales_parkinson}
 
 \end{document}

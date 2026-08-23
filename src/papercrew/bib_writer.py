@@ -4,6 +4,7 @@ import os
 import re
 import urllib.parse
 import urllib.request
+from difflib import SequenceMatcher
 from pathlib import Path
 
 import yaml
@@ -61,8 +62,19 @@ def _bibtex_por_doi(doi: str) -> str | None:
         return None
 
 
+def _titulos_se_parecen(titulo_a: str, titulo_b: str) -> bool:
+    """Compara dos títulos de forma tolerante a diferencias menores de formato
+    (mayúsculas, puntuación) para descartar coincidencias de CrossRef que solo
+    comparten palabras sueltas con el título real del PDF."""
+    normalizar = lambda t: re.sub(r'[^a-z0-9 ]', '', t.lower())
+    return SequenceMatcher(None, normalizar(titulo_a), normalizar(titulo_b)).ratio() >= 0.6
+
+
 def _doi_por_titulo(titulo: str) -> str | None:
-    """Busca en CrossRef por título. Solo acepta resultados con score alto."""
+    """Busca en CrossRef por título. Solo acepta resultados con score alto Y
+    cuyo título coincida de verdad con el buscado (el score de CrossRef por sí
+    solo no basta: puede dar score alto a coincidencias parciales de palabras
+    sueltas cuando el título extraído del PDF viene incompleto o con ruido)."""
     try:
         q = urllib.parse.quote(titulo[:120])
         url = f"https://api.crossref.org/works?query.title={q}&rows=1"
@@ -73,8 +85,12 @@ def _doi_por_titulo(titulo: str) -> str | None:
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read())
         items = data.get("message", {}).get("items", [])
-        if items and items[0].get("score", 0) >= 50:
-            return items[0].get("DOI")
+        if not items or items[0].get("score", 0) < 50:
+            return None
+        titulos_resultado = items[0].get("title") or []
+        if not any(_titulos_se_parecen(titulo, t) for t in titulos_resultado):
+            return None
+        return items[0].get("DOI")
     except Exception:
         pass
     return None
@@ -198,19 +214,23 @@ def generar_bib(citas_path: str, nombre_base: str, tipo: str) -> Path | None:
         if doi:
             bibtex_externo = _bibtex_por_doi(doi)
 
-        # 2. ID de arXiv en el texto
-        if not bibtex_externo:
-            doi_arxiv = _extraer_arxiv_doi(texto)
-            if doi_arxiv:
-                bibtex_externo = _bibtex_por_doi(doi_arxiv)
-
-        # 3. Búsqueda por título en CrossRef (solo si score alto)
+        # 2. Búsqueda por título en CrossRef (solo si score alto y el título coincide de
+        # verdad). Va antes que el ID de arXiv porque un paper subido primero a arXiv y
+        # publicado despues en una revista tiene dos DOIs con años distintos (el de la
+        # preprint y el de la version final); el titulo suele encontrar la version
+        # publicada, que es la que citan otros papers.
         if not bibtex_externo:
             titulo = _extraer_titulo(texto)
             if titulo:
                 doi_cr = _doi_por_titulo(titulo)
                 if doi_cr:
                     bibtex_externo = _bibtex_por_doi(doi_cr)
+
+        # 3. ID de arXiv en el texto (ultimo recurso: solo la preprint, sin version publicada)
+        if not bibtex_externo:
+            doi_arxiv = _extraer_arxiv_doi(texto)
+            if doi_arxiv:
+                bibtex_externo = _bibtex_por_doi(doi_arxiv)
 
         if bibtex_externo:
             bibtex = _forzar_clave(bibtex_externo, clave)

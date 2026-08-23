@@ -1,54 +1,77 @@
 # PaperCrew
 
-Welcome to the PaperCrew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+Sistema multiagente construido con [CrewAI](https://crewai.com) que asiste en la redacción de abstracts e introducciones de artículos científicos. La introducción se genera siguiendo el modelo CARS de Swales y los ejes de Shaw; ambas secciones se integran automáticamente en una plantilla LaTeX oficial (IEEEtran), con la bibliografía generada y verificada mediante una cascada de búsqueda por DOI, arXiv y CrossRef.
 
-## Installation
+El sistema admite dos modos de adquisición de información (entrevista interactiva al autor, o extracción automática desde un PDF) y dos formas de uso (interfaz web o línea de comandos).
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+## Requisitos previos
 
-First, if you haven't already, install uv:
+- Python >= 3.10, < 3.14
+- [uv](https://docs.astral.sh/uv/) instalado globalmente
+- Clave de API de OpenAI con crédito disponible
 
-```bash
-pip install uv
-```
-
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
-
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/papercrew/config/agents.yaml` to define your agents
-- Modify `src/papercrew/config/tasks.yaml` to define your tasks
-- Modify `src/papercrew/crew.py` to add your own logic, tools and specific args
-- Modify `src/papercrew/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+## Instalación
 
 ```bash
-$ crewai run
+git clone <url-del-repositorio>
+cd abstrack
+uv sync
 ```
 
-This command initializes the PaperCrew Crew, assembling the agents and assigning them tasks as defined in your configuration.
+Crea un fichero `.env` en la raíz del proyecto:
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```
+MODEL=openai/gpt-4.1-mini
+OPENAI_API_KEY=sk-...
+```
 
-## Understanding Your Crew
+## Uso
 
-The PaperCrew Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+### Interfaz web (recomendada)
 
-## Support
+```bash
+uv run papercrew-web
+```
 
-For support, questions, or feedback regarding PaperCrew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+Abre `http://localhost:8501`. Desde ahí se configura el tipo de texto a generar, el modo de entrada, el idioma y los ficheros de entrada, y se descargan los resultados al finalizar.
 
-Let's create wonders together with the power and simplicity of crewAI.
+### Línea de comandos
+
+```bash
+# Abstract en modo interactivo
+uv run papercrew
+
+# Abstract desde PDF
+uv run papercrew --pdf papers/sin_abstract/paper.pdf
+
+# Introducción en modo interactivo
+uv run papercrew --tipo introduccion
+
+# Introducción desde PDF (con carpeta de citas)
+uv run papercrew --tipo introduccion --pdf papers/sin_introduccion/paper.pdf
+
+# Elegir idioma de salida (por defecto: Español)
+uv run papercrew --pdf papers/sin_abstract/paper.pdf --idioma Inglés
+
+# Insertar el resultado en un .tex ya maquetado
+uv run papercrew --pdf papers/sin_abstract/paper.pdf --tex-existente ruta/a/mi_paper.tex
+```
+
+## Estructura del proyecto
+
+```
+src/papercrew/
+  agents.yaml / tasks.yaml   Configuración de los agentes y tareas (CrewAI)
+  crew.py                    Definición del crew y los pipelines
+  bib_writer.py              Cascada de búsqueda bibliográfica y verificación de citas
+  latex_writer.py            Generación e inserción en documentos LaTeX
+  comparacion.py             Excel de comparación contenido real / generado
+  main.py                    Entrada por línea de comandos
+  app.py                     Entrada por interfaz web (Streamlit)
+
+papers/       PDFs de entrada (originales, sin abstract, sin introducción, citas)
+abstracts/    Abstracts generados, LaTeX resultante y comparación
+introducciones/  Introducciones generadas, LaTeX resultante y comparación
+```
+
+Para más detalle sobre la arquitectura, el módulo de generación bibliográfica y los agentes, consulta la memoria del TFG.
