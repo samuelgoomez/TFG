@@ -302,11 +302,8 @@ def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_
     from papercrew.crew import PaperCrew
     from crewai.project.utils import cache as _crewai_memoize_cache
 
-    # El decorador @agent/@task/@crew de CrewAI memoiza resultados en un cache
-    # global del proceso, indexado por id(self). Como la web crea una instancia
-    # de PaperCrew nueva por ejecución y Python puede reutilizar la misma
-    # dirección de memoria al liberar la anterior, sin este reset una ejecución
-    # nueva puede recibir resultados cacheados de una ejecución previa distinta.
+    # CrewAI cachea @agent/@task por id(self). En la web, una PaperCrew nueva puede
+    # reutilizar la misma dirección de memoria que la anterior y heredar su cache.
     _crewai_memoize_cache._cache.clear()
 
     set_web_queues(q_questions, q_answers)
@@ -317,9 +314,8 @@ def _run_pipeline(tipo, pdf_path, citas_path, idioma, q_questions, q_answers, q_
         )
         set_informe_path(ruta_informe)
 
-    # En modo jerárquico task_output.agent es siempre el coordinador (manager).
-    # Se pre-calcula la lista de agentes esperados por orden de ejecución para
-    # mostrar el agente real en cada paso.
+    # task_output.agent siempre es el coordinador en modo jerárquico, así que se precalcula
+    # el orden real de agentes para mostrarlo bien en la interfaz.
     if pdf_path and tipo == "introduccion":
         _task_labels = [
             "Agente de Adquisición desde PDF",
@@ -740,9 +736,8 @@ def main():
                             except Exception:
                                 pass
                             try:
-                                # payload (no payload_limpio): generar_latex/actualizar_latex_existente
-                                # necesitan los marcadores [[CITA: ...]] intactos para poder enlazar
-                                # las citas con \cite{}.
+                                # payload y no payload_limpio: aquí hacen falta los marcadores [[CITA: ...]] intactos
+                                # para poder enlazar las citas con \cite{}.
                                 if st.session_state.tex_existente:
                                     from papercrew.latex_writer import actualizar_latex_existente
                                     latex_dest = actualizar_latex_existente(

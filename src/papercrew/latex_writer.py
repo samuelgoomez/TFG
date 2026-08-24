@@ -48,9 +48,7 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
-    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
-    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    # Por si queda algún marcador "[[CITA: ...]]" mal formado que insertar_citas no reconoció.
     contenido = limpiar_marcadores_cita(resultado)
 
     pendiente = "% [Pendiente de generacion]"
@@ -102,9 +100,7 @@ def actualizar_latex_existente(
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
-    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
-    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    # Por si queda algún marcador "[[CITA: ...]]" mal formado que insertar_citas no reconoció.
     texto_nuevo = limpiar_marcadores_cita(resultado)
 
     if tipo == "abstract":
@@ -123,10 +119,8 @@ def actualizar_latex_existente(
 
     if bib_text:
         if _BIBLIOGRAPHY_RE.search(contenido):
-            # Ya había un \bibliography{} en el documento, pero puede ser el
-            # nombre de un .bib de otra ejecucion anterior (otro paper): lo
-            # corregimos para que apunte siempre al .bib que se acaba de
-            # generar para este texto.
+            # El \bibliography{} que ya hubiera en el documento puede apuntar a un .bib de otro
+            # paper de una ejecucion anterior; se corrige para que apunte al que se acaba de generar.
             contenido = _BIBLIOGRAPHY_RE.sub(lambda m: f"\\bibliography{{{nombre_base}}}", contenido, count=1)
         else:
             insercion = f"\\bibliographystyle{{IEEEtran}}\n\\bibliography{{{nombre_base}}}\n\n"

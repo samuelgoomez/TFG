@@ -16,11 +16,8 @@ from papercrew.tools.custom_tools import (
 )
 
 
-# El agente de validación a veces da por buena una frase como "alta tasa de aciertos"
-# como si fuera un dato numérico, aunque la propia tarea le pide explícitamente rechazar
-# ese tipo de vaguedad. En vez de confiar solo en su criterio, este guardrail comprueba
-# por código que el bloque de Resultados tenga al menos una cifra antes de dejar pasar
-# la tarea; si no la tiene, CrewAI reintenta la tarea automáticamente con este mensaje.
+# El validador a veces da por buena una vaguedad tipo "alta tasa de aciertos" como si
+# fuera un dato numérico. Este guardrail lo comprueba por código en vez de fiarse de él.
 def _verificar_resultados_con_dato_numerico(salida):
     texto = salida.raw if hasattr(salida, "raw") else str(salida)
     match = re.search(
@@ -285,9 +282,8 @@ class PaperCrew():
     @task
     def tarea_validacion_intro(self) -> Task:
         tarea_previa = self.tarea_adquisicion_pdf_intro() if self.pdf_path else self.tarea_adquisicion_intro()
-        # En modo PDF los documentos son fijos: usamos la variante sin bucle de re-lectura
-        # para evitar que el coordinador re-delegue con el mismo input y quede atrapado
-        # en el guard de "acción repetida" de CrewAI hasta agotar max_iter.
+        # En modo PDF los documentos son fijos: la variante sin bucle de re-lectura evita que el
+        # coordinador re-delegue con el mismo input y quede atrapado en el guard de CrewAI hasta max_iter.
         config_key = 'tarea_validacion_pdf_intro' if self.pdf_path else 'tarea_validacion_intro'
         return Task(
             config=self.tasks_config[config_key],
@@ -380,10 +376,8 @@ class PaperCrew():
             self.agente_de_control_de_calidad(),
         ]
 
-        # Inyectar pdf_path en el goal del agente PDF aquí, donde self.pdf_path ya está asignado.
-        # @agent cachea la instancia, por lo que la inyección en el método factory no funciona
-        # (se ejecuta antes de que se asigne pdf_path desde fuera). Se parcha el atributo .goal
-        # directamente sobre la instancia ya construida.
+        # pdf_path se inyecta aquí y no en el método factory porque @agent cachea la instancia
+        # antes de que self.pdf_path esté asignado; se parchea .goal sobre la instancia ya creada.
         agente_pdf = self.agente_de_adquisicion_pdf()
         if self.pdf_path:
             prefijo = (
