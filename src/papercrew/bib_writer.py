@@ -320,12 +320,14 @@ def insertar_citas(texto: str, bib_text: str) -> str:
 
     texto = _CITA_MARKER_RE.sub(_sustituir_marcador, texto)
 
+    # admite "et al." (3+ autores) y también "y Apellido2"/"and Apellido2" (exactamente dos autores)
+    conector = r"(?:et\s+al\.?|(?:y|and)\s+[A-ZÁÉÍÓÚÑ][\wÀ-ÿ.'-]+)"
     for apellido, year, clave in referencias:
         if (apellido.lower(), year) in citadas:
             continue
         patron = re.compile(
-            rf'{re.escape(apellido)}(\s+et\s+al\.?)?\s*\({year}\)'
-            rf'|\({re.escape(apellido)}(\s+et\s+al\.?)?\s+{year}\)'
+            rf'{re.escape(apellido)}(\s+{conector})?\s*\({year}\)'
+            rf'|\({re.escape(apellido)}(\s+{conector})?\s+{year}\)'
         )
         texto = patron.sub(lambda m: f"{m.group(0)}~\\cite{{{clave}}}", texto)
 
