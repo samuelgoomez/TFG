@@ -82,7 +82,6 @@ This work addresses the limitations of unidirectional language models in NLP, pa
 
 
 \section{Introduction}
-\label{sec:intro}
 
 Recent advances in natural language processing (NLP) have demonstrated the importance of pre-trained language models for improving performance across a diverse set of tasks. Traditional approaches often rely on unidirectional models that condition on either the left or right context, limiting the richness of learned representations. Modern architectures, such as Transformers and bidirectional LSTM-based models, have expanded the ability to capture comprehensive contextual information. Techniques like ELMo utilize bidirectional LSTMs to generate deep contextualized word embeddings, while models such as OpenAI GPT employ Transformer architectures with a unidirectional left-to-right focus. These models form the foundation of many state-of-the-art NLP systems, addressing challenges in tasks like textual entailment, question answering, and named entity recognition. Enhancing these pre-trained models to incorporate richer bidirectional context remains a central theme in advancing the field.
 
@@ -90,11 +89,13 @@ Previous approaches have made significant strides in improving language represen
 
 The approach presented addresses these limitations by introducing a deeply bidirectional Transformer encoder that is pre-trained using two novel tasks: the Masked Language Model (Masked LM) and Next Sentence Prediction. This design enables the model to learn comprehensive context representations by conditioning on both left and right contexts simultaneously, overcoming the unidirectional constraints observed in prior models. By pre-training with these objectives, the model generates rich, fully bidirectional representations that can be fine-tuned for a wide array of natural language processing tasks without requiring task-specific architectural changes. This approach directly tackles the gap left by earlier models that either lacked deep bidirectionality or were limited by their unidirectional training, establishing a more versatile and effective framework for language understanding.
 
-- Introduction of deep bidirectional pre-training based on Transformers.
-- Combined use of Masked Language Model and Next Sentence Prediction tasks to capture context from both directions.
-- Demonstration of state-of-the-art improvements on eleven natural language processing tasks including GLUE, SQuAD v1.1 and v2.0, SWAG, among others.
-- Provision of pre-trained models and open-source code to the community (https://github.com/google-research/bert).
-- Comprehensive analysis of model ablations, including effects of model size and contribution of individual layers.
+\begin{itemize}
+  \item Introduction of deep bidirectional pre-training based on Transformers.
+  \item Combined use of Masked Language Model and Next Sentence Prediction tasks to capture context from both directions.
+  \item Demonstration of state-of-the-art improvements on eleven natural language processing tasks including GLUE, SQuAD v1.1 and v2.0, SWAG, among others.
+  \item Provision of pre-trained models and open-source code to the community (https://github.com/google-research/bert).
+  \item Comprehensive analysis of model ablations, including effects of model size and contribution of individual layers.
+\end{itemize}
 
 The validation of the proposed work is conducted through fine-tuning experiments across eleven diverse natural language processing tasks, encompassing text classification, natural language inference, question answering, and benchmarks such as GLUE and SWAG. These experiments provide empirical evidence supporting the effectiveness and generality of the approach, demonstrating improvements in key evaluation metrics such as accuracy and F1 scores compared to prior state-of-the-art methods.
 

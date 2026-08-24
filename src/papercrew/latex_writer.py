@@ -35,6 +35,33 @@ def _escapar_latex(texto: str) -> str:
     return texto
 
 
+_LISTA_MD_RE = re.compile(r'^-\s+\S')
+
+
+def _convertir_listas_markdown(texto: str) -> str:
+    """Convierte bloques de líneas markdown '- item' (el formato en que los
+    agentes redactan las contribuciones) en un entorno \\begin{itemize} de
+    LaTeX. Sin esto, el texto insertado en la plantilla se ve como párrafos
+    sueltos empezando por un guion literal, en vez de una lista con viñetas."""
+    lineas = texto.split("\n")
+    resultado: list[str] = []
+    en_lista = False
+    for linea in lineas:
+        if _LISTA_MD_RE.match(linea):
+            if not en_lista:
+                resultado.append(r'\begin{itemize}')
+                en_lista = True
+            resultado.append(f'  \\item {linea[1:].strip()}')
+        else:
+            if en_lista:
+                resultado.append(r'\end{itemize}')
+                en_lista = False
+            resultado.append(linea)
+    if en_lista:
+        resultado.append(r'\end{itemize}')
+    return "\n".join(resultado)
+
+
 def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | None = None) -> Path:
     """
     Inserta `resultado` en la sección correspondiente de la plantilla IEEE y
@@ -44,6 +71,7 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     """
     template = _TEMPLATE.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _convertir_listas_markdown(resultado)
     resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
@@ -96,6 +124,7 @@ def actualizar_latex_existente(
 
     contenido = origen.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _convertir_listas_markdown(resultado)
     resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
