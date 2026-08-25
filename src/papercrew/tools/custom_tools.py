@@ -1,8 +1,8 @@
 import queue as _queue_module
 from crewai.tools import tool
 
-# When running in web mode these are set to Queue objects before starting the pipeline thread.
-# In CLI mode they stay None and the tool falls back to input().
+# En modo web se fijan como objetos Queue antes de arrancar el hilo del pipeline.
+# En modo CLI se quedan a None y la herramienta recurre a input().
 _q_questions = None
 _q_answers = None
 

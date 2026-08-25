@@ -1,8 +1,8 @@
-# 1. Tarea del coordinador
-# coordinate_task:
+# 1. Tarea del coordinador (si fuera necesario tener una tarea sería así)
+# tarea_coordinador:
 #   description: ""
 #   expected_output: ""
-#   agent: coordinator
+#   agent: agente_coordinador
 
 # 2. Tarea de adquisición de información
 tarea_adquisicion:

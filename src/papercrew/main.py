@@ -182,7 +182,7 @@ def run():
         else:
             _guardar_abstract_generado(resultado, pdf_path, tex_existente)
     except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
+        raise Exception(f"Ha ocurrido un error al ejecutar el crew: {e}")
     finally:
         clear_informe_path()
 
