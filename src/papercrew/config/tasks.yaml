@@ -367,6 +367,7 @@ tarea_generar_bibtex:
     Un objeto JSON estricto con exactamente estas claves: {"title": "...", "author": "...", "year": "....", "venue": "..."}. Sin texto adicional antes o después del JSON.
   agent: agente_bibliografico
 
+# 20. Tarea de recorte de texto
 tarea_recortar_texto:
   description: >
     Este texto se ha quedado en {palabras_actuales} palabras, por encima del límite de {limite} que tiene que respetar:
