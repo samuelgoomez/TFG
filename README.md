@@ -14,7 +14,7 @@ El sistema admite dos modos de adquisición de información (entrevista interact
 
 ```bash
 git clone <url-del-repositorio>
-cd abstrack
+cd TFG
 uv sync
 ```
 
