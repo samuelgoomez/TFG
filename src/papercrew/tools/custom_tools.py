@@ -6,9 +6,8 @@ from crewai.tools import tool
 _q_questions = None
 _q_answers = None
 
-# Ruta del informe de esta sesión, para ir dejando constancia de cada pregunta
-# y respuesta según se producen, sin depender de que ningún agente se acuerde
-# de guardarlo. Se fija antes de arrancar el pipeline interactivo (ver crew.py).
+# Ruta del informe de esta sesión: deja constancia de cada pregunta/respuesta sin depender
+# de que ningún agente se acuerde de guardarlo. Se fija antes de arrancar el pipeline (ver crew.py).
 _informe_path = None
 
 

@@ -35,6 +35,33 @@ def _escapar_latex(texto: str) -> str:
     return texto
 
 
+_LISTA_MD_RE = re.compile(r'^-\s+\S')
+
+
+def _convertir_listas_markdown(texto: str) -> str:
+    """Convierte bloques de líneas markdown '- item' (el formato en que los
+    agentes redactan las contribuciones) en un entorno \\begin{itemize} de
+    LaTeX. Sin esto, el texto insertado en la plantilla se ve como párrafos
+    sueltos empezando por un guion literal, en vez de una lista con viñetas."""
+    lineas = texto.split("\n")
+    resultado: list[str] = []
+    en_lista = False
+    for linea in lineas:
+        if _LISTA_MD_RE.match(linea):
+            if not en_lista:
+                resultado.append(r'\begin{itemize}')
+                en_lista = True
+            resultado.append(f'  \\item {linea[1:].strip()}')
+        else:
+            if en_lista:
+                resultado.append(r'\end{itemize}')
+                en_lista = False
+            resultado.append(linea)
+    if en_lista:
+        resultado.append(r'\end{itemize}')
+    return "\n".join(resultado)
+
+
 def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | None = None) -> Path:
     """
     Inserta `resultado` en la sección correspondiente de la plantilla IEEE y
@@ -44,13 +71,12 @@ def generar_latex(resultado: str, tipo: str, nombre_base: str, bib_text: str | N
     """
     template = _TEMPLATE.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _convertir_listas_markdown(resultado)
     resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
-    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
-    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    # Por si queda algún marcador "[[CITA: ...]]" mal formado que insertar_citas no reconoció.
     contenido = limpiar_marcadores_cita(resultado)
 
     pendiente = "% [Pendiente de generacion]"
@@ -98,13 +124,12 @@ def actualizar_latex_existente(
 
     contenido = origen.read_text(encoding="utf-8")
     resultado = limpiar_markdown(resultado)
+    resultado = _convertir_listas_markdown(resultado)
     resultado = _escapar_latex(resultado.strip())
     if bib_text:
         resultado = insertar_citas(resultado, bib_text)
         resultado = marcar_citas_sin_respaldo(resultado, bib_text)
-    # Red de seguridad final: si el LLM ha escrito un marcador "[[CITA: ...]]"
-    # mal formado (p.ej. sin año real, con "No especificado") que insertar_citas
-    # no ha podido reconocer ni convertir a \cite{}, no debe quedar visible.
+    # Por si queda algún marcador "[[CITA: ...]]" mal formado que insertar_citas no reconoció.
     texto_nuevo = limpiar_marcadores_cita(resultado)
 
     if tipo == "abstract":
@@ -123,10 +148,8 @@ def actualizar_latex_existente(
 
     if bib_text:
         if _BIBLIOGRAPHY_RE.search(contenido):
-            # Ya había un \bibliography{} en el documento, pero puede ser el
-            # nombre de un .bib de otra ejecucion anterior (otro paper): lo
-            # corregimos para que apunte siempre al .bib que se acaba de
-            # generar para este texto.
+            # El \bibliography{} que ya hubiera en el documento puede apuntar a un .bib de otro
+            # paper de una ejecucion anterior; se corrige para que apunte al que se acaba de generar.
             contenido = _BIBLIOGRAPHY_RE.sub(lambda m: f"\\bibliography{{{nombre_base}}}", contenido, count=1)
         else:
             insercion = f"\\bibliographystyle{{IEEEtran}}\n\\bibliography{{{nombre_base}}}\n\n"

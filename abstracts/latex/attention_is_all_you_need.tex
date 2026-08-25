@@ -83,6 +83,7 @@ The Transformer model addresses the limitations of traditional recurrent and con
 
 \section{Introduction}
 
+
 The field of sequence modeling and transduction has traditionally been dominated by recurrent neural networks (RNNs) and their variants, such as long short-term memory (LSTM) and gated recurrent units (GRU). These models have been widely applied to problems like language modeling and machine translation, due to their ability to process sequences of arbitrary length. However, the inherently sequential nature of RNNs limits parallelization during training and presents difficulties when modeling long-range dependencies within sequences. To address these issues, attention mechanisms have been incorporated into recurrent models, enabling them to capture dependencies between distant positions in input and output sequences more effectively. Despite these advances, attention is commonly used in conjunction with recurrence rather than replacing it.
 
 This work situates itself within this context by exploring a model architecture that entirely removes the recurrent components and relies solely on attention mechanisms to capture global dependencies. By doing so, it aims to overcome the computational and modeling constraints imposed by recurrent structures, offering both improved parallelization and potentially enhanced performance in sequence transduction tasks.
@@ -91,11 +92,13 @@ Bahdanau et al. (2014)~\cite{bahdanau2014neuralmt} introduced an encoder-decoder
 
 The central proposal of this work is the Transformer, a novel encoder-decoder architecture that entirely replaces recurrent layers with multi-head self-attention mechanisms and position-wise feed-forward networks to capture global dependencies within sequences. By relying solely on attention, the Transformer eliminates the sequential computation inherent in recurrent architectures, enabling significantly more parallelization during training. Additionally, the model uses sinusoidal positional encodings to inject information about the order of tokens in the sequence, which addresses the absence of recurrence or convolutional structure. This design not only facilitates highly parallel and efficient training but also achieves state-of-the-art performance in sequence transduction tasks like machine translation, directly addressing the limitations found in prior approaches.
 
-- Introduction of the Transformer, the first sequence transduction model based entirely on attention mechanisms without recurrence or convolution (Section 3).
-- Implementation of multi-head attention that allows the model to jointly attend to information from different representation subspaces at different positions (Section 3.2).
-- Proposal and effective use of sinusoidal positional encodings to provide information about the relative or absolute position of tokens in a sequence (Section 3.5).
-- Empirical demonstration that the Transformer outperforms previous state-of-the-art models in English-to-German and English-to-French translation tasks at a fraction of the computational training cost (Section 6.1).
-- Additional evaluation showing that the Transformer generalizes well to other tasks such as English constituency parsing (Section 6.3).
+\begin{itemize}
+  \item Introduction of the Transformer, the first sequence transduction model based entirely on attention mechanisms without recurrence or convolution (Section 3).
+  \item Implementation of multi-head attention that allows the model to jointly attend to information from different representation subspaces at different positions (Section 3.2).
+  \item Proposal and effective use of sinusoidal positional encodings to provide information about the relative or absolute position of tokens in a sequence (Section 3.5).
+  \item Empirical demonstration that the Transformer outperforms previous state-of-the-art models in English-to-German and English-to-French translation tasks at a fraction of the computational training cost (Section 6.1).
+  \item Additional evaluation showing that the Transformer generalizes well to other tasks such as English constituency parsing (Section 6.3).
+\end{itemize}
 
 The validation of this work is conducted through extensive empirical experiments on large-scale machine translation benchmarks, specifically the WMT 2014 English-to-German and English-to-French datasets. The model is trained using high-performance GPUs to assess its efficiency and scalability. Performance is evaluated on standardized test sets using the BLEU metric, enabling direct comparison with prior state-of-the-art methods such as recurrent and convolutional neural network models and their ensembles. Additionally, the model is tested on other natural language processing tasks, like English constituency parsing, to demonstrate its generalization capabilities. These experiments collectively support the effectiveness and advantages of the proposed Transformer architecture.
 

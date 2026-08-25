@@ -2,9 +2,9 @@
 __pycache__/
 .DS_Store
 .idea/
-report.md
 informe_entrevista.md
-abstract_final.md
+CONTEXTO_PROYECTO.md
+.claude/
 
 # Transcripciones de pruebas manuales del modo interactivo (no son ejemplos del proyecto)
 abstracts/generados/interactivo_*
