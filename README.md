@@ -13,7 +13,7 @@ El sistema admite dos modos de adquisición de información (entrevista interact
 ## Instalación
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/samuelgoomez/TFG.git
 cd TFG
 uv sync
 ```
