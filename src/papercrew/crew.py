@@ -18,20 +18,38 @@ from papercrew.tools.custom_tools import (
 
 # El validador a veces da por buena una vaguedad tipo "alta tasa de aciertos" como si
 # fuera un dato numérico. Este guardrail lo comprueba por código en vez de fiarse de él.
-def _verificar_resultados_con_dato_numerico(salida):
-    texto = salida.raw if hasattr(salida, "raw") else str(salida)
+def _resultados_tienen_dato_numerico(texto):
+    """Busca la sección de Resultados en `texto` y dice si contiene una cifra.
+    Devuelve None si no encuentra la sección (no concluyente), True/False si sí."""
     match = re.search(
         r"(?:\d\.\s*)?Resultados\s*:?\s*\n?(.*?)(?=\n\s*(?:\d\.\s*)?(?:Conclusi[oó]n|Restricciones)\b|\Z)",
         texto,
         re.IGNORECASE | re.DOTALL,
     )
     if not match:
-        # No se encontró la sección con el formato esperado: no forzamos el rechazo
-        # para no romper el pipeline por un simple cambio de formato del informe.
-        return (True, salida)
+        return None
     seccion = match.group(1)
-    if re.search(r"\d", seccion) or "[SIN DATO NUMÉRICO]" in seccion.upper():
+    return bool(re.search(r"\d", seccion) or "[SIN DATO NUMÉRICO]" in seccion.upper())
+
+
+def _verificar_resultados_con_dato_numerico(salida):
+    texto = salida.raw if hasattr(salida, "raw") else str(salida)
+    encontrado = _resultados_tienen_dato_numerico(texto)
+    if encontrado is None or encontrado is True:
+        # No se encontró la sección con el formato esperado (no forzamos el rechazo para
+        # no romper el pipeline por un simple cambio de formato), o sí tiene un dato real.
         return (True, salida)
+
+    # El validador sí trae un apartado de Resultados en su reformulación, pero sin
+    # ninguna cifra visible. Antes de rechazar, se comprueba el informe real en disco:
+    # el validador tiende a parafrasear al reescribirlo y puede perder la cifra aunque
+    # el autor sí la haya dado (el fichero refleja literalmente lo que dijo).
+    from pathlib import Path
+    ruta_informe = Path("papers/salida/informe_entrevista.md")
+    if ruta_informe.is_file():
+        if _resultados_tienen_dato_numerico(ruta_informe.read_text(encoding="utf-8")):
+            return (True, salida)
+
     return (
         False,
         "El punto de Resultados no tiene ningún dato concreto y medible (cifra, porcentaje, "
