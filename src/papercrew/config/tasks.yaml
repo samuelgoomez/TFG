@@ -24,6 +24,7 @@ tarea_adquisicion:
     Esta tarea termina al entregar el informe de la entrevista. Validación, estructuración, redacción, revisión y control de calidad son tareas aparte: no las hagas aquí ni añadas un veredicto de validación al informe.
   expected_output: >
     Un informe estructurado (texto limpio) que contenga los 6 puntos clave, manteniendo TODOS LOS DETALLES TÉCNICOS aportados por el usuario (nombres de datasets, modelos, métricas, números). No resumas en exceso ni elimines datos concretos. Clasifícalo bajo 6 encabezados (Problema, Objetivo, Metodología, Resultados, Conclusión, Restricciones).
+  agent: agente_de_adquisicion_de_informacion
   output_file: "papers/salida/informe_entrevista.md"
 
   # 2b. Tarea de adquisición desde PDF
